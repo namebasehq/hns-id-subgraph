@@ -40,4 +40,9 @@ graph add 0x0F1143972197B63053709794f718e60599Ce4730 --contract-name DefaultRegi
 # https://optimistic.etherscan.io/address/0x93Cea80D190eB1401b15e3dbBE3d0392D32e3FCf
 # graph add 0x93Cea80D190eB1401b15e3dbBE3d0392D32e3FCf --contract-name GenericMetadataService --start-block 123 --merge-entities
 
+# deploying subgraph
+graph auth --studio 0e8d07e24d861d280d1dcf39f6e86236
+graph codegen
+graph build
+graph deploy --studio hns-id
 ```
