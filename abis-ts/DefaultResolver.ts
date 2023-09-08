@@ -208,9 +208,9 @@ export const abi = [
       },
       {
         indexed: true,
-        internalType: "string",
+        internalType: "bytes32",
         name: "indexedKey",
-        type: "string"
+        type: "bytes32"
       },
       {
         indexed: false,

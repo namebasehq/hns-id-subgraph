@@ -209,14 +209,14 @@
       {
         "indexed": true,
         "internalType": "string",
-        "name": "indexedKey",
+        "name": "key",
         "type": "string"
       },
       {
-        "indexed": false,
-        "internalType": "string",
-        "name": "key",
-        "type": "string"
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "indexedKey",
+        "type": "bytes32"
       },
       {
         "indexed": false,

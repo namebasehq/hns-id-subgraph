@@ -221,7 +221,7 @@ type ReverseClaimed @entity(immutable: true) {
 type TextChanged @entity(immutable: true) {
   id: Bytes!
   node: Bytes! # bytes32
-  indexedKey: String! # string
+  indexedKey: Bytes! # bytes32
   key: String! # string
   value: String! # string
   blockNumber: BigInt!

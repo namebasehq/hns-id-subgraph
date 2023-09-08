@@ -163,7 +163,7 @@ dataSources:
           handler: handleNameChanged
         - event: ReverseClaimed(indexed address,string)
           handler: handleReverseClaimed
-        - event: TextChanged(indexed bytes32,indexed string,string,string)
+        - event: TextChanged(indexed bytes32,indexed string,indexed bytes32,string)
           handler: handleTextChanged
         - event: UpdatedDelegate(indexed address,indexed uint256,address)
           handler: handleUpdatedDelegate
