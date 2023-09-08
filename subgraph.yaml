@@ -3,56 +3,6 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: DefaultResolver
-    network: optimism
-    source:
-      address: "0xDDa56f06D80f3D8E3E35159701A63753f39c3BCB"
-      abi: DefaultResolver
-      startBlock: 108383420
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - AddrChanged
-        - AddressChanged
-        - ContenthashChanged
-        - DNSRecordChanged
-        - DNSRecordDeleted
-        - DNSZonehashChanged
-        - NameChanged
-        - ReverseClaimed
-        - TextChanged
-        - UpdatedDelegate
-        - VersionChanged
-      abis:
-        - name: DefaultResolver
-          file: ./abis/DefaultResolver.json
-      eventHandlers:
-        - event: AddrChanged(indexed bytes32,address)
-          handler: handleAddrChanged
-        - event: AddressChanged(indexed bytes32,uint256,bytes)
-          handler: handleAddressChanged
-        - event: ContenthashChanged(indexed bytes32,bytes)
-          handler: handleContenthashChanged
-        - event: DNSRecordChanged(indexed bytes32,bytes,uint16,bytes)
-          handler: handleDNSRecordChanged
-        - event: DNSRecordDeleted(indexed bytes32,bytes,uint16)
-          handler: handleDNSRecordDeleted
-        - event: DNSZonehashChanged(indexed bytes32,bytes,bytes)
-          handler: handleDNSZonehashChanged
-        - event: NameChanged(indexed bytes32,string)
-          handler: handleNameChanged
-        - event: ReverseClaimed(indexed address,string)
-          handler: handleReverseClaimed
-        - event: TextChanged(indexed bytes32,indexed string,string,string)
-          handler: handleTextChanged
-        - event: UpdatedDelegate(indexed address,indexed uint256,address)
-          handler: handleUpdatedDelegate
-        - event: VersionChanged(indexed bytes32,uint256)
-          handler: handleVersionChanged
-      file: ./src/default-resolver.ts
-  - kind: ethereum
     name: SldRegistrationManager
     network: optimism
     source:
@@ -137,106 +87,6 @@ dataSources:
           handler: handleRoyaltyPayoutAmountSet
       file: ./src/handshake-sld.ts
   - kind: ethereum
-    name: SldCommitIntent
-    network: optimism
-    source:
-      address: "0x84EE3763E5F2faB55E8d7197632Aa234159C2f5f"
-      abi: DefaultResolver
-      startBlock: 108382221
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - AddrChanged
-        - AddressChanged
-        - ContenthashChanged
-        - DNSRecordChanged
-        - DNSRecordDeleted
-        - DNSZonehashChanged
-        - NameChanged
-        - ReverseClaimed
-        - TextChanged
-        - UpdatedDelegate
-        - VersionChanged
-      abis:
-        - name: DefaultResolver
-          file: ./abis/DefaultResolver.json
-      eventHandlers:
-        - event: AddrChanged(indexed bytes32,address)
-          handler: handleAddrChanged
-        - event: AddressChanged(indexed bytes32,uint256,bytes)
-          handler: handleAddressChanged
-        - event: ContenthashChanged(indexed bytes32,bytes)
-          handler: handleContenthashChanged
-        - event: DNSRecordChanged(indexed bytes32,bytes,uint16,bytes)
-          handler: handleDNSRecordChanged
-        - event: DNSRecordDeleted(indexed bytes32,bytes,uint16)
-          handler: handleDNSRecordDeleted
-        - event: DNSZonehashChanged(indexed bytes32,bytes,bytes)
-          handler: handleDNSZonehashChanged
-        - event: NameChanged(indexed bytes32,string)
-          handler: handleNameChanged
-        - event: ReverseClaimed(indexed address,string)
-          handler: handleReverseClaimed
-        - event: TextChanged(indexed bytes32,indexed string,string,string)
-          handler: handleTextChanged
-        - event: UpdatedDelegate(indexed address,indexed uint256,address)
-          handler: handleUpdatedDelegate
-        - event: VersionChanged(indexed bytes32,uint256)
-          handler: handleVersionChanged
-      file: ./src/default-resolver.ts
-  - kind: ethereum
-    name: TldClaimManager
-    network: optimism
-    source:
-      address: "0x9209397263427413817Afc6957A434cF62C02c68"
-      abi: DefaultResolver
-      startBlock: 108382569
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - AddrChanged
-        - AddressChanged
-        - ContenthashChanged
-        - DNSRecordChanged
-        - DNSRecordDeleted
-        - DNSZonehashChanged
-        - NameChanged
-        - ReverseClaimed
-        - TextChanged
-        - UpdatedDelegate
-        - VersionChanged
-      abis:
-        - name: DefaultResolver
-          file: ./abis/DefaultResolver.json
-      eventHandlers:
-        - event: AddrChanged(indexed bytes32,address)
-          handler: handleAddrChanged
-        - event: AddressChanged(indexed bytes32,uint256,bytes)
-          handler: handleAddressChanged
-        - event: ContenthashChanged(indexed bytes32,bytes)
-          handler: handleContenthashChanged
-        - event: DNSRecordChanged(indexed bytes32,bytes,uint16,bytes)
-          handler: handleDNSRecordChanged
-        - event: DNSRecordDeleted(indexed bytes32,bytes,uint16)
-          handler: handleDNSRecordDeleted
-        - event: DNSZonehashChanged(indexed bytes32,bytes,bytes)
-          handler: handleDNSZonehashChanged
-        - event: NameChanged(indexed bytes32,string)
-          handler: handleNameChanged
-        - event: ReverseClaimed(indexed address,string)
-          handler: handleReverseClaimed
-        - event: TextChanged(indexed bytes32,indexed string,string,string)
-          handler: handleTextChanged
-        - event: UpdatedDelegate(indexed address,indexed uint256,address)
-          handler: handleUpdatedDelegate
-        - event: VersionChanged(indexed bytes32,uint256)
-          handler: handleVersionChanged
-      file: ./src/default-resolver.ts
-  - kind: ethereum
     name: DefaultRegistrationStrategy
     network: optimism
     source:
@@ -268,3 +118,53 @@ dataSources:
         - event: ReservedNameSet(indexed bytes32,indexed address,string)
           handler: handleReservedNameSet
       file: ./src/default-registration-strategy.ts
+  - kind: ethereum
+    name: DefaultResolver
+    network: optimism
+    source:
+      address: "0xDDa56f06D80f3D8E3E35159701A63753f39c3BCB"
+      abi: DefaultResolver
+      startBlock: 108383420
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - AddrChanged
+        - AddressChanged
+        - ContenthashChanged
+        - DNSRecordChanged
+        - DNSRecordDeleted
+        - DNSZonehashChanged
+        - NameChanged
+        - ReverseClaimed
+        - TextChanged
+        - UpdatedDelegate
+        - VersionChanged
+      abis:
+        - name: DefaultResolver
+          file: ./abis/DefaultResolver.json
+      eventHandlers:
+        - event: AddrChanged(indexed bytes32,address)
+          handler: handleAddrChanged
+        - event: AddressChanged(indexed bytes32,uint256,bytes)
+          handler: handleAddressChanged
+        - event: ContenthashChanged(indexed bytes32,bytes)
+          handler: handleContenthashChanged
+        - event: DNSRecordChanged(indexed bytes32,bytes,uint16,bytes)
+          handler: handleDNSRecordChanged
+        - event: DNSRecordDeleted(indexed bytes32,bytes,uint16)
+          handler: handleDNSRecordDeleted
+        - event: DNSZonehashChanged(indexed bytes32,bytes,bytes)
+          handler: handleDNSZonehashChanged
+        - event: NameChanged(indexed bytes32,string)
+          handler: handleNameChanged
+        - event: ReverseClaimed(indexed address,string)
+          handler: handleReverseClaimed
+        - event: TextChanged(indexed bytes32,indexed string,string,string)
+          handler: handleTextChanged
+        - event: UpdatedDelegate(indexed address,indexed uint256,address)
+          handler: handleUpdatedDelegate
+        - event: VersionChanged(indexed bytes32,uint256)
+          handler: handleVersionChanged
+      file: ./src/default-resolver.ts

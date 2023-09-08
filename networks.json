@@ -1,9 +1,5 @@
 {
   "optimism": {
-    "DefaultResolver": {
-      "address": "0xDDa56f06D80f3D8E3E35159701A63753f39c3BCB",
-      "startBlock": 108383420
-    },
     "SldRegistrationManager": {
       "address": "0xfda87cc032cd641ac192027353e5b25261dfe6b3"
     },
@@ -21,6 +17,9 @@
     },
     "DefaultRegistrationStrategy": {
       "address": "0x0F1143972197B63053709794f718e60599Ce4730"
+    },
+    "DefaultResolver": {
+      "address": "0xDDa56f06D80f3D8E3E35159701A63753f39c3BCB"
     }
   }
 }
