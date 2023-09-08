@@ -67,4 +67,5 @@ typings/
 .idea
 .DS_STORE
 src/types
-/tests/.bin
+tests/.bin
+tests/.latest.json

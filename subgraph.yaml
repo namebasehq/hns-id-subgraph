@@ -1,4 +1,6 @@
 specVersion: 0.0.5
+description: "Decentralized domains anchored to the Handshake root zone."
+repository: "https://github.com/namebasehq/hns-id-subgraph"
 schema:
   file: ./schema.graphql
 dataSources:

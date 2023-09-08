@@ -18,7 +18,7 @@ import { createEnabledSetEvent } from "./default-registration-strategy-utils"
 describe("Describe entity assertions", () => {
   beforeAll(() => {
     let _tokenNamehash = Bytes.fromI32(1234567890)
-    let _enabled = "boolean Not implemented"
+    let _enabled = false;
     let newEnabledSetEvent = createEnabledSetEvent(_tokenNamehash, _enabled)
     handleEnabledSet(newEnabledSetEvent)
   })
@@ -44,7 +44,7 @@ describe("Describe entity assertions", () => {
       "EnabledSet",
       "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
       "_enabled",
-      "boolean Not implemented"
+      "false"
     )
 
     // More assert options:
