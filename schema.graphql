@@ -1,0 +1,249 @@
+type AddrChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  a: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AddressChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  coinType: BigInt! # uint256
+  newAddress: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ContenthashChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  hash: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type DNSRecordChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  name: Bytes! # bytes
+  resource: Int! # uint16
+  record: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type DNSRecordDeleted @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  name: Bytes! # bytes
+  resource: Int! # uint16
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type DNSZonehashChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  lastzonehash: Bytes! # bytes
+  zonehash: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type NameChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  name: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ReverseClaimed @entity(immutable: true) {
+  id: Bytes!
+  _addr: Bytes! # address
+  _domain: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TextChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  indexedKey: String! # string
+  key: String! # string
+  value: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type UpdatedDelegate @entity(immutable: true) {
+  id: Bytes!
+  _owner: Bytes! # address
+  _tokenId: BigInt! # uint256
+  _delegate: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type VersionChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  newVersion: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type AdminChanged @entity(immutable: true) {
+  id: Bytes!
+  previousAdmin: Bytes! # address
+  newAdmin: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type BeaconUpgraded @entity(immutable: true) {
+  id: Bytes!
+  beacon: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Upgraded @entity(immutable: true) {
+  id: Bytes!
+  implementation: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type Approval @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  approved: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ApprovalForAll @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  operator: Bytes! # address
+  approved: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RegistrationStrategySet @entity(immutable: true) {
+  id: Bytes!
+  namehash: Bytes! # bytes32
+  strategy: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ResolverSet @entity(immutable: true) {
+  id: Bytes!
+  _nftNamehash: Bytes! # bytes32
+  _resolver: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Transfer @entity(immutable: true) {
+  id: Bytes!
+  from: Bytes! # address
+  to: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type RoyaltyPayoutAddressSet @entity(immutable: true) {
+  id: Bytes!
+  _nftNamehash: Bytes! # bytes32
+  _payoutAddress: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RoyaltyPayoutAmountSet @entity(immutable: true) {
+  id: Bytes!
+  _nftNamehash: Bytes! # bytes32
+  _amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type EnabledSet @entity(immutable: true) {
+  id: Bytes!
+  _tokenNamehash: Bytes! # bytes32
+  _enabled: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type LengthCostSet @entity(immutable: true) {
+  id: Bytes!
+  _tokenNamehash: Bytes! # bytes32
+  _prices: [BigInt!]! # uint256[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type MultiYearDiscountSet @entity(immutable: true) {
+  id: Bytes!
+  _tokenNamehash: Bytes! # bytes32
+  _discounts: [BigInt!]! # uint256[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type PremiumNameSet @entity(immutable: true) {
+  id: Bytes!
+  _tokenNamehash: Bytes! # bytes32
+  _price: BigInt! # uint256
+  _label: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ReservedNameSet @entity(immutable: true) {
+  id: Bytes!
+  _tokenNamehash: Bytes! # bytes32
+  _claimant: Bytes! # address
+  _label: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
