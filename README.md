@@ -62,6 +62,8 @@ graph init --product subgraph-studio --from-contract 0xDDa56f06D80f3D8E3E3515970
 # https://optimistic.etherscan.io/address/0xDDa56f06D80f3D8E3E35159701A63753f39c3BCB
 graph add 0xDDa56f06D80f3D8E3E35159701A63753f39c3BCB --contract-name DefaultResolver --start-block 108383420 --merge-entities
 
+# PROXY
+# https://optimistic.etherscan.io/address/0x9209397263427413817Afc6957A434cF62C02c68
 # https://optimistic.etherscan.io/address/0x60131eb218ae7abeC4Bb8bD594Ee703ED6E0Ea0B
 graph add 0x60131eb218ae7abeC4Bb8bD594Ee703ED6E0Ea0B --contract-name TldClaimManager --start-block 108382565 --merge-entities
 
@@ -71,6 +73,8 @@ graph add 0x01eBCf32e4b5da0167eaacEA1050B2be63122B6f --contract-name HandshakeTl
 # https://optimistic.etherscan.io/address/0x7963bfA8F8f914b9776ac6259a8C39965d26f42F
 graph add 0x7963bfA8F8f914b9776ac6259a8C39965d26f42F --contract-name HandshakeSld --start-block 108382206 --merge-entities
 
+# PROXY
+# https://optimistic.etherscan.io/address/0xfda87CC032cD641ac192027353e5B25261dfe6b3
 # https://optimistic.etherscan.io/address/0x7392854e46f76C1e15eC86030b5a6B0b611713E7
 graph add 0x7392854e46f76C1e15eC86030b5a6B0b611713E7 --contract-name SldRegistrationManager --start-block 108382554 --merge-entities
 

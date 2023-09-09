@@ -13,7 +13,7 @@
       "startBlock": 108382221
     },
     "SldRegistrationManager": {
-      "address": "0x7392854e46f76C1e15eC86030b5a6B0b611713E7",
+      "address": "0xfda87CC032cD641ac192027353e5B25261dfe6b3",
       "startBlock": 108382554
     },
     "DefaultRegistrationStrategy": {
@@ -21,7 +21,7 @@
       "startBlock": 108382562
     },
     "TldClaimManager": {
-      "address": "0x60131eb218ae7abeC4Bb8bD594Ee703ED6E0Ea0B",
+      "address": "0x9209397263427413817Afc6957A434cF62C02c68",
       "startBlock": 108382565
     },
     "DefaultResolver": {

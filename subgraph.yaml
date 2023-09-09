@@ -58,7 +58,7 @@ dataSources:
     name: TldClaimManager
     network: optimism
     source:
-      address: "0x60131eb218ae7abeC4Bb8bD594Ee703ED6E0Ea0B"
+      address: "0x9209397263427413817Afc6957A434cF62C02c68"
       abi: TldClaimManager
       startBlock: 108382565
     mapping:
@@ -169,7 +169,7 @@ dataSources:
     name: SldRegistrationManager
     network: optimism
     source:
-      address: "0x7392854e46f76C1e15eC86030b5a6B0b611713E7"
+      address: "0xfda87CC032cD641ac192027353e5B25261dfe6b3"
       abi: SldRegistrationManager
       startBlock: 108382554
     mapping:
