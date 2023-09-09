@@ -18,17 +18,14 @@ import {
   NewUsdOracle,
   OwnershipTransferred,
   PaymentSent,
-  RegisterSld,
-  RenewSld
+  RegisterSld, Registration,
+  RenewSld, Sld
 } from "../generated/schema"
 import { concat } from "./utils";
 import { BigInt, ByteArray, Bytes, crypto } from "@graphprotocol/graph-ts";
 import { HandshakeSld } from "../generated/HandshakeSld/HandshakeSld";
 
 export function handleRegisterSld(event: RegisterSldEvent): void {
-  let account = new Account(event.transaction.from.toHex());
-  account.save();
-
   let label = event.params._label;
   let labelHash = crypto.keccak256(ByteArray.fromUTF8(label));
   let parentHash= event.params._tldNamehash;
@@ -37,27 +34,37 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
   let nameHash = crypto.keccak256(concat(parentHash, labelHash));
   let tokenId = BigInt.fromString(nameHash.toHex());
 
-  // bind the contract to the address that emitted the event
-  // get the full domain name from contract function
-  let sld = HandshakeSld.bind(event.address);
-  let name = sld.name1(Bytes.fromByteArray(nameHash));
+  // TODO: temp debug entity
+  let sld = new Sld(labelHash.toHex());
+  sld.labelName = label;
+  sld.save();
 
-  // let registration = new Registration(label.toHex());
-  let domain = Domain.load(nameHash.toHex())!;
+  let account = new Account(event.transaction.from.toHex());
+  account.save();
+
+  let domain = new Domain(nameHash.toHex());
   domain.labelName = label;
   domain.labelhash = Bytes.fromByteArray(labelHash);
-  domain.name = name;
-
-  // registration.domain = domain.id;
-  // registration.registrationDate = event.block.timestamp;
-  // registration.expiryDate = event.params.expires;
-  // registration.registrant = account.id;
-
-  // domain.registrant = account.id;
-  // domain.expiryDate = event.params.expires.plus(GRACE_PERIOD_SECONDS);
-  // registration.labelName = labelName;
+  // bind the contract to the address that emitted the event
+  // get the full domain name from contract function
+  // let handshakeSld = HandshakeSld.bind(event.address);
+  // let name = handshakeSld.name1(Bytes.fromByteArray(nameHash));
+  // domain.name = name;
+  domain.owner = account.id;
+  domain.registrant = account.id;
+  domain.createdAt = event.block.timestamp;
+  domain.expiryDate = event.params._expiry;
   domain.save();
-  // registration.save();
+
+  let registration = new Registration(labelHash.toHex());
+  registration.domain = domain.id;
+  registration.registrationDate = event.block.timestamp;
+  registration.expiryDate = event.params._expiry;
+  registration.registrant = account.id;
+  registration.labelName = label;
+  registration.blockNumber = event.block.number.toI32();
+  registration.transactionID = event.transaction.hash;
+  registration.save();
 
   // let registrationEvent = new NameRegistered(createEventID(event));
   // registrationEvent.registration = registration.id;
@@ -66,19 +73,6 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
   // registrationEvent.registrant = account.id;
   // registrationEvent.expiryDate = event.params.expires;
   // registrationEvent.save();
-
-  // let entity = new RegisterSld(
-  //   event.transaction.hash.concatI32(event.logIndex.toI32())
-  // )
-  // entity._tldNamehash = event.params._tldNamehash
-  // entity._secret = event.params._secret
-  // entity._label = event.params._label
-  // entity._expiry = event.params._expiry
-  // entity.blockNumber = event.block.number
-  // entity.blockTimestamp = event.block.timestamp
-  // entity.transactionHash = event.transaction.hash
-
-  // entity.save()
 }
 
 export function handleRegisterSldOld(event: RegisterSldEvent): void {

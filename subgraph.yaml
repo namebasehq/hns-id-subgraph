@@ -186,6 +186,10 @@ dataSources:
         - PaymentSent
         - RegisterSld
         - RenewSld
+        - Account
+        - Domain
+        - Registration
+        - Sld
       abis:
         - name: SldRegistrationManager
           file: ./abis/SldRegistrationManager.json

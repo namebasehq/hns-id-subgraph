@@ -7,8 +7,25 @@ type Domain @entity {
   labelName: String
   "keccak256(labelName)"
   labelhash: Bytes
+  "The time when the domain was created"
+  createdAt: BigInt!
+  "The expiry date for the domain"
+  expiryDate: BigInt
   "The account that owns the domain"
   owner: Account!
+  "The account that owns the ERC721 NFT for the domain"
+  registrant: Account
+  "The registration associated with the domain"
+  registration: Registration @derivedFrom(field: "domain")
+}
+
+type Sld @entity {
+  "The namehash of the name"
+  id: ID!
+  "The human readable name"
+  name: String
+  "The human readable label name"
+  labelName: String
 }
 
 type Account @entity {
@@ -16,8 +33,28 @@ type Account @entity {
   id: ID!
   "The domains owned by the account"
   domains: [Domain!]! @derivedFrom(field: "owner")
+  "The Registrations made by the account"
+  registrations: [Registration!] @derivedFrom(field: "registrant")
 }
 
+type Registration @entity {
+  "The unique identifier of the registration"
+  id: ID!
+  "The domain name associated with the registration"
+  domain: Domain!
+  "The registration date of the domain"
+  registrationDate: BigInt!
+  "The expiry date of the domain"
+  expiryDate: BigInt!
+  "The account that registered the domain"
+  registrant: Account!
+  "The human-readable label name associated with the domain registration"
+  labelName: String
+  "The block number of the event"
+  blockNumber: Int!
+  "The transaction ID associated with the event"
+  transactionID: Bytes!
+}
 
 type AddrChanged @entity(immutable: true) {
   id: Bytes!

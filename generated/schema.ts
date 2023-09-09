@@ -101,6 +101,36 @@ export class Domain extends Entity {
     }
   }
 
+  get createdAt(): BigInt {
+    let value = this.get("createdAt");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
+  }
+
+  get expiryDate(): BigInt | null {
+    let value = this.get("expiryDate");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set expiryDate(value: BigInt | null) {
+    if (!value) {
+      this.unset("expiryDate");
+    } else {
+      this.set("expiryDate", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
   get owner(): string {
     let value = this.get("owner");
     if (!value || value.kind == ValueKind.NULL) {
@@ -112,6 +142,105 @@ export class Domain extends Entity {
 
   set owner(value: string) {
     this.set("owner", Value.fromString(value));
+  }
+
+  get registrant(): string | null {
+    let value = this.get("registrant");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set registrant(value: string | null) {
+    if (!value) {
+      this.unset("registrant");
+    } else {
+      this.set("registrant", Value.fromString(<string>value));
+    }
+  }
+
+  get registration(): RegistrationLoader {
+    return new RegistrationLoader(
+      "Domain",
+      this.get("id")!.toString(),
+      "registration"
+    );
+  }
+}
+
+export class Sld extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Sld entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Sld must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Sld", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Sld | null {
+    return changetype<Sld | null>(store.get_in_block("Sld", id));
+  }
+
+  static load(id: string): Sld | null {
+    return changetype<Sld | null>(store.get("Sld", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get name(): string | null {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set name(value: string | null) {
+    if (!value) {
+      this.unset("name");
+    } else {
+      this.set("name", Value.fromString(<string>value));
+    }
+  }
+
+  get labelName(): string | null {
+    let value = this.get("labelName");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set labelName(value: string | null) {
+    if (!value) {
+      this.unset("labelName");
+    } else {
+      this.set("labelName", Value.fromString(<string>value));
+    }
   }
 }
 
@@ -156,6 +285,151 @@ export class Account extends Entity {
 
   get domains(): DomainLoader {
     return new DomainLoader("Account", this.get("id")!.toString(), "domains");
+  }
+
+  get registrations(): RegistrationLoader {
+    return new RegistrationLoader(
+      "Account",
+      this.get("id")!.toString(),
+      "registrations"
+    );
+  }
+}
+
+export class Registration extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Registration entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Registration must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Registration", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Registration | null {
+    return changetype<Registration | null>(
+      store.get_in_block("Registration", id)
+    );
+  }
+
+  static load(id: string): Registration | null {
+    return changetype<Registration | null>(store.get("Registration", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get domain(): string {
+    let value = this.get("domain");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set domain(value: string) {
+    this.set("domain", Value.fromString(value));
+  }
+
+  get registrationDate(): BigInt {
+    let value = this.get("registrationDate");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set registrationDate(value: BigInt) {
+    this.set("registrationDate", Value.fromBigInt(value));
+  }
+
+  get expiryDate(): BigInt {
+    let value = this.get("expiryDate");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set expiryDate(value: BigInt) {
+    this.set("expiryDate", Value.fromBigInt(value));
+  }
+
+  get registrant(): string {
+    let value = this.get("registrant");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set registrant(value: string) {
+    this.set("registrant", Value.fromString(value));
+  }
+
+  get labelName(): string | null {
+    let value = this.get("labelName");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set labelName(value: string | null) {
+    if (!value) {
+      this.unset("labelName");
+    } else {
+      this.set("labelName", Value.fromString(<string>value));
+    }
+  }
+
+  get blockNumber(): i32 {
+    let value = this.get("blockNumber");
+    if (!value || value.kind == ValueKind.NULL) {
+      return 0;
+    } else {
+      return value.toI32();
+    }
+  }
+
+  set blockNumber(value: i32) {
+    this.set("blockNumber", Value.fromI32(value));
+  }
+
+  get transactionID(): Bytes {
+    let value = this.get("transactionID");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transactionID(value: Bytes) {
+    this.set("transactionID", Value.fromBytes(value));
   }
 }
 
@@ -5491,6 +5765,24 @@ export class SldCommitIntentOwnershipTransferred extends Entity {
 
   set transactionHash(value: Bytes) {
     this.set("transactionHash", Value.fromBytes(value));
+  }
+}
+
+export class RegistrationLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): Registration[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Registration[]>(value);
   }
 }
 
