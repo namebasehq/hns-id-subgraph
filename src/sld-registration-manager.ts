@@ -42,7 +42,10 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
   let account = new Account(event.transaction.from.toHex());
   account.save();
 
-  let domain = new Domain(nameHash.toHex());
+  let domain = Domain.load(nameHash.toHex());
+  if (domain == null) {
+    domain = new Domain(nameHash.toHex());
+  }
   domain.labelName = label;
   domain.labelhash = Bytes.fromByteArray(labelHash);
   // bind the contract to the address that emitted the event
