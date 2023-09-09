@@ -19,7 +19,7 @@ import {
   OwnershipTransferred,
   PaymentSent,
   RegisterSld, Registration,
-  RenewSld, Sld
+  RenewSld
 } from "../generated/schema"
 import { concat } from "./utils";
 import { BigInt, ByteArray, Bytes, crypto } from "@graphprotocol/graph-ts";
@@ -29,15 +29,7 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
   let label = event.params._label;
   let labelHash = crypto.keccak256(ByteArray.fromUTF8(label));
   let parentHash= event.params._tldNamehash;
-
-  // TODO: try ByteArray.concat instead
   let nameHash = crypto.keccak256(concat(parentHash, labelHash));
-  let tokenId = BigInt.fromString(nameHash.toHex());
-
-  // TODO: temp debug entity
-  let sld = new Sld(labelHash.toHex());
-  sld.labelName = label;
-  sld.save();
 
   let account = new Account(event.transaction.from.toHex());
   account.save();
@@ -59,7 +51,7 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
   domain.expiryDate = event.params._expiry;
   domain.save();
 
-  let registration = new Registration(labelHash.toHex());
+  let registration = new Registration(nameHash.toHex());
   registration.domain = domain.id;
   registration.registrationDate = event.block.timestamp;
   registration.expiryDate = event.params._expiry;
