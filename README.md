@@ -5,18 +5,32 @@ This Subgraph sources events from the HNS.ID contracts. This includes the regist
 ### Example Query
 ```graphql
 {
-    domains {
+    domains(first: 10) {
         id
         name
         labelName
         labelhash
+        expiryDate
+        createdAt
         owner {
             id
+        }
+        registrant {
+            id
+        }
+        registration {
+            blockNumber
+            expiryDate
+            id
+            labelName
+            registrationDate
+            transactionID
         }
     }
     accounts {
         id
         domains(first: 5) {
+            labelName
             name
         }
     }
