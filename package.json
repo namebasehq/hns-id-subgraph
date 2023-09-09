@@ -1,6 +1,6 @@
 {
   "name": "hns-id",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "repository": "https://github.com/namebasehq/hns-id-subgraph",
   "license": "MIT",
   "scripts": {

@@ -1,146 +1,3 @@
-type AdminChanged @entity(immutable: true) {
-  id: Bytes!
-  previousAdmin: Bytes! # address
-  newAdmin: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type BeaconUpgraded @entity(immutable: true) {
-  id: Bytes!
-  beacon: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Upgraded @entity(immutable: true) {
-  id: Bytes!
-  implementation: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type Approval @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  approved: Bytes! # address
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ApprovalForAll @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  operator: Bytes! # address
-  approved: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type OwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RegistrationStrategySet @entity(immutable: true) {
-  id: Bytes!
-  namehash: Bytes! # bytes32
-  strategy: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ResolverSet @entity(immutable: true) {
-  id: Bytes!
-  _nftNamehash: Bytes! # bytes32
-  _resolver: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Transfer @entity(immutable: true) {
-  id: Bytes!
-  from: Bytes! # address
-  to: Bytes! # address
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type RoyaltyPayoutAddressSet @entity(immutable: true) {
-  id: Bytes!
-  _nftNamehash: Bytes! # bytes32
-  _payoutAddress: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RoyaltyPayoutAmountSet @entity(immutable: true) {
-  id: Bytes!
-  _nftNamehash: Bytes! # bytes32
-  _amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type EnabledSet @entity(immutable: true) {
-  id: Bytes!
-  _tokenNamehash: Bytes! # bytes32
-  _enabled: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type LengthCostSet @entity(immutable: true) {
-  id: Bytes!
-  _tokenNamehash: Bytes! # bytes32
-  _prices: [BigInt!]! # uint256[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type MultiYearDiscountSet @entity(immutable: true) {
-  id: Bytes!
-  _tokenNamehash: Bytes! # bytes32
-  _discounts: [BigInt!]! # uint256[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type PremiumNameSet @entity(immutable: true) {
-  id: Bytes!
-  _tokenNamehash: Bytes! # bytes32
-  _price: BigInt! # uint256
-  _label: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ReservedNameSet @entity(immutable: true) {
-  id: Bytes!
-  _tokenNamehash: Bytes! # bytes32
-  _claimant: Bytes! # address
-  _label: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
 type AddrChanged @entity(immutable: true) {
   id: Bytes!
   node: Bytes! # bytes32
@@ -243,6 +100,327 @@ type VersionChanged @entity(immutable: true) {
   id: Bytes!
   node: Bytes! # bytes32
   newVersion: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AllowedTldMintUpdate @entity(immutable: true) {
+  id: Bytes!
+  _claimant: Bytes! # address
+  _manager: Bytes! # address
+  _label: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Initialized @entity(immutable: true) {
+  id: Bytes!
+  version: Int! # uint8
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type NewLabelValidator @entity(immutable: true) {
+  id: Bytes!
+  _labelValidator: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type NewUsdOracle @entity(immutable: true) {
+  id: Bytes!
+  _usdEthPriceOracle: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TldClaimed @entity(immutable: true) {
+  id: Bytes!
+  _to: Bytes! # address
+  _tokenId: BigInt! # uint256
+  _label: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type UpdateAllowedTldManager @entity(immutable: true) {
+  id: Bytes!
+  _addr: Bytes! # address
+  _allowed: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type Approval @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  approved: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ApprovalForAll @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  operator: Bytes! # address
+  approved: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type HandshakeTldOwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RegistrationStrategySet @entity(immutable: true) {
+  id: Bytes!
+  namehash: Bytes! # bytes32
+  strategy: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ResolverSet @entity(immutable: true) {
+  id: Bytes!
+  _nftNamehash: Bytes! # bytes32
+  _resolver: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Transfer @entity(immutable: true) {
+  id: Bytes!
+  from: Bytes! # address
+  to: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type HandshakeSldApproval @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  approved: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type HandshakeSldApprovalForAll @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  operator: Bytes! # address
+  approved: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type HandshakeSldOwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type HandshakeSldResolverSet @entity(immutable: true) {
+  id: Bytes!
+  _nftNamehash: Bytes! # bytes32
+  _resolver: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RoyaltyPayoutAddressSet @entity(immutable: true) {
+  id: Bytes!
+  _nftNamehash: Bytes! # bytes32
+  _payoutAddress: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RoyaltyPayoutAmountSet @entity(immutable: true) {
+  id: Bytes!
+  _nftNamehash: Bytes! # bytes32
+  _amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type HandshakeSldTransfer @entity(immutable: true) {
+  id: Bytes!
+  from: Bytes! # address
+  to: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type DiscountSet @entity(immutable: true) {
+  id: Bytes!
+  _tokenNamehash: Bytes! # bytes32
+  _claimant: Bytes! # address
+  _discount_startTimestamp: BigInt! # uint80
+  _discount_endTimestamp: BigInt! # uint80
+  _discount_discountPercentage: Int! # uint8
+  _discount_isRegistration: Boolean! # bool
+  _discount_isRenewal: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SldRegistrationManagerInitialized @entity(immutable: true) {
+  id: Bytes!
+  version: Int! # uint8
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type NewGracePeriod @entity(immutable: true) {
+  id: Bytes!
+  _newGracePeriod: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SldRegistrationManagerNewLabelValidator @entity(immutable: true) {
+  id: Bytes!
+  _labelValidator: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SldRegistrationManagerNewUsdOracle @entity(immutable: true) {
+  id: Bytes!
+  _usdEthPriceOracle: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SldRegistrationManagerOwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type PaymentSent @entity(immutable: true) {
+  id: Bytes!
+  _to: Bytes! # address
+  _amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RegisterSld @entity(immutable: true) {
+  id: Bytes!
+  _tldNamehash: Bytes! # bytes32
+  _secret: Bytes! # bytes32
+  _label: String! # string
+  _expiry: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RenewSld @entity(immutable: true) {
+  id: Bytes!
+  _tldNamehash: Bytes! # bytes32
+  _label: String! # string
+  _expiry: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type EnabledSet @entity(immutable: true) {
+  id: Bytes!
+  _tokenNamehash: Bytes! # bytes32
+  _enabled: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type LengthCostSet @entity(immutable: true) {
+  id: Bytes!
+  _tokenNamehash: Bytes! # bytes32
+  _prices: [BigInt!]! # uint256[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type MultiYearDiscountSet @entity(immutable: true) {
+  id: Bytes!
+  _tokenNamehash: Bytes! # bytes32
+  _discounts: [BigInt!]! # uint256[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type PremiumNameSet @entity(immutable: true) {
+  id: Bytes!
+  _tokenNamehash: Bytes! # bytes32
+  _price: BigInt! # uint256
+  _label: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ReservedNameSet @entity(immutable: true) {
+  id: Bytes!
+  _tokenNamehash: Bytes! # bytes32
+  _claimant: Bytes! # address
+  _label: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type SldCommitIntentOwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

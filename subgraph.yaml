@@ -1,125 +1,9 @@
 specVersion: 0.0.5
-description: "Decentralized domains anchored to the Handshake root zone."
-repository: "https://github.com/namebasehq/hns-id-subgraph"
+description: Decentralized domains anchored to the Handshake root zone.
+repository: https://github.com/namebasehq/hns-id-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
-  - kind: ethereum
-    name: SldRegistrationManager
-    network: optimism
-    source:
-      address: "0xfda87cc032cd641ac192027353e5b25261dfe6b3"
-      abi: SldRegistrationManager
-      startBlock: 108382558
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - AdminChanged
-        - BeaconUpgraded
-        - Upgraded
-      abis:
-        - name: SldRegistrationManager
-          file: ./abis/SldRegistrationManager.json
-      eventHandlers:
-        - event: AdminChanged(address,address)
-          handler: handleAdminChanged
-        - event: BeaconUpgraded(indexed address)
-          handler: handleBeaconUpgraded
-        - event: Upgraded(indexed address)
-          handler: handleUpgraded
-      file: ./src/sld-registration-manager.ts
-  - kind: ethereum
-    name: HandshakeTld
-    network: optimism
-    source:
-      address: "0x01eBCf32e4b5da0167eaacEA1050B2be63122B6f"
-      abi: HandshakeTld
-      startBlock: 108382202
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - Approval
-        - ApprovalForAll
-        - OwnershipTransferred
-        - RegistrationStrategySet
-        - ResolverSet
-        - Transfer
-      abis:
-        - name: HandshakeTld
-          file: ./abis/HandshakeTld.json
-      eventHandlers:
-        - event: Approval(indexed address,indexed address,indexed uint256)
-          handler: handleApproval
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
-        - event: RegistrationStrategySet(indexed bytes32,address)
-          handler: handleRegistrationStrategySet
-        - event: ResolverSet(indexed bytes32,address)
-          handler: handleResolverSet
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransfer
-      file: ./src/handshake-tld.ts
-  - kind: ethereum
-    name: HandshakeSld
-    network: optimism
-    source:
-      address: "0x7963bfA8F8f914b9776ac6259a8C39965d26f42F"
-      abi: HandshakeSld
-      startBlock: 108382206
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - RoyaltyPayoutAddressSet
-        - RoyaltyPayoutAmountSet
-      abis:
-        - name: HandshakeSld
-          file: ./abis/HandshakeSld.json
-      eventHandlers:
-        - event: RoyaltyPayoutAddressSet(indexed bytes32,address)
-          handler: handleRoyaltyPayoutAddressSet
-        - event: RoyaltyPayoutAmountSet(indexed bytes32,uint256)
-          handler: handleRoyaltyPayoutAmountSet
-      file: ./src/handshake-sld.ts
-  - kind: ethereum
-    name: DefaultRegistrationStrategy
-    network: optimism
-    source:
-      address: "0x0F1143972197B63053709794f718e60599Ce4730"
-      abi: DefaultRegistrationStrategy
-      startBlock: 108382562
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - EnabledSet
-        - LengthCostSet
-        - MultiYearDiscountSet
-        - PremiumNameSet
-        - ReservedNameSet
-      abis:
-        - name: DefaultRegistrationStrategy
-          file: ./abis/DefaultRegistrationStrategy.json
-      eventHandlers:
-        - event: EnabledSet(indexed bytes32,bool)
-          handler: handleEnabledSet
-        - event: LengthCostSet(indexed bytes32,uint256[])
-          handler: handleLengthCostSet
-        - event: MultiYearDiscountSet(indexed bytes32,uint256[])
-          handler: handleMultiYearDiscountSet
-        - event: PremiumNameSet(indexed bytes32,uint256,string)
-          handler: handlePremiumNameSet
-        - event: ReservedNameSet(indexed bytes32,indexed address,string)
-          handler: handleReservedNameSet
-      file: ./src/default-registration-strategy.ts
   - kind: ethereum
     name: DefaultResolver
     network: optimism
@@ -163,10 +47,217 @@ dataSources:
           handler: handleNameChanged
         - event: ReverseClaimed(indexed address,string)
           handler: handleReverseClaimed
-        - event: TextChanged(indexed bytes32,indexed string,indexed bytes32,string)
+        - event: TextChanged(indexed bytes32,indexed bytes32,string,string)
           handler: handleTextChanged
         - event: UpdatedDelegate(indexed address,indexed uint256,address)
           handler: handleUpdatedDelegate
         - event: VersionChanged(indexed bytes32,uint256)
           handler: handleVersionChanged
       file: ./src/default-resolver.ts
+  - kind: ethereum
+    name: TldClaimManager
+    network: optimism
+    source:
+      address: "0x60131eb218ae7abeC4Bb8bD594Ee703ED6E0Ea0B"
+      abi: TldClaimManager
+      startBlock: 108382565
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - AllowedTldMintUpdate
+        - Initialized
+        - NewLabelValidator
+        - NewUsdOracle
+        - OwnershipTransferred
+        - TldClaimed
+        - UpdateAllowedTldManager
+      abis:
+        - name: TldClaimManager
+          file: ./abis/TldClaimManager.json
+      eventHandlers:
+        - event: AllowedTldMintUpdate(indexed address,indexed address,string)
+          handler: handleAllowedTldMintUpdate
+        - event: Initialized(uint8)
+          handler: handleInitialized
+        - event: NewLabelValidator(indexed address)
+          handler: handleNewLabelValidator
+        - event: NewUsdOracle(indexed address)
+          handler: handleNewUsdOracle
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: TldClaimed(indexed address,indexed uint256,string)
+          handler: handleTldClaimed
+        - event: UpdateAllowedTldManager(indexed address,bool)
+          handler: handleUpdateAllowedTldManager
+      file: ./src/tld-claim-manager.ts
+  - kind: ethereum
+    name: HandshakeTld
+    network: optimism
+    source:
+      address: "0x01eBCf32e4b5da0167eaacEA1050B2be63122B6f"
+      abi: HandshakeTld
+      startBlock: 108382202
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - ApprovalForAll
+        - HandshakeTldOwnershipTransferred
+        - RegistrationStrategySet
+        - ResolverSet
+        - Transfer
+      abis:
+        - name: HandshakeTld
+          file: ./abis/HandshakeTld.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: RegistrationStrategySet(indexed bytes32,address)
+          handler: handleRegistrationStrategySet
+        - event: ResolverSet(indexed bytes32,address)
+          handler: handleResolverSet
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/handshake-tld.ts
+  - kind: ethereum
+    name: HandshakeSld
+    network: optimism
+    source:
+      address: "0x7963bfA8F8f914b9776ac6259a8C39965d26f42F"
+      abi: HandshakeSld
+      startBlock: 108382206
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - HandshakeSldApproval
+        - HandshakeSldApprovalForAll
+        - HandshakeSldOwnershipTransferred
+        - HandshakeSldResolverSet
+        - RoyaltyPayoutAddressSet
+        - RoyaltyPayoutAmountSet
+        - HandshakeSldTransfer
+      abis:
+        - name: HandshakeSld
+          file: ./abis/HandshakeSld.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: ResolverSet(indexed bytes32,address)
+          handler: handleResolverSet
+        - event: RoyaltyPayoutAddressSet(indexed bytes32,address)
+          handler: handleRoyaltyPayoutAddressSet
+        - event: RoyaltyPayoutAmountSet(indexed bytes32,uint256)
+          handler: handleRoyaltyPayoutAmountSet
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/handshake-sld.ts
+  - kind: ethereum
+    name: SldRegistrationManager
+    network: optimism
+    source:
+      address: "0x7392854e46f76C1e15eC86030b5a6B0b611713E7"
+      abi: SldRegistrationManager
+      startBlock: 108382554
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - DiscountSet
+        - SldRegistrationManagerInitialized
+        - NewGracePeriod
+        - SldRegistrationManagerNewLabelValidator
+        - SldRegistrationManagerNewUsdOracle
+        - SldRegistrationManagerOwnershipTransferred
+        - PaymentSent
+        - RegisterSld
+        - RenewSld
+      abis:
+        - name: SldRegistrationManager
+          file: ./abis/SldRegistrationManager.json
+      eventHandlers:
+        - event: DiscountSet(indexed bytes32,indexed address,(uint80,uint80,uint8,bool,bool))
+          handler: handleDiscountSet
+        - event: Initialized(uint8)
+          handler: handleInitialized
+        - event: NewGracePeriod(uint256)
+          handler: handleNewGracePeriod
+        - event: NewLabelValidator(indexed address)
+          handler: handleNewLabelValidator
+        - event: NewUsdOracle(indexed address)
+          handler: handleNewUsdOracle
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: PaymentSent(indexed address,uint256)
+          handler: handlePaymentSent
+        - event: RegisterSld(indexed bytes32,bytes32,string,uint256)
+          handler: handleRegisterSld
+        - event: RenewSld(indexed bytes32,string,uint256)
+          handler: handleRenewSld
+      file: ./src/sld-registration-manager.ts
+  - kind: ethereum
+    name: DefaultRegistrationStrategy
+    network: optimism
+    source:
+      address: "0x0F1143972197B63053709794f718e60599Ce4730"
+      abi: DefaultRegistrationStrategy
+      startBlock: 108382562
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - EnabledSet
+        - LengthCostSet
+        - MultiYearDiscountSet
+        - PremiumNameSet
+        - ReservedNameSet
+      abis:
+        - name: DefaultRegistrationStrategy
+          file: ./abis/DefaultRegistrationStrategy.json
+      eventHandlers:
+        - event: EnabledSet(indexed bytes32,bool)
+          handler: handleEnabledSet
+        - event: LengthCostSet(indexed bytes32,uint256[])
+          handler: handleLengthCostSet
+        - event: MultiYearDiscountSet(indexed bytes32,uint256[])
+          handler: handleMultiYearDiscountSet
+        - event: PremiumNameSet(indexed bytes32,uint256,string)
+          handler: handlePremiumNameSet
+        - event: ReservedNameSet(indexed bytes32,indexed address,string)
+          handler: handleReservedNameSet
+      file: ./src/default-registration-strategy.ts
+  - kind: ethereum
+    name: SldCommitIntent
+    network: optimism
+    source:
+      address: "0x84EE3763E5F2faB55E8d7197632Aa234159C2f5f"
+      abi: SldCommitIntent
+      startBlock: 108382221
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - SldCommitIntentOwnershipTransferred
+      abis:
+        - name: SldCommitIntent
+          file: ./abis/SldCommitIntent.json
+      eventHandlers:
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+      file: ./src/sld-commit-intent.ts
