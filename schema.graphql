@@ -1,3 +1,24 @@
+type Domain @entity {
+  "The namehash of the name"
+  id: ID!
+  "The human readable name"
+  name: String
+  "The human readable label name"
+  labelName: String
+  "keccak256(labelName)"
+  labelhash: Bytes
+  "The account that owns the domain"
+  owner: Account!
+}
+
+type Account @entity {
+  "The unique identifier for the account"
+  id: ID!
+  "The domains owned by the account"
+  domains: [Domain!]! @derivedFrom(field: "owner")
+}
+
+
 type AddrChanged @entity(immutable: true) {
   id: Bytes!
   node: Bytes! # bytes32
