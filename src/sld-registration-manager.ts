@@ -42,8 +42,9 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
   domain.labelhash = Bytes.fromByteArray(labelHash);
   // bind the contract by the address that emitted the event
   // get the full domain name from contract function
-  let handshakeSld = HandshakeSld.bind(event.address);
-  domain.name = handshakeSld.name1(Bytes.fromByteArray(nameHash));
+  // let handshakeSld = HandshakeSld.bind(event.address);
+  // domain.name = handshakeSld.name1(Bytes.fromByteArray(nameHash));
+  // TODO: reference to Tld entity by namehash? then get computed full name?
   domain.owner = account.id;
   domain.registrant = account.id;
   domain.createdAt = event.block.timestamp;
