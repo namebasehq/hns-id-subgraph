@@ -4,10 +4,46 @@ import {
   Approval,
   ApprovalForAll,
   OwnershipTransferred,
-  RegistrationStrategySet,
   ResolverSet,
+  RoyaltyPayoutAddressSet,
+  RoyaltyPayoutAmountSet,
   Transfer
-} from "../generated/HandshakeTld/HandshakeTld"
+} from "../generated/HandshakeSld/HandshakeSld"
+import { RegisterSld } from "../generated/SldRegistrationManager/SldRegistrationManager";
+
+export function createRegisterSldEvent(
+  _tldNamehash: Bytes,
+  _secret: Bytes,
+  _label: string,
+  _expiry: BigInt,
+): RegisterSld {
+  let mockEvent = newMockEvent();
+  let registerSldEvent = new RegisterSld(
+    mockEvent.address,
+    mockEvent.logIndex,
+    mockEvent.transactionLogIndex,
+    mockEvent.logType,
+    mockEvent.block,
+    mockEvent.transaction,
+    mockEvent.parameters,
+    mockEvent.receipt
+  );
+
+  registerSldEvent.parameters = new Array()
+  registerSldEvent.parameters.push(
+    new ethereum.EventParam("_tldNamehash", ethereum.Value.fromBytes(_tldNamehash))
+  );
+  registerSldEvent.parameters.push(
+    new ethereum.EventParam("_secret", ethereum.Value.fromBytes(_secret))
+  );
+  registerSldEvent.parameters.push(
+    new ethereum.EventParam("_label", ethereum.Value.fromString(_label))
+  );
+  registerSldEvent.parameters.push(
+    new ethereum.EventParam("_expiry", ethereum.Value.fromUnsignedBigInt(_expiry))
+  );
+  return registerSldEvent;
+}
 
 export function createApprovalEvent(
   owner: Address,
@@ -79,26 +115,6 @@ export function createOwnershipTransferredEvent(
   return ownershipTransferredEvent
 }
 
-export function createRegistrationStrategySetEvent(
-  namehash: Bytes,
-  strategy: Address
-): RegistrationStrategySet {
-  let registrationStrategySetEvent = changetype<RegistrationStrategySet>(
-    newMockEvent()
-  )
-
-  registrationStrategySetEvent.parameters = new Array()
-
-  registrationStrategySetEvent.parameters.push(
-    new ethereum.EventParam("namehash", ethereum.Value.fromFixedBytes(namehash))
-  )
-  registrationStrategySetEvent.parameters.push(
-    new ethereum.EventParam("strategy", ethereum.Value.fromAddress(strategy))
-  )
-
-  return registrationStrategySetEvent
-}
-
 export function createResolverSetEvent(
   _nftNamehash: Bytes,
   _resolver: Address
@@ -118,6 +134,58 @@ export function createResolverSetEvent(
   )
 
   return resolverSetEvent
+}
+
+export function createRoyaltyPayoutAddressSetEvent(
+  _nftNamehash: Bytes,
+  _payoutAddress: Address
+): RoyaltyPayoutAddressSet {
+  let royaltyPayoutAddressSetEvent = changetype<RoyaltyPayoutAddressSet>(
+    newMockEvent()
+  )
+
+  royaltyPayoutAddressSetEvent.parameters = new Array()
+
+  royaltyPayoutAddressSetEvent.parameters.push(
+    new ethereum.EventParam(
+      "_nftNamehash",
+      ethereum.Value.fromFixedBytes(_nftNamehash)
+    )
+  )
+  royaltyPayoutAddressSetEvent.parameters.push(
+    new ethereum.EventParam(
+      "_payoutAddress",
+      ethereum.Value.fromAddress(_payoutAddress)
+    )
+  )
+
+  return royaltyPayoutAddressSetEvent
+}
+
+export function createRoyaltyPayoutAmountSetEvent(
+  _nftNamehash: Bytes,
+  _amount: BigInt
+): RoyaltyPayoutAmountSet {
+  let royaltyPayoutAmountSetEvent = changetype<RoyaltyPayoutAmountSet>(
+    newMockEvent()
+  )
+
+  royaltyPayoutAmountSetEvent.parameters = new Array()
+
+  royaltyPayoutAmountSetEvent.parameters.push(
+    new ethereum.EventParam(
+      "_nftNamehash",
+      ethereum.Value.fromFixedBytes(_nftNamehash)
+    )
+  )
+  royaltyPayoutAmountSetEvent.parameters.push(
+    new ethereum.EventParam(
+      "_amount",
+      ethereum.Value.fromUnsignedBigInt(_amount)
+    )
+  )
+
+  return royaltyPayoutAmountSetEvent
 }
 
 export function createTransferEvent(

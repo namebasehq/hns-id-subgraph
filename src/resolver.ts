@@ -24,11 +24,10 @@ import {
   UpdatedDelegate,
   VersionChanged
 } from "../generated/schema"
+import { createEventID } from "./utils";
 
 export function handleAddrChanged(event: AddrChangedEvent): void {
-  let entity = new AddrChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
+  let entity = new AddrChanged(createEventID(event))
   entity.node = event.params.node
   entity.a = event.params.a
 
@@ -40,9 +39,7 @@ export function handleAddrChanged(event: AddrChangedEvent): void {
 }
 
 export function handleAddressChanged(event: AddressChangedEvent): void {
-  let entity = new AddressChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
+  let entity = new AddressChanged(createEventID(event))
   entity.node = event.params.node
   entity.coinType = event.params.coinType
   entity.newAddress = event.params.newAddress
@@ -55,9 +52,7 @@ export function handleAddressChanged(event: AddressChangedEvent): void {
 }
 
 export function handleContenthashChanged(event: ContenthashChangedEvent): void {
-  let entity = new ContenthashChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
+  let entity = new ContenthashChanged(createEventID(event))
   entity.node = event.params.node
   entity.hash = event.params.hash
 
@@ -69,9 +64,7 @@ export function handleContenthashChanged(event: ContenthashChangedEvent): void {
 }
 
 export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
-  let entity = new DNSRecordChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
+  let entity = new DNSRecordChanged(createEventID(event))
   entity.node = event.params.node
   entity.name = event.params.name
   entity.resource = event.params.resource
@@ -85,9 +78,7 @@ export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
 }
 
 export function handleDNSRecordDeleted(event: DNSRecordDeletedEvent): void {
-  let entity = new DNSRecordDeleted(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
+  let entity = new DNSRecordDeleted(createEventID(event))
   entity.node = event.params.node
   entity.name = event.params.name
   entity.resource = event.params.resource
@@ -100,9 +91,7 @@ export function handleDNSRecordDeleted(event: DNSRecordDeletedEvent): void {
 }
 
 export function handleDNSZonehashChanged(event: DNSZonehashChangedEvent): void {
-  let entity = new DNSZonehashChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
+  let entity = new DNSZonehashChanged(createEventID(event))
   entity.node = event.params.node
   entity.lastzonehash = event.params.lastzonehash
   entity.zonehash = event.params.zonehash
@@ -115,9 +104,7 @@ export function handleDNSZonehashChanged(event: DNSZonehashChangedEvent): void {
 }
 
 export function handleNameChanged(event: NameChangedEvent): void {
-  let entity = new NameChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
+  let entity = new NameChanged(createEventID(event))
   entity.node = event.params.node
   entity.name = event.params.name
 
@@ -129,9 +116,7 @@ export function handleNameChanged(event: NameChangedEvent): void {
 }
 
 export function handleReverseClaimed(event: ReverseClaimedEvent): void {
-  let entity = new ReverseClaimed(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
+  let entity = new ReverseClaimed(createEventID(event))
   entity._addr = event.params._addr
   entity._domain = event.params._domain
 
@@ -143,9 +128,7 @@ export function handleReverseClaimed(event: ReverseClaimedEvent): void {
 }
 
 export function handleTextChanged(event: TextChangedEvent): void {
-  let entity = new TextChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
+  let entity = new TextChanged(createEventID(event))
   entity.node = event.params.node
   entity.indexedKey = event.params.indexedKey
   entity.key = event.params.key
@@ -159,9 +142,7 @@ export function handleTextChanged(event: TextChangedEvent): void {
 }
 
 export function handleUpdatedDelegate(event: UpdatedDelegateEvent): void {
-  let entity = new UpdatedDelegate(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
+  let entity = new UpdatedDelegate(createEventID(event))
   entity._owner = event.params._owner
   entity._tokenId = event.params._tokenId
   entity._delegate = event.params._delegate
@@ -174,9 +155,7 @@ export function handleUpdatedDelegate(event: UpdatedDelegateEvent): void {
 }
 
 export function handleVersionChanged(event: VersionChangedEvent): void {
-  let entity = new VersionChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
+  let entity = new VersionChanged(createEventID(event))
   entity.node = event.params.node
   entity.newVersion = event.params.newVersion
 

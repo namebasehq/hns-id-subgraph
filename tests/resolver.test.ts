@@ -1,23 +1,14 @@
-import {
-  assert,
-  describe,
-  test,
-  clearStore,
-  beforeAll,
-  afterAll
-} from "matchstick-as/assembly/index"
-import { Bytes, Address, BigInt } from "@graphprotocol/graph-ts"
-import { AddrChanged } from "../generated/schema"
-import { AddrChanged as AddrChangedEvent } from "../generated/DefaultResolver/DefaultResolver"
-import { handleAddrChanged } from "../src/default-resolver"
-import { createAddrChangedEvent } from "./default-resolver-utils"
+import { afterAll, assert, beforeAll, clearStore, describe, test } from "matchstick-as/assembly/index"
+import { Address, Bytes } from "@graphprotocol/graph-ts"
+import { handleAddrChanged } from "../src/resolver"
+import { createAddrChangedEvent } from "./resolver-utils"
 
 // Tests structure (matchstick-as >=0.5.0)
 // https://thegraph.com/docs/en/developer/matchstick/#tests-structure-0-5-0
 
 describe("Describe entity assertions", () => {
   beforeAll(() => {
-    let node = Bytes.fromI32(1234567890)
+    let node = Bytes.fromHexString("0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0")
     let a = Address.fromString("0x0000000000000000000000000000000000000001")
     let newAddrChangedEvent = createAddrChangedEvent(node, a)
     handleAddrChanged(newAddrChangedEvent)
@@ -38,7 +29,7 @@ describe("Describe entity assertions", () => {
       "AddrChanged",
       "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
       "node",
-      "1234567890"
+      "0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0"
     )
     assert.fieldEquals(
       "AddrChanged",
