@@ -1,7 +1,17 @@
 // Import types and APIs from graph-ts
-import { BigInt, ByteArray, ethereum } from "@graphprotocol/graph-ts";
+import { BigInt, ByteArray, ethereum, log } from "@graphprotocol/graph-ts";
+import { Account, Domain, Tld } from "../generated/schema";
 
+// using TX hash + log index
 export function createEventID(event: ethereum.Event): string {
+  return event.transaction.hash
+    .toHex()
+    .concat("-")
+    .concat(event.logIndex.toString());
+}
+
+// using block + log index
+export function createEventIDfromBlock(event: ethereum.Event): string {
   return event.block.number
     .toString()
     .concat("-")
@@ -43,5 +53,47 @@ export function uint256ToByteArray(i: BigInt): ByteArray {
     .slice(2)
     .padStart(64, "0");
   return byteArrayFromHex(hex);
+}
+
+export function createOrLoadAccount(address: string): Account {
+  let account = Account.load(address);
+  if (account == null) {
+    account = new Account(address);
+  }
+  return account;
+}
+
+export function createOrLoadDomain(node: string): Domain {
+  let domain = Domain.load(node);
+  if (domain == null) {
+    domain = new Domain(node);
+  }
+  return domain;
+}
+
+export function createOrLoadTld(node: string): Tld {
+  let tld = Tld.load(node);
+  if (tld == null) {
+    tld = new Tld(node);
+  }
+  return tld;
+}
+
+export function checkValidLabel(name: string): boolean {
+  for (let i = 0; i < name.length; i++) {
+    let c = name.charCodeAt(i);
+    if (c === 0) {
+      log.warning("Invalid label '{}' contained null byte. Skipping.", [name]);
+      return false;
+    } else if (c === 46) {
+      log.warning(
+        "Invalid label '{}' contained separator char '.'. Skipping.",
+        [name]
+      );
+      return false;
+    }
+  }
+
+  return true;
 }
 

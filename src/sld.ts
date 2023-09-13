@@ -1,10 +1,22 @@
 import {
+  HandshakeSld,
+  ResolverSet as ResolverSetEvent,
+  Transfer as TransferEvent,
+  Approval as ApprovalEvent,
+  ApprovalForAll as ApprovalForAllEvent,
+} from "../generated/HandshakeSld/HandshakeSld"
+import {
+  Account,
+  DiscountSet,
+  Domain,
+  PaymentSent,
+  Registration,
+  RenewSld, SldApproval, SldApprovalForAll,
+  SldResolverSet,
+  SldTransfer, Tld
+} from "../generated/schema"
+import {
   DiscountSet as DiscountSetEvent,
-  Initialized as InitializedEvent,
-  NewGracePeriod as NewGracePeriodEvent,
-  NewLabelValidator as NewLabelValidatorEvent,
-  NewUsdOracle as NewUsdOracleEvent,
-  OwnershipTransferred as OwnershipTransferredEvent,
   PaymentSent as PaymentSentEvent,
   RegisterSld as RegisterSldEvent,
   RenewSld as RenewSldEvent
@@ -85,9 +97,7 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
 }
 
 export function handleDiscountSet(event: DiscountSetEvent): void {
-  let entity = new DiscountSet(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
+  let entity = new DiscountSet(createEventID(event))
   entity._tokenNamehash = event.params._tokenNamehash
   entity._claimant = event.params._claimant
   entity._discount_startTimestamp = event.params._discount.startTimestamp
@@ -104,11 +114,10 @@ export function handleDiscountSet(event: DiscountSetEvent): void {
   entity.save()
 }
 
-export function handleInitialized(event: InitializedEvent): void {
-  let entity = new Initialized(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.version = event.params.version
+export function handleSldResolverSet(event: ResolverSetEvent): void {
+  let entity = new SldResolverSet(createEventID(event))
+  entity._nftNamehash = event.params._nftNamehash
+  entity._resolver = event.params._resolver
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -117,11 +126,11 @@ export function handleInitialized(event: InitializedEvent): void {
   entity.save()
 }
 
-export function handleNewGracePeriod(event: NewGracePeriodEvent): void {
-  let entity = new NewGracePeriod(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity._newGracePeriod = event.params._newGracePeriod
+export function handleSldTransfer(event: TransferEvent): void {
+  let entity = new SldTransfer(createEventID(event))
+  entity.from = event.params.from
+  entity.to = event.params.to
+  entity.tokenId = event.params.tokenId
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -130,11 +139,11 @@ export function handleNewGracePeriod(event: NewGracePeriodEvent): void {
   entity.save()
 }
 
-export function handleNewLabelValidator(event: NewLabelValidatorEvent): void {
-  let entity = new NewLabelValidator(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity._labelValidator = event.params._labelValidator
+export function handleSldApproval(event: ApprovalEvent): void {
+  let entity = new SldApproval(createEventID(event))
+  entity.owner = event.params.owner
+  entity.approved = event.params.approved
+  entity.tokenId = event.params.tokenId
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -143,11 +152,11 @@ export function handleNewLabelValidator(event: NewLabelValidatorEvent): void {
   entity.save()
 }
 
-export function handleNewUsdOracle(event: NewUsdOracleEvent): void {
-  let entity = new NewUsdOracle(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity._usdEthPriceOracle = event.params._usdEthPriceOracle
+export function handleSldApprovalForAll(event: ApprovalForAllEvent): void {
+  let entity = new SldApprovalForAll(createEventID(event))
+  entity.owner = event.params.owner
+  entity.operator = event.params.operator
+  entity.approved = event.params.approved
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
