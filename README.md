@@ -85,4 +85,9 @@ rm -rf ./data
 ```bash
 docker-compose down
 docker-compose up
+graph deploy --studio hns-id
+
+# deploying hosted service
+graph auth --product hosted-service 21ff9bf3e7d7f7ab4c524014a1588d78
+graph deploy --product hosted-service namebasehq/hns-id
 ```
