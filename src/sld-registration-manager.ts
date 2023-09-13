@@ -40,11 +40,10 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
   }
   domain.labelName = label;
   domain.labelhash = Bytes.fromByteArray(labelHash);
-  // bind the contract to the address that emitted the event
+  // bind the contract by the address that emitted the event
   // get the full domain name from contract function
-  // let handshakeSld = HandshakeSld.bind(event.address);
-  // let name = handshakeSld.name1(Bytes.fromByteArray(nameHash));
-  // domain.name = name;
+  let handshakeSld = HandshakeSld.bind(event.address);
+  domain.name = handshakeSld.name1(Bytes.fromByteArray(nameHash));
   domain.owner = account.id;
   domain.registrant = account.id;
   domain.createdAt = event.block.timestamp;
