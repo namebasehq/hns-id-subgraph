@@ -97,90 +97,6 @@ type NewResolver implements DomainEvent @entity {
   resolver: Resolver!
 }
 
-type NewTTL implements DomainEvent @entity {
-  "The unique identifier of the event"
-  id: ID!
-  "The domain name associated with the event"
-  domain: Domain!
-  "The block number at which the event occurred"
-  blockNumber: Int!
-  "The transaction hash of the transaction that triggered the event"
-  transactionID: Bytes!
-  "The new TTL value (in seconds) associated with the domain"
-  ttl: BigInt!
-}
-
-type WrappedTransfer implements DomainEvent @entity {
-  "The unique identifier of the event"
-  id: ID!
-  "The domain name associated with the event"
-  domain: Domain!
-  "The block number at which the event occurred"
-  blockNumber: Int!
-  "The transaction hash of the transaction that triggered the event"
-  transactionID: Bytes!
-  "The account that owns the wrapped domain after the transfer"
-  owner: Account!
-}
-
-type NameWrapped implements DomainEvent @entity {
-  "The unique identifier of the wrapped domain"
-  id: ID!
-  "The domain name associated with the wrapped domain"
-  domain: Domain!
-  "The block number at which the wrapped domain was wrapped"
-  blockNumber: Int!
-  "The transaction hash of the transaction that wrapped the domain"
-  transactionID: Bytes!
-  "The human-readable name of the wrapped domain"
-  name: String
-  "The number of fuses associated with the wrapped domain"
-  fuses: Int!
-  "The account that owns the wrapped domain"
-  owner: Account!
-  "The expiry date of the wrapped domain registration"
-  expiryDate: BigInt!
-}
-
-type NameUnwrapped implements DomainEvent @entity {
-  "The unique identifier of the event"
-  id: ID!
-  "The domain name associated with the event"
-  domain: Domain!
-  "The block number at which the event occurred"
-  blockNumber: Int!
-  "The transaction hash of the transaction that triggered the event"
-  transactionID: Bytes!
-  "The account that owns the domain after it was unwrapped"
-  owner: Account!
-}
-
-type FusesSet implements DomainEvent @entity {
-  "The unique identifier of the event"
-  id: ID!
-  "The domain name associated with the event"
-  domain: Domain!
-  "The block number at which the event occurred"
-  blockNumber: Int!
-  "The transaction hash of the transaction that triggered the event"
-  transactionID: Bytes!
-  "The number of fuses associated with the domain after the set event"
-  fuses: Int!
-}
-
-type ExpiryExtended implements DomainEvent @entity {
-  "The unique identifier of the event"
-  id: ID!
-  "The domain name associated with the event"
-  domain: Domain!
-  "The block number at which the event occurred"
-  blockNumber: Int!
-  "The transaction hash of the transaction that triggered the event"
-  transactionID: Bytes!
-  "The new expiry date associated with the domain after the extension event"
-  expiryDate: BigInt!
-}
-
 type Registration @entity {
   "The unique identifier of the registration"
   id: ID!
@@ -250,21 +166,6 @@ type NameTransferred implements RegistrationEvent @entity {
   transactionID: Bytes!
   "The new owner of the domain"
   newOwner: Account!
-}
-
-type WrappedDomain @entity {
-  "unique identifier for each instance of the WrappedDomain entity"
-  id: ID!
-  "The domain that is wrapped by this WrappedDomain"
-  domain: Domain!
-  "The expiry date of the wrapped domain"
-  expiryDate: BigInt!
-  "The number of fuses remaining on the wrapped domain"
-  fuses: Int!
-  "The account that owns this WrappedDomain"
-  owner: Account!
-  "The name of the wrapped domain"
-  name: String
 }
 
 type Account @entity {

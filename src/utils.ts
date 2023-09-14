@@ -1,6 +1,6 @@
 // Import types and APIs from graph-ts
 import { BigInt, ByteArray, ethereum, log } from "@graphprotocol/graph-ts";
-import { Account, Domain, Tld } from "../generated/schema";
+import { Account, Sld, Tld } from "../generated/schema";
 
 // using TX hash + log index
 export function createEventID(event: ethereum.Event): string {
@@ -17,7 +17,8 @@ export function createEventIDfromBlock(event: ethereum.Event): string {
     .concat("-")
     .concat(event.logIndex.toString());
 }
-
+export const ETH_NODE =
+  "93cdeb708b7545dc668eb9280176169d1c33cfd8ed6f04690a0bcc88a93fc4ae";
 export const ROOT_NODE =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
 export const EMPTY_ADDRESS = "0x0000000000000000000000000000000000000000";
@@ -63,12 +64,12 @@ export function createOrLoadAccount(address: string): Account {
   return account;
 }
 
-export function createOrLoadDomain(node: string): Domain {
-  let domain = Domain.load(node);
-  if (domain == null) {
-    domain = new Domain(node);
+export function createOrLoadSld(node: string): Sld {
+  let sld = Sld.load(node);
+  if (sld == null) {
+    sld = new Sld(node);
   }
-  return domain;
+  return sld;
 }
 
 export function createOrLoadTld(node: string): Tld {

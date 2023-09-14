@@ -9,7 +9,8 @@ import {
   RoyaltyPayoutAmountSet,
   Transfer
 } from "../generated/HandshakeSld/HandshakeSld"
-import { RegisterSld } from "../generated/SldRegistrationManager/SldRegistrationManager";
+import { RegisterSld, RenewSld } from "../generated/SldRegistrationManager/SldRegistrationManager";
+import { TransferSld } from "../generated/schema";
 
 export function createRegisterSldEvent(
   _tldNamehash: Bytes,
@@ -18,7 +19,7 @@ export function createRegisterSldEvent(
   _expiry: BigInt,
 ): RegisterSld {
   let mockEvent = newMockEvent();
-  let registerSldEvent = new RegisterSld(
+  let event = new RegisterSld(
     mockEvent.address,
     mockEvent.logIndex,
     mockEvent.transactionLogIndex,
@@ -29,20 +30,80 @@ export function createRegisterSldEvent(
     mockEvent.receipt
   );
 
-  registerSldEvent.parameters = new Array()
-  registerSldEvent.parameters.push(
+  event.parameters = new Array()
+  event.parameters.push(
     new ethereum.EventParam("_tldNamehash", ethereum.Value.fromBytes(_tldNamehash))
   );
-  registerSldEvent.parameters.push(
+  event.parameters.push(
     new ethereum.EventParam("_secret", ethereum.Value.fromBytes(_secret))
   );
-  registerSldEvent.parameters.push(
+  event.parameters.push(
     new ethereum.EventParam("_label", ethereum.Value.fromString(_label))
   );
-  registerSldEvent.parameters.push(
+  event.parameters.push(
     new ethereum.EventParam("_expiry", ethereum.Value.fromUnsignedBigInt(_expiry))
   );
-  return registerSldEvent;
+  return event;
+}
+
+export function createRenewSldEvent(
+  _tldNamehash: Bytes,
+  _label: string,
+  _expiry: BigInt,
+): RenewSld {
+  let mockEvent = newMockEvent();
+  let event = new RenewSld(
+    mockEvent.address,
+    mockEvent.logIndex,
+    mockEvent.transactionLogIndex,
+    mockEvent.logType,
+    mockEvent.block,
+    mockEvent.transaction,
+    mockEvent.parameters,
+    mockEvent.receipt
+  );
+
+  event.parameters = new Array()
+  event.parameters.push(
+    new ethereum.EventParam("_tldNamehash", ethereum.Value.fromBytes(_tldNamehash))
+  );
+  event.parameters.push(
+    new ethereum.EventParam("_label", ethereum.Value.fromString(_label))
+  );
+  event.parameters.push(
+    new ethereum.EventParam("_expiry", ethereum.Value.fromUnsignedBigInt(_expiry))
+  );
+  return event;
+}
+
+export function createTransferSldEvent(
+  from: Address,
+  to: Address,
+  tokenId: BigInt,
+): Transfer {
+  let mockEvent = newMockEvent();
+  let event = new Transfer(
+    mockEvent.address,
+    mockEvent.logIndex,
+    mockEvent.transactionLogIndex,
+    mockEvent.logType,
+    mockEvent.block,
+    mockEvent.transaction,
+    mockEvent.parameters,
+    mockEvent.receipt
+  );
+
+  event.parameters = new Array()
+  event.parameters.push(
+    new ethereum.EventParam("from", ethereum.Value.fromAddress(from))
+  );
+  event.parameters.push(
+    new ethereum.EventParam("to", ethereum.Value.fromAddress(to))
+  );
+  event.parameters.push(
+    new ethereum.EventParam("tokenId", ethereum.Value.fromUnsignedBigInt(tokenId))
+  );
+  return event;
 }
 
 export function createApprovalEvent(

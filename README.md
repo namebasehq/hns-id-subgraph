@@ -3,7 +3,6 @@
 This Subgraph sources events from the HNS.ID contracts. This includes the registration managers and any resolvers that are created and linked to domains. The resolvers are added through dynamic data sources. More information on all of this can be found at [The Graph Documentation](https://thegraph.com/docs/developer/quick-start/).
 
 ### Example Query
-
 ```
 
 ```

@@ -19,22 +19,22 @@ export class Domain extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Domain entity without an ID");
+    assert(id != null, "Cannot save Sld entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Domain must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Sld must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("Domain", id.toString(), this);
+      store.set("Sld", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: string): Domain | null {
-    return changetype<Domain | null>(store.get_in_block("Domain", id));
+  static loadInBlock(id: string): Sld | null {
+    return changetype<Sld | null>(store.get_in_block("Sld", id));
   }
 
-  static load(id: string): Domain | null {
-    return changetype<Domain | null>(store.get("Domain", id));
+  static load(id: string): Sld | null {
+    return changetype<Sld | null>(store.get("Sld", id));
   }
 
   get id(): string {
@@ -163,7 +163,7 @@ export class Domain extends Entity {
 
   get registration(): RegistrationLoader {
     return new RegistrationLoader(
-      "Domain",
+      "Sld",
       this.get("id")!.toString(),
       "registration"
     );

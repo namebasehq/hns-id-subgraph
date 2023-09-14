@@ -1,15 +1,16 @@
 import { ResolverSet as ResolverSetEvent, Transfer as TransferEvent } from "../generated/HandshakeTld/HandshakeTld"
 import {
+  Account,
   AllowedTldMintUpdate,
   EnabledSet,
   LengthCostSet,
   MultiYearDiscountSet,
   PremiumNameSet,
   ReservedNameSet,
-  TldResolverSet,
+  ResolverSetTld,
   TldClaimed,
-  Transfer,
-  UpdateAllowedTldManager, Tld, TldTransfer, Account
+  TransferTld,
+  UpdateAllowedTldManager
 } from "../generated/schema"
 import {
   AllowedTldMintUpdate as AllowedTldMintUpdateEvent,
@@ -80,8 +81,8 @@ export function handleUpdateAllowedTldManager(
   entity.save()
 }
 
-export function handleTldResolverSet(event: ResolverSetEvent): void {
-  let entity = new TldResolverSet(createEventID(event))
+export function handleResolverSetTld(event: ResolverSetEvent): void {
+  let entity = new ResolverSetTld(createEventID(event))
   entity._nftNamehash = event.params._nftNamehash
   entity._resolver = event.params._resolver
 
@@ -92,8 +93,8 @@ export function handleTldResolverSet(event: ResolverSetEvent): void {
   entity.save()
 }
 
-export function handleTldTransfer(event: TransferEvent): void {
-  let entity = new TldTransfer(createEventID(event))
+export function handleTransferTld(event: TransferEvent): void {
+  let entity = new TransferTld(createEventID(event))
   entity.from = event.params.from
   entity.to = event.params.to
   entity.tokenId = event.params.tokenId

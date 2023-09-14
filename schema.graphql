@@ -1,4 +1,4 @@
-type Tld @entity {
+interface Domain {
   "The namehash of the name"
   id: ID!
   "The human readable name"
@@ -7,19 +7,54 @@ type Tld @entity {
   labelName: String
   "keccak256(labelName)"
   labelhash: Bytes
+  "The namehash (id) of the parent name"
+  parent: Tld
   "The resolver that controls the domain's settings"
   resolver: Resolver
   "The time when the domain was created"
   createdAt: BigInt!
+  "The expiry date for the domain"
+  expiryDate: BigInt
   "The account that owns the domain"
   owner: Account!
-  "The claim associated with the TLD"
-  claim: TldClaimed @derivedFrom(field: "tld")
-  # "The events associated with the domain"
-  # events: [DomainEvent!]! @derivedFrom(field: "domain")
+  "The account that owns the ERC721 NFT for the domain"
+  registrant: Account
+  "The registration associated with the domain"
+  registration: Registration @derivedFrom(field: "domain")
+  "The events associated with the domain"
+  events: [DomainEvent!] @derivedFrom(field: "domain")
 }
 
-type TldResolverSet @entity {
+type Tld implements Domain @entity {
+  "The namehash of the name"
+  id: ID!
+  "The human readable name"
+  name: String
+  "The human readable label name"
+  labelName: String
+  "keccak256(labelName)"
+  labelhash: Bytes
+  "The namehash (id) of the parent name"
+  parent: Tld
+  "The resolver that controls the domain's settings"
+  resolver: Resolver
+  "The time when the domain was created"
+  createdAt: BigInt!
+  "The expiry date for the domain"
+  expiryDate: BigInt
+  "The account that owns the domain"
+  owner: Account!
+  "The account that owns the ERC721 NFT for the domain"
+  registrant: Account
+  "The registration associated with the domain"
+  registration: Registration @derivedFrom(field: "domain")
+  "The claim associated with the TLD"
+  claim: TldClaimed @derivedFrom(field: "tld")
+  "The events associated with the domain"
+  events: [DomainEvent!] @derivedFrom(field: "domain")
+}
+
+type ResolverSetTld @entity {
   id: ID!
   _nftNamehash: Bytes! # bytes32
   _resolver: Bytes! # address
@@ -28,7 +63,7 @@ type TldResolverSet @entity {
   transactionHash: Bytes!
 }
 
-type TldTransfer @entity {
+type TransferTld @entity {
   id: ID!
   from: Bytes! # address
   to: Bytes! # address
@@ -76,7 +111,7 @@ type UpdateAllowedTldManager @entity {
   transactionHash: Bytes!
 }
 
-type Domain @entity {
+type Sld implements Domain @entity {
   "The namehash of the name"
   id: ID!
   "The human readable name"
@@ -86,21 +121,21 @@ type Domain @entity {
   "keccak256(labelName)"
   labelhash: Bytes
   "The namehash (id) of the parent name"
-  parent: Tld!
+  parent: Tld
   "The resolver that controls the domain's settings"
   resolver: Resolver
   "The time when the domain was created"
   createdAt: BigInt!
+  "The expiry date for the domain"
+  expiryDate: BigInt
   "The account that owns the domain"
   owner: Account!
   "The account that owns the ERC721 NFT for the domain"
   registrant: Account
-  "The expiry date for the domain"
-  expiryDate: BigInt
   "The registration associated with the domain"
   registration: Registration @derivedFrom(field: "domain")
   "The events associated with the domain"
-  events: [DomainEvent!]! @derivedFrom(field: "domain")
+  events: [DomainEvent!] @derivedFrom(field: "domain")
 }
 
 type Royalty @entity {
@@ -218,7 +253,7 @@ type Account @entity {
   transactionHash: Bytes!
 }
 
-type SldTransfer @entity {
+type TransferSld @entity {
   id: ID!
   from: Bytes! # address
   to: Bytes! # address
@@ -371,8 +406,8 @@ type Registration @entity {
   registrant: Account!
   "The human-readable label name associated with the domain registration"
   labelName: String
-   "The events associated with the domain registration"
-   events: [RegistrationEvent!]! @derivedFrom(field: "registration")
+  "The events associated with the domain registration"
+  events: [RegistrationEvent!]! @derivedFrom(field: "registration")
 }
 
 interface RegistrationEvent {
@@ -506,7 +541,7 @@ type ReservedNameSet @entity {
   transactionHash: Bytes!
 }
 
-type SldApproval @entity {
+type ApprovalSld @entity {
   id: ID!
   owner: Bytes! # address
   approved: Bytes! # address
@@ -516,7 +551,7 @@ type SldApproval @entity {
   transactionHash: Bytes!
 }
 
-type SldApprovalForAll @entity {
+type ApprovalForAllSld @entity {
   id: ID!
   owner: Bytes! # address
   operator: Bytes! # address

@@ -1,19 +1,19 @@
 import {
+  Approval as ApprovalEvent,
+  ApprovalForAll as ApprovalForAllEvent,
   HandshakeSld,
   ResolverSet as ResolverSetEvent,
   Transfer as TransferEvent,
-  Approval as ApprovalEvent,
-  ApprovalForAll as ApprovalForAllEvent,
 } from "../generated/HandshakeSld/HandshakeSld"
 import {
-  Account,
+  Account, ApprovalForAllSld, ApprovalSld,
   DiscountSet,
-  Domain,
+  NameRegistered,
+  NameRenewed,
+  NameTransferred,
   PaymentSent,
-  Registration,
-  RenewSld, SldApproval, SldApprovalForAll,
-  SldResolverSet,
-  SldTransfer, Tld
+  Registration, ResolverSetSld,
+  Sld
 } from "../generated/schema"
 import {
   DiscountSet as DiscountSetEvent,
@@ -114,33 +114,8 @@ export function handleDiscountSet(event: DiscountSetEvent): void {
   entity.save()
 }
 
-export function handleSldResolverSet(event: ResolverSetEvent): void {
-  let entity = new SldResolverSet(createEventID(event))
-  entity._nftNamehash = event.params._nftNamehash
-  entity._resolver = event.params._resolver
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleSldTransfer(event: TransferEvent): void {
-  let entity = new SldTransfer(createEventID(event))
-  entity.from = event.params.from
-  entity.to = event.params.to
-  entity.tokenId = event.params.tokenId
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleSldApproval(event: ApprovalEvent): void {
-  let entity = new SldApproval(createEventID(event))
+export function handleApprovalSld(event: ApprovalEvent): void {
+  let entity = new ApprovalSld(createEventID(event))
   entity.owner = event.params.owner
   entity.approved = event.params.approved
   entity.tokenId = event.params.tokenId
@@ -152,8 +127,8 @@ export function handleSldApproval(event: ApprovalEvent): void {
   entity.save()
 }
 
-export function handleSldApprovalForAll(event: ApprovalForAllEvent): void {
-  let entity = new SldApprovalForAll(createEventID(event))
+export function handleApprovalForAllSld(event: ApprovalForAllEvent): void {
+  let entity = new ApprovalForAllSld(createEventID(event))
   entity.owner = event.params.owner
   entity.operator = event.params.operator
   entity.approved = event.params.approved
