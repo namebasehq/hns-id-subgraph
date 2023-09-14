@@ -100,16 +100,18 @@ export function handleTransferSld(event: TransferEvent): void {
   account.save();
 
   // TODO: GET TOKEN ID RIGHT
-  let labelHash = uint256ToByteArray(event.params.tokenId);
+  // let labelHash = uint256ToByteArray(event.params.tokenId);
   // let nameHash = labelHash.toHex();
   let nameHash = event.params.tokenId.toHex();
 
-  let registration = Registration.load(nameHash)!;
+  // TODO: transfer event fires first during mint, so Registration and Sld aren't available yet
+  let registration = Registration.load(nameHash);
   if (registration == null) return;
   registration.registrant = account.id;
   registration.save();
 
-  let sld = Sld.load(nameHash)!;
+  let sld = Sld.load(nameHash);
+  if (sld == null) return;
   sld.registrant = account.id;
   sld.save();
 
