@@ -10,6 +10,10 @@ This Subgraph sources events from the HNS.ID contracts. This includes the regist
         name
         labelName
         labelhash
+        resolver {
+            id
+            address
+        }
         expiryDate
         createdAt
         owner {
@@ -19,52 +23,38 @@ This Subgraph sources events from the HNS.ID contracts. This includes the regist
             id
         }
         registration {
-            blockNumber
-            expiryDate
             id
             labelName
             registrationDate
-            transactionID
+            expiryDate
+            registrant {
+                id
+            }
+            events {
+                id
+                ... on NameRegistered {
+                    id
+                    expiryDate
+                    transactionID
+                    registrant {
+                        id
+                    }
+                }
+                ... on NameRenewed {
+                    id
+                    expiryDate
+                    transactionID
+                }
+                ... on NameTransferred {
+                    id
+                    newOwner {
+                        id
+                    }
+                    transactionID
+                }
+            }
         }
-    }
-    accounts {
-        id
-        domains(first: 5) {
-            labelName
-            name
-        }
-    }
-    textChangeds(orderBy: id, orderDirection: desc) {
-        blockNumber
-        blockTimestamp
-        id
-        indexedKey
-        key
-        node
-        transactionHash
-        value
-    }
-    tldClaimeds(orderBy: blockNumber, orderDirection: desc) {
-        _label
-        _to
-        _tokenId
-        blockNumber
-        blockTimestamp
-        transactionHash
-    }
-    registerSlds(orderBy: blockNumber, orderDirection: desc) {
-        _expiry
-        _label
-        _tldNamehash
-        blockNumber
-        blockTimestamp
-        transactionHash
-    }
-    reservedNameSets(orderBy: blockNumber, orderDirection: desc) {
-        _claimant
-        _label
-        blockTimestamp
-        blockNumber
+
     }
 }
 ```

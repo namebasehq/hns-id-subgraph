@@ -94,8 +94,8 @@ dataSources:
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - TldResolverSet
-        - TldTransfer
+        - ResolverSetTld
+        - TransferTld
         - Tld
         - Resolver
       abis:
@@ -103,9 +103,9 @@ dataSources:
           file: ./abis/HandshakeTld.json
       eventHandlers:
         - event: ResolverSet(indexed bytes32,address)
-          handler: handleTldResolverSet
+          handler: handleResolverSetTld
         - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTldTransfer
+          handler: handleTransferTld
       file: ./src/tld.ts
   - kind: ethereum
     name: HandshakeSld
@@ -119,25 +119,25 @@ dataSources:
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - SldApproval
-        - SldApprovalForAll
-        - SldResolverSet
-        - SldTransfer
+        - ApprovalSld
+        - ApprovalForAllSld
+        - ResolverSetSld
+        - TransferSld
+        - Sld
         - Tld
-        - Domain
         - Resolver
       abis:
         - name: HandshakeSld
           file: ./abis/HandshakeSld.json
       eventHandlers:
         - event: ResolverSet(indexed bytes32,address)
-          handler: handleSldResolverSet
+          handler: handleResolverSetSld
         - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleSldTransfer
+          handler: handleTransferSld
         - event: Approval(indexed address,indexed address,indexed uint256)
-          handler: handleSldApproval
+          handler: handleApprovalSld
         - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleSldApprovalForAll
+          handler: handleApprovalForAllSld
       file: ./src/sld.ts
   - kind: ethereum
     name: SldRegistrationManager
@@ -157,7 +157,7 @@ dataSources:
         - RenewSld
         - Account
         - Tld
-        - Domain
+        - Sld
         - Registration
         - NameRegistered
         - NameRenewed

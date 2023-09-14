@@ -101,6 +101,23 @@ export class Tld extends Entity {
     }
   }
 
+  get parent(): string | null {
+    let value = this.get("parent");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set parent(value: string | null) {
+    if (!value) {
+      this.unset("parent");
+    } else {
+      this.set("parent", Value.fromString(<string>value));
+    }
+  }
+
   get resolver(): string | null {
     let value = this.get("resolver");
     if (!value || value.kind == ValueKind.NULL) {
@@ -131,6 +148,23 @@ export class Tld extends Entity {
     this.set("createdAt", Value.fromBigInt(value));
   }
 
+  get expiryDate(): BigInt | null {
+    let value = this.get("expiryDate");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set expiryDate(value: BigInt | null) {
+    if (!value) {
+      this.unset("expiryDate");
+    } else {
+      this.set("expiryDate", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
   get owner(): string {
     let value = this.get("owner");
     if (!value || value.kind == ValueKind.NULL) {
@@ -144,12 +178,41 @@ export class Tld extends Entity {
     this.set("owner", Value.fromString(value));
   }
 
+  get registrant(): string | null {
+    let value = this.get("registrant");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set registrant(value: string | null) {
+    if (!value) {
+      this.unset("registrant");
+    } else {
+      this.set("registrant", Value.fromString(<string>value));
+    }
+  }
+
+  get registration(): RegistrationLoader {
+    return new RegistrationLoader(
+      "Tld",
+      this.get("id")!.toString(),
+      "registration"
+    );
+  }
+
   get claim(): TldClaimedLoader {
     return new TldClaimedLoader("Tld", this.get("id")!.toString(), "claim");
   }
+
+  get events(): DomainEventLoader {
+    return new DomainEventLoader("Tld", this.get("id")!.toString(), "events");
+  }
 }
 
-export class TldResolverSet extends Entity {
+export class ResolverSetTld extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -157,24 +220,24 @@ export class TldResolverSet extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save TldResolverSet entity without an ID");
+    assert(id != null, "Cannot save ResolverSetTld entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type TldResolverSet must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type ResolverSetTld must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("TldResolverSet", id.toString(), this);
+      store.set("ResolverSetTld", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: string): TldResolverSet | null {
-    return changetype<TldResolverSet | null>(
-      store.get_in_block("TldResolverSet", id)
+  static loadInBlock(id: string): ResolverSetTld | null {
+    return changetype<ResolverSetTld | null>(
+      store.get_in_block("ResolverSetTld", id)
     );
   }
 
-  static load(id: string): TldResolverSet | null {
-    return changetype<TldResolverSet | null>(store.get("TldResolverSet", id));
+  static load(id: string): ResolverSetTld | null {
+    return changetype<ResolverSetTld | null>(store.get("ResolverSetTld", id));
   }
 
   get id(): string {
@@ -256,7 +319,7 @@ export class TldResolverSet extends Entity {
   }
 }
 
-export class TldTransfer extends Entity {
+export class TransferTld extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -264,24 +327,24 @@ export class TldTransfer extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save TldTransfer entity without an ID");
+    assert(id != null, "Cannot save TransferTld entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type TldTransfer must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type TransferTld must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("TldTransfer", id.toString(), this);
+      store.set("TransferTld", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: string): TldTransfer | null {
-    return changetype<TldTransfer | null>(
-      store.get_in_block("TldTransfer", id)
+  static loadInBlock(id: string): TransferTld | null {
+    return changetype<TransferTld | null>(
+      store.get_in_block("TransferTld", id)
     );
   }
 
-  static load(id: string): TldTransfer | null {
-    return changetype<TldTransfer | null>(store.get("TldTransfer", id));
+  static load(id: string): TransferTld | null {
+    return changetype<TransferTld | null>(store.get("TransferTld", id));
   }
 
   get id(): string {
@@ -749,7 +812,7 @@ export class UpdateAllowedTldManager extends Entity {
   }
 }
 
-export class Domain extends Entity {
+export class Sld extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -757,22 +820,22 @@ export class Domain extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save Domain entity without an ID");
+    assert(id != null, "Cannot save Sld entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type Domain must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Sld must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("Domain", id.toString(), this);
+      store.set("Sld", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: string): Domain | null {
-    return changetype<Domain | null>(store.get_in_block("Domain", id));
+  static loadInBlock(id: string): Sld | null {
+    return changetype<Sld | null>(store.get_in_block("Sld", id));
   }
 
-  static load(id: string): Domain | null {
-    return changetype<Domain | null>(store.get("Domain", id));
+  static load(id: string): Sld | null {
+    return changetype<Sld | null>(store.get("Sld", id));
   }
 
   get id(): string {
@@ -839,17 +902,21 @@ export class Domain extends Entity {
     }
   }
 
-  get parent(): string {
+  get parent(): string | null {
     let value = this.get("parent");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toString();
     }
   }
 
-  set parent(value: string) {
-    this.set("parent", Value.fromString(value));
+  set parent(value: string | null) {
+    if (!value) {
+      this.unset("parent");
+    } else {
+      this.set("parent", Value.fromString(<string>value));
+    }
   }
 
   get resolver(): string | null {
@@ -882,6 +949,23 @@ export class Domain extends Entity {
     this.set("createdAt", Value.fromBigInt(value));
   }
 
+  get expiryDate(): BigInt | null {
+    let value = this.get("expiryDate");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set expiryDate(value: BigInt | null) {
+    if (!value) {
+      this.unset("expiryDate");
+    } else {
+      this.set("expiryDate", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
   get owner(): string {
     let value = this.get("owner");
     if (!value || value.kind == ValueKind.NULL) {
@@ -912,41 +996,20 @@ export class Domain extends Entity {
     }
   }
 
-  get expiryDate(): BigInt | null {
-    let value = this.get("expiryDate");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set expiryDate(value: BigInt | null) {
-    if (!value) {
-      this.unset("expiryDate");
-    } else {
-      this.set("expiryDate", Value.fromBigInt(<BigInt>value));
-    }
-  }
-
   get registration(): RegistrationLoader {
     return new RegistrationLoader(
-      "Domain",
+      "Sld",
       this.get("id")!.toString(),
       "registration"
     );
   }
 
   get events(): DomainEventLoader {
-    return new DomainEventLoader(
-      "Domain",
-      this.get("id")!.toString(),
-      "events"
-    );
+    return new DomainEventLoader("Sld", this.get("id")!.toString(), "events");
   }
 }
 
-export class SldResolverSet extends Entity {
+export class ResolverSetSld extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -954,24 +1017,24 @@ export class SldResolverSet extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save SldResolverSet entity without an ID");
+    assert(id != null, "Cannot save ResolverSetSld entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type SldResolverSet must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type ResolverSetSld must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("SldResolverSet", id.toString(), this);
+      store.set("ResolverSetSld", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: string): SldResolverSet | null {
-    return changetype<SldResolverSet | null>(
-      store.get_in_block("SldResolverSet", id)
+  static loadInBlock(id: string): ResolverSetSld | null {
+    return changetype<ResolverSetSld | null>(
+      store.get_in_block("ResolverSetSld", id)
     );
   }
 
-  static load(id: string): SldResolverSet | null {
-    return changetype<SldResolverSet | null>(store.get("SldResolverSet", id));
+  static load(id: string): ResolverSetSld | null {
+    return changetype<ResolverSetSld | null>(store.get("ResolverSetSld", id));
   }
 
   get id(): string {
@@ -1053,7 +1116,7 @@ export class SldResolverSet extends Entity {
   }
 }
 
-export class SldTransfer extends Entity {
+export class TransferSld extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -1061,24 +1124,24 @@ export class SldTransfer extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save SldTransfer entity without an ID");
+    assert(id != null, "Cannot save TransferSld entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type SldTransfer must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type TransferSld must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("SldTransfer", id.toString(), this);
+      store.set("TransferSld", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: string): SldTransfer | null {
-    return changetype<SldTransfer | null>(
-      store.get_in_block("SldTransfer", id)
+  static loadInBlock(id: string): TransferSld | null {
+    return changetype<TransferSld | null>(
+      store.get_in_block("TransferSld", id)
     );
   }
 
-  static load(id: string): SldTransfer | null {
-    return changetype<SldTransfer | null>(store.get("SldTransfer", id));
+  static load(id: string): TransferSld | null {
+    return changetype<TransferSld | null>(store.get("TransferSld", id));
   }
 
   get id(): string {
@@ -2909,7 +2972,7 @@ export class ReservedNameSet extends Entity {
   }
 }
 
-export class SldApproval extends Entity {
+export class ApprovalSld extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -2917,24 +2980,24 @@ export class SldApproval extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save SldApproval entity without an ID");
+    assert(id != null, "Cannot save ApprovalSld entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type SldApproval must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type ApprovalSld must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("SldApproval", id.toString(), this);
+      store.set("ApprovalSld", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: string): SldApproval | null {
-    return changetype<SldApproval | null>(
-      store.get_in_block("SldApproval", id)
+  static loadInBlock(id: string): ApprovalSld | null {
+    return changetype<ApprovalSld | null>(
+      store.get_in_block("ApprovalSld", id)
     );
   }
 
-  static load(id: string): SldApproval | null {
-    return changetype<SldApproval | null>(store.get("SldApproval", id));
+  static load(id: string): ApprovalSld | null {
+    return changetype<ApprovalSld | null>(store.get("ApprovalSld", id));
   }
 
   get id(): string {
@@ -3029,7 +3092,7 @@ export class SldApproval extends Entity {
   }
 }
 
-export class SldApprovalForAll extends Entity {
+export class ApprovalForAllSld extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -3037,25 +3100,25 @@ export class SldApprovalForAll extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save SldApprovalForAll entity without an ID");
+    assert(id != null, "Cannot save ApprovalForAllSld entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type SldApprovalForAll must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type ApprovalForAllSld must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("SldApprovalForAll", id.toString(), this);
+      store.set("ApprovalForAllSld", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: string): SldApprovalForAll | null {
-    return changetype<SldApprovalForAll | null>(
-      store.get_in_block("SldApprovalForAll", id)
+  static loadInBlock(id: string): ApprovalForAllSld | null {
+    return changetype<ApprovalForAllSld | null>(
+      store.get_in_block("ApprovalForAllSld", id)
     );
   }
 
-  static load(id: string): SldApprovalForAll | null {
-    return changetype<SldApprovalForAll | null>(
-      store.get("SldApprovalForAll", id)
+  static load(id: string): ApprovalForAllSld | null {
+    return changetype<ApprovalForAllSld | null>(
+      store.get("ApprovalForAllSld", id)
     );
   }
 
@@ -4510,24 +4573,6 @@ export class VersionChanged extends Entity {
   }
 }
 
-export class TldClaimedLoader extends Entity {
-  _entity: string;
-  _field: string;
-  _id: string;
-
-  constructor(entity: string, id: string, field: string) {
-    super();
-    this._entity = entity;
-    this._id = id;
-    this._field = field;
-  }
-
-  load(): TldClaimed[] {
-    let value = store.loadRelated(this._entity, this._id, this._field);
-    return changetype<TldClaimed[]>(value);
-  }
-}
-
 export class RegistrationLoader extends Entity {
   _entity: string;
   _field: string;
@@ -4543,6 +4588,24 @@ export class RegistrationLoader extends Entity {
   load(): Registration[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<Registration[]>(value);
+  }
+}
+
+export class TldClaimedLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): TldClaimed[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<TldClaimed[]>(value);
   }
 }
 
