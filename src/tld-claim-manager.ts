@@ -3,9 +3,10 @@ import {
 } from "../generated/TldClaimManager/TldClaimManager";
 import {
   Account,
+  Royalty,
   Tld
 } from "../generated/schema";
-import { log } from '@graphprotocol/graph-ts';
+import { log, BigInt } from '@graphprotocol/graph-ts';
 
 
 export function handleTldClaimed(event: TldClaimedEvent): void {
@@ -18,9 +19,18 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
     claimantAccount.save();
   }
 
+  // Create and save the royalty entity
+  let royaltyId = event.params._tokenId.toHexString();
+  let royaltyEntity = new Royalty(royaltyId);
+  royaltyEntity.id = royaltyId; // Set the ID for the royalty entity
+  royaltyEntity.percentage = BigInt.fromI32(10); // Default is 0
+  royaltyEntity.payoutAddress = claimantAccount.id; // Default is the owner wallet
+  royaltyEntity.save();
+
   // For this scenario, the claimant and owner are the same at the start.
   tldEntity.claimant = claimantAccount.id;
   tldEntity.owner = claimantAccount.id;
+  tldEntity.royalty = royaltyEntity.id; // Link the royalty entity
 
   tldEntity.tokenId = event.params._tokenId;
   tldEntity.label = event.params._label;
@@ -29,3 +39,4 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
   
   tldEntity.save();
 }
+

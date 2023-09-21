@@ -19,6 +19,15 @@ type Domain @entity {
   registration: Registration @derivedFrom(field: "domain")
 }
 
+type Royalty @entity {
+  "Unique identifier for the Royalty"
+  id: ID!
+  "The percentage of royalties to be paid out"
+  percentage: BigInt!
+  "The address to which royalties will be paid"
+  payoutAddress: Account!
+}
+
 type Tld @entity {
   "Unique identifier for the TLD"
   id: ID!
@@ -38,11 +47,35 @@ type Tld @entity {
   saleSettings: SaleSettings @derivedFrom(field: "tld")
   "The array of SLDs associated with this TLD"
   slds: [Sld!] @derivedFrom(field: "parentTld")
+  "The royalty settings for this TLD"
+  royalty: Royalty!
+  "The history of royalty changes for this TLD"
+  royaltyHistory: [RoyaltyHistory!] @derivedFrom(field: "tld")
 }
+
+type RoyaltyHistory @entity {
+  "Unique identifier for the RoyaltyHistory"
+  id: ID!
+  "The TLD to which this history item belongs"
+  tld: Tld!
+  "The percentage of the royalty"
+  percentage: BigInt!
+  "The payout address for the royalty"
+  payoutAddress: Account!
+  "The block number of the event"
+  blockNumber: BigInt!
+  "The transaction ID associated with the event"
+  transactionID: Bytes!
+  "The transaction datetime of the event"
+  transactionDateTime: BigInt!
+}
+
 
 type Sld @entity {
   "Unique identifier for the SLD"
   id: ID!
+    "The label of the SLD"
+  label: String!
   "The full name of the SLD"
   fullName: String!
   "The account that owns the SLD"

@@ -170,6 +170,72 @@ export class Domain extends Entity {
   }
 }
 
+export class Royalty extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Royalty entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Royalty must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Royalty", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Royalty | null {
+    return changetype<Royalty | null>(store.get_in_block("Royalty", id));
+  }
+
+  static load(id: string): Royalty | null {
+    return changetype<Royalty | null>(store.get("Royalty", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get percentage(): BigInt {
+    let value = this.get("percentage");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set percentage(value: BigInt) {
+    this.set("percentage", Value.fromBigInt(value));
+  }
+
+  get payoutAddress(): string {
+    let value = this.get("payoutAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set payoutAddress(value: string) {
+    this.set("payoutAddress", Value.fromString(value));
+  }
+}
+
 export class Tld extends Entity {
   constructor(id: string) {
     super();
@@ -298,6 +364,147 @@ export class Tld extends Entity {
   get slds(): SldLoader {
     return new SldLoader("Tld", this.get("id")!.toString(), "slds");
   }
+
+  get royalty(): string {
+    let value = this.get("royalty");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set royalty(value: string) {
+    this.set("royalty", Value.fromString(value));
+  }
+
+  get royaltyHistory(): RoyaltyHistoryLoader {
+    return new RoyaltyHistoryLoader(
+      "Tld",
+      this.get("id")!.toString(),
+      "royaltyHistory"
+    );
+  }
+}
+
+export class RoyaltyHistory extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save RoyaltyHistory entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type RoyaltyHistory must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("RoyaltyHistory", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): RoyaltyHistory | null {
+    return changetype<RoyaltyHistory | null>(
+      store.get_in_block("RoyaltyHistory", id)
+    );
+  }
+
+  static load(id: string): RoyaltyHistory | null {
+    return changetype<RoyaltyHistory | null>(store.get("RoyaltyHistory", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get tld(): string {
+    let value = this.get("tld");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set tld(value: string) {
+    this.set("tld", Value.fromString(value));
+  }
+
+  get percentage(): BigInt {
+    let value = this.get("percentage");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set percentage(value: BigInt) {
+    this.set("percentage", Value.fromBigInt(value));
+  }
+
+  get payoutAddress(): string {
+    let value = this.get("payoutAddress");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set payoutAddress(value: string) {
+    this.set("payoutAddress", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
+  get transactionID(): Bytes {
+    let value = this.get("transactionID");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transactionID(value: Bytes) {
+    this.set("transactionID", Value.fromBytes(value));
+  }
+
+  get transactionDateTime(): BigInt {
+    let value = this.get("transactionDateTime");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set transactionDateTime(value: BigInt) {
+    this.set("transactionDateTime", Value.fromBigInt(value));
+  }
 }
 
 export class Sld extends Entity {
@@ -337,6 +544,19 @@ export class Sld extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get label(): string {
+    let value = this.get("label");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set label(value: string) {
+    this.set("label", Value.fromString(value));
   }
 
   get fullName(): string {
@@ -6332,6 +6552,24 @@ export class SldLoader extends Entity {
   load(): Sld[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<Sld[]>(value);
+  }
+}
+
+export class RoyaltyHistoryLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): RoyaltyHistory[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<RoyaltyHistory[]>(value);
   }
 }
 
