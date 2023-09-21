@@ -1029,6 +1029,367 @@ export class Account extends Entity {
   }
 }
 
+export class Resolver extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Resolver entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Resolver must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Resolver", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Resolver | null {
+    return changetype<Resolver | null>(store.get_in_block("Resolver", id));
+  }
+
+  static load(id: string): Resolver | null {
+    return changetype<Resolver | null>(store.get("Resolver", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get addresses(): AddressLoader {
+    return new AddressLoader(
+      "Resolver",
+      this.get("id")!.toString(),
+      "addresses"
+    );
+  }
+
+  get textRecords(): TextRecordLoader {
+    return new TextRecordLoader(
+      "Resolver",
+      this.get("id")!.toString(),
+      "textRecords"
+    );
+  }
+
+  get contenthash(): string | null {
+    let value = this.get("contenthash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set contenthash(value: string | null) {
+    if (!value) {
+      this.unset("contenthash");
+    } else {
+      this.set("contenthash", Value.fromString(<string>value));
+    }
+  }
+
+  get dnsRecords(): DnsRecordLoader {
+    return new DnsRecordLoader(
+      "Resolver",
+      this.get("id")!.toString(),
+      "dnsRecords"
+    );
+  }
+
+  get dnsZonehash(): string | null {
+    let value = this.get("dnsZonehash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set dnsZonehash(value: string | null) {
+    if (!value) {
+      this.unset("dnsZonehash");
+    } else {
+      this.set("dnsZonehash", Value.fromString(<string>value));
+    }
+  }
+}
+
+export class Address extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Address entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Address must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Address", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Address | null {
+    return changetype<Address | null>(store.get_in_block("Address", id));
+  }
+
+  static load(id: string): Address | null {
+    return changetype<Address | null>(store.get("Address", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get address(): string {
+    let value = this.get("address");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set address(value: string) {
+    this.set("address", Value.fromString(value));
+  }
+
+  get cointype(): BigInt {
+    let value = this.get("cointype");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set cointype(value: BigInt) {
+    this.set("cointype", Value.fromBigInt(value));
+  }
+
+  get resolver(): string {
+    let value = this.get("resolver");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set resolver(value: string) {
+    this.set("resolver", Value.fromString(value));
+  }
+}
+
+export class TextRecord extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save TextRecord entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type TextRecord must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("TextRecord", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): TextRecord | null {
+    return changetype<TextRecord | null>(store.get_in_block("TextRecord", id));
+  }
+
+  static load(id: string): TextRecord | null {
+    return changetype<TextRecord | null>(store.get("TextRecord", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get key(): string {
+    let value = this.get("key");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set key(value: string) {
+    this.set("key", Value.fromString(value));
+  }
+
+  get value(): string {
+    let value = this.get("value");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set value(value: string) {
+    this.set("value", Value.fromString(value));
+  }
+
+  get resolver(): string {
+    let value = this.get("resolver");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set resolver(value: string) {
+    this.set("resolver", Value.fromString(value));
+  }
+}
+
+export class DnsRecord extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save DnsRecord entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type DnsRecord must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("DnsRecord", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): DnsRecord | null {
+    return changetype<DnsRecord | null>(store.get_in_block("DnsRecord", id));
+  }
+
+  static load(id: string): DnsRecord | null {
+    return changetype<DnsRecord | null>(store.get("DnsRecord", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get node(): Bytes {
+    let value = this.get("node");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set node(value: Bytes) {
+    this.set("node", Value.fromBytes(value));
+  }
+
+  get name(): Bytes {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set name(value: Bytes) {
+    this.set("name", Value.fromBytes(value));
+  }
+
+  get resource(): BigInt {
+    let value = this.get("resource");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set resource(value: BigInt) {
+    this.set("resource", Value.fromBigInt(value));
+  }
+
+  get record(): Bytes {
+    let value = this.get("record");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set record(value: Bytes) {
+    this.set("record", Value.fromBytes(value));
+  }
+
+  get resolver(): string {
+    let value = this.get("resolver");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set resolver(value: string) {
+    this.set("resolver", Value.fromString(value));
+  }
+}
+
 export class Registration extends Entity {
   constructor(id: string) {
     super();
@@ -6624,5 +6985,59 @@ export class DomainLoader extends Entity {
   load(): Domain[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<Domain[]>(value);
+  }
+}
+
+export class AddressLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): Address[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Address[]>(value);
+  }
+}
+
+export class TextRecordLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): TextRecord[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<TextRecord[]>(value);
+  }
+}
+
+export class DnsRecordLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): DnsRecord[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<DnsRecord[]>(value);
   }
 }

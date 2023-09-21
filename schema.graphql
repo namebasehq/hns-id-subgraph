@@ -129,6 +129,60 @@ type Account @entity {
   registrations: [Registration!] @derivedFrom(field: "registrant")
 }
 
+type Resolver @entity {
+  "Unique identifier for the Resolver"
+  id: ID!
+  "Array of Addresses associated with this Resolver"
+  addresses: [Address!] @derivedFrom(field: "resolver")
+  "Array of Text Records associated with this Resolver"
+  textRecords: [TextRecord!] @derivedFrom(field: "resolver")
+  "Content hash associated with this Resolver"
+  contenthash: String
+  "Array of DNS Records associated with this Resolver"
+  dnsRecords: [DnsRecord!] @derivedFrom(field: "resolver")
+  "DNS Zone hash associated with this Resolver"
+  dnsZonehash: String
+}
+
+type Address @entity {
+  "Unique identifier for the Address"
+  id: ID!
+  "Address in string format"
+  address: String!
+  "Coin type as a number"
+  cointype: BigInt!
+  "Parent Resolver of this Address"
+  resolver: Resolver!
+}
+
+type TextRecord @entity {
+  "Unique identifier for the Text Record"
+  id: ID!
+  "The key for the Text Record"
+  key: String!
+  "The value for the Text Record"
+  value: String!
+  "Parent Resolver of this Text Record"
+  resolver: Resolver!
+}
+
+type DnsRecord @entity {
+  "Unique identifier for the DNS Record"
+  id: ID!
+  "Node identifier in bytes32 format"
+  node: Bytes!
+  "Name in bytes format"
+  name: Bytes!
+  "Resource type as a uint16"
+  resource: BigInt!
+  "Record in bytes format"
+  record: Bytes!
+  "Parent Resolver of this DNS Record"
+  resolver: Resolver!
+}
+
+
+
 type Registration @entity {
   "The unique identifier of the registration"
   id: ID!
