@@ -170,6 +170,471 @@ export class Domain extends Entity {
   }
 }
 
+export class Tld extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Tld entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Tld must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Tld", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Tld | null {
+    return changetype<Tld | null>(store.get_in_block("Tld", id));
+  }
+
+  static load(id: string): Tld | null {
+    return changetype<Tld | null>(store.get("Tld", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get claimant(): string {
+    let value = this.get("claimant");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set claimant(value: string) {
+    this.set("claimant", Value.fromString(value));
+  }
+
+  get owner(): string {
+    let value = this.get("owner");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set owner(value: string) {
+    this.set("owner", Value.fromString(value));
+  }
+
+  get tokenId(): BigInt {
+    let value = this.get("tokenId");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set tokenId(value: BigInt) {
+    this.set("tokenId", Value.fromBigInt(value));
+  }
+
+  get label(): string {
+    let value = this.get("label");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set label(value: string) {
+    this.set("label", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
+  get transactionID(): Bytes {
+    let value = this.get("transactionID");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transactionID(value: Bytes) {
+    this.set("transactionID", Value.fromBytes(value));
+  }
+
+  get saleSettings(): SaleSettingsLoader {
+    return new SaleSettingsLoader(
+      "Tld",
+      this.get("id")!.toString(),
+      "saleSettings"
+    );
+  }
+}
+
+export class SaleSettings extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save SaleSettings entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type SaleSettings must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("SaleSettings", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): SaleSettings | null {
+    return changetype<SaleSettings | null>(
+      store.get_in_block("SaleSettings", id)
+    );
+  }
+
+  static load(id: string): SaleSettings | null {
+    return changetype<SaleSettings | null>(store.get("SaleSettings", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get tld(): string {
+    let value = this.get("tld");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set tld(value: string) {
+    this.set("tld", Value.fromString(value));
+  }
+
+  get enabled(): boolean {
+    let value = this.get("enabled");
+    if (!value || value.kind == ValueKind.NULL) {
+      return false;
+    } else {
+      return value.toBoolean();
+    }
+  }
+
+  set enabled(value: boolean) {
+    this.set("enabled", Value.fromBoolean(value));
+  }
+
+  get prices(): Array<BigInt> | null {
+    let value = this.get("prices");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigIntArray();
+    }
+  }
+
+  set prices(value: Array<BigInt> | null) {
+    if (!value) {
+      this.unset("prices");
+    } else {
+      this.set("prices", Value.fromBigIntArray(<Array<BigInt>>value));
+    }
+  }
+
+  get discounts(): Array<BigInt> | null {
+    let value = this.get("discounts");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigIntArray();
+    }
+  }
+
+  set discounts(value: Array<BigInt> | null) {
+    if (!value) {
+      this.unset("discounts");
+    } else {
+      this.set("discounts", Value.fromBigIntArray(<Array<BigInt>>value));
+    }
+  }
+
+  get premiumPrices(): PremiumPriceLoader {
+    return new PremiumPriceLoader(
+      "SaleSettings",
+      this.get("id")!.toString(),
+      "premiumPrices"
+    );
+  }
+
+  get reservedNames(): ReservedNameLoader {
+    return new ReservedNameLoader(
+      "SaleSettings",
+      this.get("id")!.toString(),
+      "reservedNames"
+    );
+  }
+
+  get blockNumber(): BigInt | null {
+    let value = this.get("blockNumber");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockNumber(value: BigInt | null) {
+    if (!value) {
+      this.unset("blockNumber");
+    } else {
+      this.set("blockNumber", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get blockTimestamp(): BigInt | null {
+    let value = this.get("blockTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockTimestamp(value: BigInt | null) {
+    if (!value) {
+      this.unset("blockTimestamp");
+    } else {
+      this.set("blockTimestamp", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get transactionHash(): Bytes | null {
+    let value = this.get("transactionHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transactionHash(value: Bytes | null) {
+    if (!value) {
+      this.unset("transactionHash");
+    } else {
+      this.set("transactionHash", Value.fromBytes(<Bytes>value));
+    }
+  }
+}
+
+export class PremiumPrice extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save PremiumPrice entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type PremiumPrice must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("PremiumPrice", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): PremiumPrice | null {
+    return changetype<PremiumPrice | null>(
+      store.get_in_block("PremiumPrice", id)
+    );
+  }
+
+  static load(id: string): PremiumPrice | null {
+    return changetype<PremiumPrice | null>(store.get("PremiumPrice", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get saleSettings(): string {
+    let value = this.get("saleSettings");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set saleSettings(value: string) {
+    this.set("saleSettings", Value.fromString(value));
+  }
+
+  get label(): string {
+    let value = this.get("label");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set label(value: string) {
+    this.set("label", Value.fromString(value));
+  }
+
+  get price(): BigInt | null {
+    let value = this.get("price");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set price(value: BigInt | null) {
+    if (!value) {
+      this.unset("price");
+    } else {
+      this.set("price", Value.fromBigInt(<BigInt>value));
+    }
+  }
+}
+
+export class ReservedName extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ReservedName entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ReservedName must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("ReservedName", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): ReservedName | null {
+    return changetype<ReservedName | null>(
+      store.get_in_block("ReservedName", id)
+    );
+  }
+
+  static load(id: string): ReservedName | null {
+    return changetype<ReservedName | null>(store.get("ReservedName", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get saleSettings(): string {
+    let value = this.get("saleSettings");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set saleSettings(value: string) {
+    this.set("saleSettings", Value.fromString(value));
+  }
+
+  get label(): string {
+    let value = this.get("label");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set label(value: string) {
+    this.set("label", Value.fromString(value));
+  }
+
+  get claimant(): Bytes | null {
+    let value = this.get("claimant");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set claimant(value: Bytes | null) {
+    if (!value) {
+      this.unset("claimant");
+    } else {
+      this.set("claimant", Value.fromBytes(<Bytes>value));
+    }
+  }
+}
+
 export class Account extends Entity {
   constructor(id: string) {
     super();
@@ -5709,6 +6174,60 @@ export class RegistrationLoader extends Entity {
   load(): Registration[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<Registration[]>(value);
+  }
+}
+
+export class SaleSettingsLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): SaleSettings[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<SaleSettings[]>(value);
+  }
+}
+
+export class PremiumPriceLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): PremiumPrice[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<PremiumPrice[]>(value);
+  }
+}
+
+export class ReservedNameLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): ReservedName[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<ReservedName[]>(value);
   }
 }
 

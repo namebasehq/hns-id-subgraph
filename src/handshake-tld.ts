@@ -12,96 +12,66 @@ import {
   OwnershipTransferred,
   RegistrationStrategySet,
   ResolverSet,
-  Transfer
+  Transfer,
+  Tld,
+  Account
 } from "../generated/schema"
 
-export function handleApproval(event: ApprovalEvent): void {
-  let entity = new Approval(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.owner = event.params.owner
-  entity.approved = event.params.approved
-  entity.tokenId = event.params.tokenId
+import { log } from '@graphprotocol/graph-ts'
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
 
-  entity.save()
-}
-
-export function handleApprovalForAll(event: ApprovalForAllEvent): void {
-  let entity = new ApprovalForAll(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.owner = event.params.owner
-  entity.operator = event.params.operator
-  entity.approved = event.params.approved
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleOwnershipTransferred(
-  event: OwnershipTransferredEvent
-): void {
-  let entity = new OwnershipTransferred(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.previousOwner = event.params.previousOwner
-  entity.newOwner = event.params.newOwner
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
 
 export function handleRegistrationStrategySet(
   event: RegistrationStrategySetEvent
 ): void {
-  let entity = new RegistrationStrategySet(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.namehash = event.params.namehash
-  entity.strategy = event.params.strategy
+  // let entity = new RegistrationStrategySet(
+  //   event.transaction.hash.concatI32(event.logIndex.toI32())
+  // )
+  // entity.namehash = event.params.namehash
+  // entity.strategy = event.params.strategy
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  // entity.blockNumber = event.block.number
+  // entity.blockTimestamp = event.block.timestamp
+  // entity.transactionHash = event.transaction.hash
 
-  entity.save()
+  // entity.save()
 }
 
 export function handleResolverSet(event: ResolverSetEvent): void {
-  let entity = new ResolverSet(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity._nftNamehash = event.params._nftNamehash
-  entity._resolver = event.params._resolver
+  // let entity = new ResolverSet(
+  //   event.transaction.hash.concatI32(event.logIndex.toI32())
+  // )
+  // entity._nftNamehash = event.params._nftNamehash
+  // entity._resolver = event.params._resolver
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  // entity.blockNumber = event.block.number
+  // entity.blockTimestamp = event.block.timestamp
+  // entity.transactionHash = event.transaction.hash
 
-  entity.save()
+  // entity.save()
 }
 
 export function handleTransfer(event: TransferEvent): void {
-  let entity = new Transfer(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.from = event.params.from
-  entity.to = event.params.to
-  entity.tokenId = event.params.tokenId
+  let tldId = event.params.tokenId.toHexString();
+  let tldEntity = Tld.load(tldId);
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  if (tldEntity) {
+    // Ensure the recipient account entity exists
+    // It should always exist though
+    let recipientAccount = Account.load(event.params.to.toHex());
+    if (!recipientAccount) {
+      recipientAccount = new Account(event.params.to.toHex());
+      recipientAccount.save();
+    }
 
-  entity.save()
+    // Update the owner field of the Tld entity
+    tldEntity.owner = recipientAccount.id;
+
+    // Save the updated Tld entity
+    tldEntity.save();
+  } else {
+    log.warning('No TLD entity found for ID: {}', [tldId]);
+  }
 }
+
+
