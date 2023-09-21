@@ -54,29 +54,10 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     domain.blockNumber = event.block.number;
     domain.transactionID = event.transaction.hash;
     domain.expiry = event.params._expiry;
+    domain.label = event.params._label;
     domain.save();
   }
 }
-
-
-
-
-export function handleRegisterSldOld(event: RegisterSldEvent): void {
-  let entity = new RegisterSld(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity._tldNamehash = event.params._tldNamehash
-  entity._secret = event.params._secret
-  entity._label = event.params._label
-  entity._expiry = event.params._expiry
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
 
 export function handleDiscountSet(event: DiscountSetEvent): void {
   let entity = new DiscountSet(
