@@ -36,7 +36,28 @@ type Tld @entity {
   transactionID: Bytes!
   "The sales settings for this TLD"
   saleSettings: SaleSettings @derivedFrom(field: "tld")
+  "The array of SLDs associated with this TLD"
+  slds: [Sld!] @derivedFrom(field: "parentTld")
 }
+
+type Sld @entity {
+  "Unique identifier for the SLD"
+  id: ID!
+  "The full name of the SLD"
+  fullName: String!
+  "The account that owns the SLD"
+  owner: Account!
+  "The parent TLD of this SLD"
+  parentTld: Tld!
+  "The block number of the event"
+  blockNumber: BigInt!
+  "The transaction ID associated with the event"
+  transactionID: Bytes!
+  "The expiry date of the SLD as a number"
+  expiry: BigInt!
+}
+
+
 
 type SaleSettings @entity {
   id: ID!  # This would be the same as the TLD's id for a one-to-one relation
