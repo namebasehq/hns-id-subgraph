@@ -3,6 +3,67 @@
 This Subgraph sources events from the HNS.ID contracts. This includes the registration managers and any resolvers that are created and linked to domains. The resolvers are added through dynamic data sources. More information on all of this can be found at [The Graph Documentation](https://thegraph.com/docs/developer/quick-start/).
 
 ### Example Query
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+```graphql
+{
+    domains(first: 10) {
+        id
+        name
+        labelName
+        labelhash
+        resolver {
+            id
+            address
+        }
+        expiryDate
+        createdAt
+        owner {
+            id
+        }
+        registrant {
+            id
+        }
+        registration {
+            id
+            labelName
+            registrationDate
+            expiryDate
+            registrant {
+                id
+            }
+            events {
+                id
+                ... on NameRegistered {
+                    id
+                    expiryDate
+                    transactionID
+                    registrant {
+                        id
+                    }
+                }
+                ... on NameRenewed {
+                    id
+                    expiryDate
+                    transactionID
+                }
+                ... on NameTransferred {
+                    id
+                    newOwner {
+                        id
+                    }
+                    transactionID
+                }
+            }
+        }
+
+    }
+}
+=======
+
+>>>>>>> 3b8b5e6 (first commit for schema changes)
+>>>>>>> accadad (first commit for schema changes)
 ```
 
 ```
@@ -89,4 +150,21 @@ graph deploy --studio hns-id
 # deploying hosted service
 graph auth --product hosted-service 21ff9bf3e7d7f7ab4c524014a1588d78
 graph deploy --product hosted-service namebasehq/hns-id
+graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001/ hns-id-subgraph
+```
+# If your schema has changed, you'll need to restart the Graph Node
+```bash
+docker-compose down
+docker-compose up
+```
+# Then build and deploy as mentioned above
+
+# Clearing the Graph
+# To clear the graph and start fresh, you can delete the Postgres data folder
+```bash
+rm -rf ./data
+# Then restart the Docker containers
+```bash
+docker-compose down
+docker-compose up
 ```
