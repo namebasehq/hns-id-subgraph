@@ -1093,21 +1093,12 @@ export class Resolver extends Entity {
     );
   }
 
-  get textRecords(): Array<string> | null {
-    let value = this.get("textRecords");
-    if (!value || value.kind == ValueKind.NULL) {
-      return null;
-    } else {
-      return value.toStringArray();
-    }
-  }
-
-  set textRecords(value: Array<string> | null) {
-    if (!value) {
-      this.unset("textRecords");
-    } else {
-      this.set("textRecords", Value.fromStringArray(<Array<string>>value));
-    }
+  get textRecords(): TextRecordLoader {
+    return new TextRecordLoader(
+      "Resolver",
+      this.get("id")!.toString(),
+      "textRecords"
+    );
   }
 
   get contenthash(): string | null {
@@ -7029,6 +7020,24 @@ export class AddressLoader extends Entity {
   load(): Address[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<Address[]>(value);
+  }
+}
+
+export class TextRecordLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): TextRecord[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<TextRecord[]>(value);
   }
 }
 
