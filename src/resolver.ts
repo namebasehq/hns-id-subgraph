@@ -33,7 +33,6 @@ import {
 
 import { BigInt, Bytes, store as GraphStore } from "@graphprotocol/graph-ts";
 
-import { BigInt } from "@graphprotocol/graph-ts";
 
 export function handleAddrChanged(event: AddrChangedEvent): void {
   /*
@@ -234,6 +233,7 @@ export function handleTextChanged(event: TextChangedEvent): void {
   // Save the updated TextRecord entity
   textRecordEntity.save();
 }
+
 
 export function handleUpdatedDelegate(event: UpdatedDelegateEvent): void {
   // Generate a unique ID for the Delegate entity by combining the _tokenId and _owner
