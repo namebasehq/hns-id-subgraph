@@ -3,8 +3,10 @@ import {
 } from "../generated/TldClaimManager/TldClaimManager";
 import {
   Account,
+  Resolver,
   Royalty,
-  Tld
+  Tld,
+  Address
 } from "../generated/schema";
 import { log, BigInt } from '@graphprotocol/graph-ts';
 
@@ -23,9 +25,28 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
   let royaltyId = event.params._tokenId.toHexString();
   let royaltyEntity = new Royalty(royaltyId);
   royaltyEntity.id = royaltyId; // Set the ID for the royalty entity
-  royaltyEntity.percentage = BigInt.fromI32(10); // Default is 0
+  royaltyEntity.percentage = BigInt.fromI32(0); // Default is 0
   royaltyEntity.payoutAddress = claimantAccount.id; // Default is the owner wallet
   royaltyEntity.save();
+
+  // Create and save the resolver entity
+  let resolverId = event.params._tokenId.toHexString();
+  let resolverEntity = new Resolver(resolverId);
+
+    // Initialize other fields if necessary
+    const defaultCoinTypes = [60, 614, 9006, 966, 9001, 9000, 9005];
+
+    for (let i = 0; i < defaultCoinTypes.length; i++) {
+      let coinType = defaultCoinTypes[i];
+      let addressId = resolverId.concat("-").concat(coinType.toString());
+      let addressEntity = new Address(addressId);
+      addressEntity.cointype = BigInt.fromI32(coinType); // Using BigInt.fromI32
+      addressEntity.address = event.params._to.toHex();
+      addressEntity.resolver = resolverEntity.id;
+      addressEntity.save();
+    }
+    
+    resolverEntity.save();
 
   // For this scenario, the claimant and owner are the same at the start.
   tldEntity.claimant = claimantAccount.id;
@@ -36,6 +57,7 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
   tldEntity.label = event.params._label;
   tldEntity.blockNumber = event.block.number;
   tldEntity.transactionID = event.transaction.hash;
+  tldEntity.resolver = resolverId;
   
   tldEntity.save();
 }

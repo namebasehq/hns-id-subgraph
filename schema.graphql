@@ -51,6 +51,8 @@ type Tld @entity {
   royalty: Royalty!
   "The history of royalty changes for this TLD"
   royaltyHistory: [RoyaltyHistory!] @derivedFrom(field: "tld")
+  "The resolver settings for this TLD"
+  resolver: Resolver
 }
 
 type RoyaltyHistory @entity {

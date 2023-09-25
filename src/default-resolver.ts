@@ -13,46 +13,78 @@ import {
 } from "../generated/DefaultResolver/DefaultResolver"
 import {
   AddrChanged,
+  Address,
   AddressChanged,
   ContenthashChanged,
   DNSRecordChanged,
   DNSRecordDeleted,
   DNSZonehashChanged,
   NameChanged,
+  Resolver,
   ReverseClaimed,
   TextChanged,
   UpdatedDelegate,
   VersionChanged
 } from "../generated/schema"
 
+import { BigInt } from "@graphprotocol/graph-ts";
+
 export function handleAddrChanged(event: AddrChangedEvent): void {
-  let entity = new AddrChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.node = event.params.node
-  entity.a = event.params.a
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  /*
+    // Generate a unique ID for the Address entity
+    let addressId = event.params.node.toHex().concat("-614");
 
-  entity.save()
+
+  // Try loading the Address entity, or create a new one if it doesn't exist
+  let addressEntity = Address.load(addressId);
+  if (addressEntity == null) {
+    addressEntity = new Address(addressId);
+  }
+  // Load or create the parent Resolver entity
+  let resolverEntity = Resolver.load(event.params.node.toHex());
+  if (!resolverEntity) {
+    resolverEntity = new Resolver(event.params.node.toHex());
+    resolverEntity.save();
+  }
+
+  // Update fields on the Address entity
+  addressEntity.address = event.params.a.toHex();
+  addressEntity.cointype = BigInt.fromI32(10);  // Assuming Optimism mainnet
+  addressEntity.resolver = resolverEntity.id;
+
+  // Save the updated Address entity
+  addressEntity.save();
+
+  */
 }
 
 export function handleAddressChanged(event: AddressChangedEvent): void {
-  let entity = new AddressChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.node = event.params.node
-  entity.coinType = event.params.coinType
-  entity.newAddress = event.params.newAddress
+  // Generate a unique ID for the Address entity
+  let addressId = event.params.node.toHex().concat("-").concat(event.params.coinType.toString());
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  // Try loading the Address entity, or create a new one if it doesn't exist
+  let addressEntity = Address.load(addressId);
+  if (addressEntity == null) {
+    addressEntity = new Address(addressId);
+  }
 
-  entity.save()
+  // Load or create the parent Resolver entity
+  let resolverEntity = Resolver.load(event.params.node.toHex());
+  if (!resolverEntity) {
+    resolverEntity = new Resolver(event.params.node.toHex());
+    resolverEntity.save();
+  }
+
+  // Update fields on the Address entity
+  addressEntity.address = event.params.newAddress.toHex();
+  addressEntity.cointype = event.params.coinType;
+  addressEntity.resolver = resolverEntity.id;
+
+  // Save the updated Address entity
+  addressEntity.save();
 }
+
 
 export function handleContenthashChanged(event: ContenthashChangedEvent): void {
   let entity = new ContenthashChanged(
