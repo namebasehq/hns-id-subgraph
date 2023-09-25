@@ -23,6 +23,7 @@ import {
   Resolver,
   ReverseClaimed,
   TextChanged,
+  TextRecord,
   UpdatedDelegate,
   VersionChanged
 } from "../generated/schema"
@@ -87,17 +88,20 @@ export function handleAddressChanged(event: AddressChangedEvent): void {
 
 
 export function handleContenthashChanged(event: ContenthashChangedEvent): void {
-  let entity = new ContenthashChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.node = event.params.node
-  entity.hash = event.params.hash
+  // Generate a unique ID for the Resolver entity
+  let resolverId = event.params.node.toHex();
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  // Try loading the Resolver entity, or create a new one if it doesn't exist
+  // (it should always exist though)
+  let resolverEntity = Resolver.load(resolverId);
+  if (!resolverEntity) {
+    resolverEntity = new Resolver(resolverId);
+    resolverEntity.save();
+  }
 
-  entity.save()
+  // Update the content hash on the Resolver entity
+  resolverEntity.contenthash = event.params.hash.toHex();
+  resolverEntity.save();
 }
 
 export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
@@ -175,20 +179,24 @@ export function handleReverseClaimed(event: ReverseClaimedEvent): void {
 }
 
 export function handleTextChanged(event: TextChangedEvent): void {
-  let entity = new TextChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.node = event.params.node
-  entity.indexedKey = event.params.indexedKey
-  entity.key = event.params.key
-  entity.value = event.params.value
+  // Generate a unique ID for the TextRecord entity
+  let textRecordId = event.params.node.toHex().concat("-").concat(event.params.key.toString());
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  // Try loading the TextRecord entity, or create a new one if it doesn't exist
+  let textRecordEntity = TextRecord.load(textRecordId);
+  if (textRecordEntity == null) {
+    textRecordEntity = new TextRecord(textRecordId);
+    textRecordEntity.resolver = event.params.node.toHex();
+  }
 
-  entity.save()
+  // Update fields on the TextRecord entity
+  textRecordEntity.key = event.params.key.toString();
+  textRecordEntity.value = event.params.value.toString();
+  
+  // Save the updated TextRecord entity
+  textRecordEntity.save();
 }
+
 
 export function handleUpdatedDelegate(event: UpdatedDelegateEvent): void {
   let entity = new UpdatedDelegate(

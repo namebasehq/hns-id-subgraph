@@ -137,7 +137,7 @@ type Resolver @entity {
   "Array of Addresses associated with this Resolver"
   addresses: [Address!] @derivedFrom(field: "resolver")
   "Array of Text Records associated with this Resolver"
-  textRecords: [TextRecord!] @derivedFrom(field: "resolver")
+  textRecords: [TextRecord!]
   "Content hash associated with this Resolver"
   contenthash: String
   "Array of DNS Records associated with this Resolver"
