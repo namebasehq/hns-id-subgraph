@@ -179,36 +179,33 @@ export function handleReverseClaimed(event: ReverseClaimedEvent): void {
 }
 
 export function handleTextChanged(event: TextChangedEvent): void {
+  // Generate a unique ID for the TextRecord entity
   let textRecordId = event.params.node.toHex().concat("-").concat(event.params.key.toString());
+
+  // Try loading the TextRecord entity, or create a new one if it doesn't exist
   let textRecordEntity = TextRecord.load(textRecordId);
   if (textRecordEntity == null) {
     textRecordEntity = new TextRecord(textRecordId);
   }
 
+  // Update fields on the TextRecord entity
   textRecordEntity.key = event.params.key.toString();
   textRecordEntity.value = event.params.value.toString();
-  
+
+  // Load or create the parent Resolver entity
   let resolverId = event.params.node.toHex();
   let resolverEntity = Resolver.load(resolverId);
   if (resolverEntity == null) {
     resolverEntity = new Resolver(resolverId);
-    resolverEntity.textRecords = [];
     resolverEntity.save();
   }
 
+  // Set the parent Resolver of this TextRecord
   textRecordEntity.resolver = resolverEntity.id;
+
+  // Save the updated TextRecord entity
   textRecordEntity.save();
-
-  let textRecords = resolverEntity.textRecords;
-  if (textRecords === null) {
-    textRecords = [];
-    resolverEntity.textRecords = textRecords;
-  }
-  textRecords.push(textRecordEntity.id);
-  resolverEntity.save();
-  
 }
-
 
 
 export function handleUpdatedDelegate(event: UpdatedDelegateEvent): void {
