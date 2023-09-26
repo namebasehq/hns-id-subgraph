@@ -11,6 +11,7 @@ import {
 } from "../generated/SldRegistrationManager/SldRegistrationManager"
 import {
   Account,
+  Address,
   DiscountSet, Domain,
   Initialized,
   NewGracePeriod,
@@ -20,6 +21,7 @@ import {
   PaymentSent,
   RegisterSld, Registration,
   RenewSld,
+  Resolver,
   Sld,
   Tld
 } from "../generated/schema"
@@ -45,6 +47,29 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
 
     // Construct the full domain name
     let fullName = label + '.' + parentLabel;
+
+
+     // Create and save the resolver entity
+  let resolverId = nameHash.toHexString();
+  let resolverEntity = new Resolver(resolverId);
+
+    // All EVM coin types. Can initialise other fields here if required.
+    const defaultCoinTypes = [60, 614, 9006, 966, 9001, 9000, 9005];
+
+    for (let i = 0; i < defaultCoinTypes.length; i++) {
+      let coinType = defaultCoinTypes[i];
+      let addressId = resolverId.concat("-").concat(coinType.toString());
+      let addressEntity = new Address(addressId);
+      addressEntity.cointype = BigInt.fromI32(coinType); // Using BigInt.fromI32
+      addressEntity.address = ""; // TODO: get owner or set using transfer event for the SLD
+      addressEntity.resolver = resolverEntity.id;
+      addressEntity.save();
+    }
+
+    // default version number
+    resolverEntity.version = BigInt.fromI32(0);
+   
+    resolverEntity.save();
 
     // Sld Entity
     let domain = new Sld(nameHash.toHex());
