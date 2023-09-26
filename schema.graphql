@@ -90,6 +90,8 @@ type Sld @entity {
   transactionID: Bytes!
   "The expiry date of the SLD as a number"
   expiry: BigInt!
+  "The resolver settings for this TLD"
+  resolver: Resolver
 }
 
 
