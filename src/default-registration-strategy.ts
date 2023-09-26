@@ -51,8 +51,6 @@ export function handleLengthCostSet(event: LengthCostSetEvent): void {
   }
 }
 
-
-
 export function handleMultiYearDiscountSet(
   event: MultiYearDiscountSetEvent
 ): void {

@@ -19,6 +19,7 @@ import {
   DNSRecordChanged,
   DNSRecordDeleted,
   DNSZonehashChanged,
+  DnsRecord,
   NameChanged,
   Resolver,
   ReverseClaimed,
@@ -28,7 +29,7 @@ import {
   VersionChanged
 } from "../generated/schema"
 
-import { BigInt } from "@graphprotocol/graph-ts";
+import { BigInt, store as GraphStore } from "@graphprotocol/graph-ts";
 
 export function handleAddrChanged(event: AddrChangedEvent): void {
 
@@ -105,35 +106,48 @@ export function handleContenthashChanged(event: ContenthashChangedEvent): void {
 }
 
 export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
-  let entity = new DNSRecordChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.node = event.params.node
-  entity.name = event.params.name
-  entity.resource = event.params.resource
-  entity.record = event.params.record
+  // Generate a unique ID for the DnsRecord entity
+  let dnsRecordId = event.params.node.toHex().concat("-").concat(event.params.resource.toString());
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  // Try loading the DnsRecord entity, or create a new one if it doesn't exist
+  let dnsRecordEntity = DnsRecord.load(dnsRecordId);
+  if (dnsRecordEntity == null) {
+    dnsRecordEntity = new DnsRecord(dnsRecordId);
+  }
 
-  entity.save()
+  // Update fields on the DnsRecord entity
+  dnsRecordEntity.node = event.params.node;
+  dnsRecordEntity.name = event.params.name;
+  dnsRecordEntity.resource = BigInt.fromI32(event.params.resource);
+  dnsRecordEntity.record = event.params.record;
+
+  // Load or create the parent Resolver entity
+  let resolverEntity = Resolver.load(event.params.node.toHex());
+  if (!resolverEntity) {
+    resolverEntity = new Resolver(event.params.node.toHex());
+    resolverEntity.save();
+  }
+
+  // Set the parent Resolver of this DnsRecord
+  dnsRecordEntity.resolver = resolverEntity.id;
+
+  // Save the updated DnsRecord entity
+  dnsRecordEntity.save();
 }
+
 
 export function handleDNSRecordDeleted(event: DNSRecordDeletedEvent): void {
-  let entity = new DNSRecordDeleted(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.node = event.params.node
-  entity.name = event.params.name
-  entity.resource = event.params.resource
+  // Generate the ID based on the node and resource
+  let dnsRecordId = event.params.node.toHex().concat("-").concat(event.params.resource.toString());
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
+  // Load the DnsRecord entity
+  let dnsRecordEntity = DnsRecord.load(dnsRecordId);
+  if (dnsRecordEntity != null) {
+    // Remove the DnsRecord entity
+    GraphStore.remove("DnsRecord", dnsRecordId);
+  }
 }
+
 
 export function handleDNSZonehashChanged(event: DNSZonehashChangedEvent): void {
   let entity = new DNSZonehashChanged(
