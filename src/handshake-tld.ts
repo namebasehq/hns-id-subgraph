@@ -14,7 +14,9 @@ import {
   ResolverSet,
   Transfer,
   Tld,
-  Account
+  Account,
+  Delegate,
+  Resolver
 } from "../generated/schema"
 
 import { log } from '@graphprotocol/graph-ts'
@@ -57,7 +59,6 @@ export function handleTransfer(event: TransferEvent): void {
 
   if (tldEntity) {
     // Ensure the recipient account entity exists
-    // It should always exist though
     let recipientAccount = Account.load(event.params.to.toHex());
     if (!recipientAccount) {
       recipientAccount = new Account(event.params.to.toHex());
@@ -69,9 +70,33 @@ export function handleTransfer(event: TransferEvent): void {
 
     // Save the updated Tld entity
     tldEntity.save();
+
+    // Generate a unique ID for the Delegate entity by combining the _tokenId and _to
+    let delegateId = tldId.concat("-").concat(event.params.to.toHex());
+
+    // Try loading the Delegate entity, or create a new one if it doesn't exist
+    let delegateEntity = Delegate.load(delegateId);
+    if (delegateEntity == null) {
+      delegateEntity = new Delegate(delegateId);
+    }
+
+    // Update the delegate field on the Delegate entity
+    delegateEntity.delegate = event.params.to;
+
+    // Save the updated Delegate entity
+    delegateEntity.save();
+
+    // Update the delegate reference on the related Resolver entity
+    let resolverEntity = Resolver.load(tldId);
+    if (resolverEntity) {
+      resolverEntity.delegate = delegateEntity.id;
+      resolverEntity.save();
+    }
+
   } else {
     log.warning('No TLD entity found for ID: {}', [tldId]);
   }
 }
+
 
 

@@ -8,7 +8,7 @@ import {
   Tld,
   Address
 } from "../generated/schema";
-import { log, BigInt } from '@graphprotocol/graph-ts';
+import { BigInt } from '@graphprotocol/graph-ts';
 
 
 export function handleTldClaimed(event: TldClaimedEvent): void {
@@ -33,7 +33,7 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
   let resolverId = event.params._tokenId.toHexString();
   let resolverEntity = new Resolver(resolverId);
 
-    // Initialize other fields if necessary
+    // All EVM coin types. Can initialise other fields here if required.
     const defaultCoinTypes = [60, 614, 9006, 966, 9001, 9000, 9005];
 
     for (let i = 0; i < defaultCoinTypes.length; i++) {
@@ -45,7 +45,10 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
       addressEntity.resolver = resolverEntity.id;
       addressEntity.save();
     }
-    
+
+    // default version number
+    resolverEntity.version = BigInt.fromI32(0);
+   
     resolverEntity.save();
 
   // For this scenario, the claimant and owner are the same at the start.

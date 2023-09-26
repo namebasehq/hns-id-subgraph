@@ -139,11 +139,22 @@ type Resolver @entity {
   "Array of Text Records associated with this Resolver"
   textRecords: [TextRecord!] @derivedFrom(field: "resolver")
   "Content hash associated with this Resolver"
-  contenthash: String
+  contenthash: Bytes
   "Array of DNS Records associated with this Resolver"
   dnsRecords: [DnsRecord!] @derivedFrom(field: "resolver")
   "DNS Zone hash associated with this Resolver"
-  dnsZonehash: String
+  dnsZonehash: Bytes
+  "Current version number of the Resolver"
+  version: BigInt!
+  "Current delegate address for the domain/owner combination"
+  delegate: Delegate
+}
+
+type Delegate @entity {
+  "Unique identifier for the Delegate, a combination of node and owner"
+  id: ID!
+  "The delegate address"
+  delegate: Bytes
 }
 
 type Address @entity {

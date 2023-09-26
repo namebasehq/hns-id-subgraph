@@ -1101,20 +1101,20 @@ export class Resolver extends Entity {
     );
   }
 
-  get contenthash(): string | null {
+  get contenthash(): Bytes | null {
     let value = this.get("contenthash");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toString();
+      return value.toBytes();
     }
   }
 
-  set contenthash(value: string | null) {
+  set contenthash(value: Bytes | null) {
     if (!value) {
       this.unset("contenthash");
     } else {
-      this.set("contenthash", Value.fromString(<string>value));
+      this.set("contenthash", Value.fromBytes(<Bytes>value));
     }
   }
 
@@ -1126,8 +1126,38 @@ export class Resolver extends Entity {
     );
   }
 
-  get dnsZonehash(): string | null {
+  get dnsZonehash(): Bytes | null {
     let value = this.get("dnsZonehash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set dnsZonehash(value: Bytes | null) {
+    if (!value) {
+      this.unset("dnsZonehash");
+    } else {
+      this.set("dnsZonehash", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get version(): BigInt {
+    let value = this.get("version");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set version(value: BigInt) {
+    this.set("version", Value.fromBigInt(value));
+  }
+
+  get delegate(): string | null {
+    let value = this.get("delegate");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -1135,11 +1165,68 @@ export class Resolver extends Entity {
     }
   }
 
-  set dnsZonehash(value: string | null) {
+  set delegate(value: string | null) {
     if (!value) {
-      this.unset("dnsZonehash");
+      this.unset("delegate");
     } else {
-      this.set("dnsZonehash", Value.fromString(<string>value));
+      this.set("delegate", Value.fromString(<string>value));
+    }
+  }
+}
+
+export class Delegate extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Delegate entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Delegate must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Delegate", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): Delegate | null {
+    return changetype<Delegate | null>(store.get_in_block("Delegate", id));
+  }
+
+  static load(id: string): Delegate | null {
+    return changetype<Delegate | null>(store.get("Delegate", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get delegate(): Bytes | null {
+    let value = this.get("delegate");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set delegate(value: Bytes | null) {
+    if (!value) {
+      this.unset("delegate");
+    } else {
+      this.set("delegate", Value.fromBytes(<Bytes>value));
     }
   }
 }
