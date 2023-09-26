@@ -215,6 +215,7 @@ export function handleTextChanged(event: TextChangedEvent): void {
     textRecordEntity = new TextRecord(textRecordId);
   }
 
+  // Update fields on the TextRecord entity
   textRecordEntity.key = event.params.key.toString();
   textRecordEntity.value = event.params.value.toString();
 
@@ -231,17 +232,7 @@ export function handleTextChanged(event: TextChangedEvent): void {
 
   // Save the updated TextRecord entity
   textRecordEntity.save();
-
-  let textRecords = resolverEntity.textRecords;
-  if (textRecords === null) {
-    textRecords = [];
-    resolverEntity.textRecords = textRecords;
-  }
-  textRecords.push(textRecordEntity.id);
-  resolverEntity.save();
-  
 }
-
 
 
 export function handleUpdatedDelegate(event: UpdatedDelegateEvent): void {
