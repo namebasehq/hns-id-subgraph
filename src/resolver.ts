@@ -33,11 +33,11 @@ import {
 
 import { BigInt, Bytes, store as GraphStore } from "@graphprotocol/graph-ts";
 
-
 export function handleAddrChanged(event: AddrChangedEvent): void {
   /*
     // Generate a unique ID for the Address entity
     let addressId = event.params.node.toHex().concat("-614");
+
 
   // Try loading the Address entity, or create a new one if it doesn't exist
   let addressEntity = Address.load(addressId);
@@ -90,7 +90,6 @@ export function handleAddressChanged(event: AddressChangedEvent): void {
   // Save the updated Address entity
   addressEntity.save();
 }
-
 
 export function handleContenthashChanged(event: ContenthashChangedEvent): void {
   // Generate a unique ID for the Resolver entity
@@ -233,7 +232,6 @@ export function handleTextChanged(event: TextChangedEvent): void {
   // Save the updated TextRecord entity
   textRecordEntity.save();
 }
-
 
 export function handleUpdatedDelegate(event: UpdatedDelegateEvent): void {
   // Generate a unique ID for the Delegate entity by combining the _tokenId and _owner
