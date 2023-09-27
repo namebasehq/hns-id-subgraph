@@ -1,4 +1,4 @@
-interface Domain {
+type Domain @entity {
   "The namehash of the name"
   id: ID!
   "The human readable name"
@@ -7,10 +7,6 @@ interface Domain {
   labelName: String
   "keccak256(labelName)"
   labelhash: Bytes
-  "The namehash (id) of the parent name"
-  parent: Tld
-  "The resolver that controls the domain's settings"
-  resolver: Resolver
   "The time when the domain was created"
   createdAt: BigInt!
   "The expiry date for the domain"
@@ -21,275 +17,112 @@ interface Domain {
   registrant: Account
   "The registration associated with the domain"
   registration: Registration @derivedFrom(field: "domain")
-  "The events associated with the domain"
-  events: [DomainEvent!] @derivedFrom(field: "domain")
 }
 
-type Tld implements Domain @entity {
-  "The namehash of the name"
+type Royalty @entity {
+  "Unique identifier for the Royalty"
   id: ID!
-  "The human readable name"
-  name: String
-  "The human readable label name"
-  labelName: String
-  "keccak256(labelName)"
-  labelhash: Bytes
-  "The namehash (id) of the parent name"
-  parent: Tld
-  "The resolver that controls the domain's settings"
-  resolver: Resolver
-  "The time when the domain was created"
-  createdAt: BigInt!
-  "The expiry date for the domain"
-  expiryDate: BigInt
-  "The account that owns the domain"
-  owner: Account!
-  "The account that owns the ERC721 NFT for the domain"
-  registrant: Account
-  "The registration associated with the domain"
-  registration: Registration @derivedFrom(field: "domain")
-  "The claim associated with the TLD"
-  claim: TldClaimed @derivedFrom(field: "tld")
-  "The events associated with the domain"
-  events: [DomainEvent!] @derivedFrom(field: "domain")
+  "The percentage of royalties to be paid out"
+  percentage: BigInt!
+  "The address to which royalties will be paid"
+  payoutAddress: Account!
 }
 
-type ResolverSetTld @entity {
+type Tld @entity {
+  "Unique identifier for the TLD"
   id: ID!
-  _nftNamehash: Bytes! # bytes32
-  _resolver: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TransferTld @entity {
-  id: ID!
-  from: Bytes! # address
-  to: Bytes! # address
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TldClaimed @entity {
-  "The unique identifier of the claim"
-  id: ID!
-  "The TLD associated with the claim"
-  tld: Tld!
-  "The claim date of the TLD"
-  claimDate: BigInt!
-  "The account that registered the domain"
+  "The account that claimed the TLD"
   claimant: Account!
-  "The human-readable label name of TLD"
-  labelName: String
-  "keccak256(labelName)"
-  labelhash: Bytes
+  "The account that owns the TLD"
+  owner: Account!
+  "The unique token ID associated with the TLD"
+  tokenId: BigInt!
+  "The label of the TLD"
+  label: String!
   "The block number of the event"
-  blockNumber: Int!
+  blockNumber: BigInt!
   "The transaction ID associated with the event"
   transactionID: Bytes!
-}
-
-type AllowedTldMintUpdate @entity {
-  id: ID!
-  _claimant: Bytes! # address
-  _manager: Bytes! # address
-  _label: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type UpdateAllowedTldManager @entity {
-  id: ID!
-  _addr: Bytes! # address
-  _allowed: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Sld implements Domain @entity {
-  "The namehash of the name"
-  id: ID!
-  "The human readable name"
-  name: String
-  "The human readable label name"
-  labelName: String
-  "keccak256(labelName)"
-  labelhash: Bytes
-  "The namehash (id) of the parent name"
-  parent: Tld
-  "The resolver that controls the domain's settings"
+  "The sales settings for this TLD"
+  saleSettings: SaleSettings @derivedFrom(field: "tld")
+  "The array of SLDs associated with this TLD"
+  slds: [Sld!] @derivedFrom(field: "parentTld")
+  "The royalty settings for this TLD"
+  royalty: Royalty!
+  "The history of royalty changes for this TLD"
+  royaltyHistory: [RoyaltyHistory!] @derivedFrom(field: "tld")
+  "The resolver settings for this TLD"
   resolver: Resolver
-  "The time when the domain was created"
-  createdAt: BigInt!
-  "The expiry date for the domain"
-  expiryDate: BigInt
-  "The account that owns the domain"
-  owner: Account!
-  "The account that owns the ERC721 NFT for the domain"
-  registrant: Account
-  "The registration associated with the domain"
-  registration: Registration @derivedFrom(field: "domain")
-  "The events associated with the domain"
-  events: [DomainEvent!] @derivedFrom(field: "domain")
 }
 
-type ResolverSetSld @entity {
+type RoyaltyHistory @entity {
+  "Unique identifier for the RoyaltyHistory"
   id: ID!
-  _nftNamehash: Bytes! # bytes32
-  _resolver: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TransferSld @entity {
-  id: ID!
-  from: Bytes! # address
-  to: Bytes! # address
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RenewSld @entity {
-  id: ID!
-  _tldNamehash: Bytes! # bytes32
-  _label: String! # string
-  _expiry: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-
-interface DomainEvent {
-  "The unique identifier of the event"
-  id: ID!
-  "The domain name associated with the event"
-  domain: Domain!
-  "The block number at which the event occurred"
-  blockNumber: Int!
-  "The transaction hash of the transaction that triggered the event"
-  transactionID: Bytes!
-}
-
-type Transfer implements DomainEvent @entity {
-  "The unique identifier of the event"
-  id: ID!
-  "The domain name associated with the event"
-  domain: Domain!
-  "The block number at which the event occurred"
-  blockNumber: Int!
-  "The transaction hash of the transaction that triggered the event"
-  transactionID: Bytes!
-  "The account that owns the domain after the transfer"
-  owner: Account!
-}
-
-type NewOwner implements DomainEvent @entity {
-  "The unique identifier of the event"
-  id: ID!
-  "The parent domain of the domain name associated with the event"
-  parentDomain: Domain
-  "The domain name associated with the event"
-  domain: Domain!
-  "The block number at which the event occurred"
-  blockNumber: Int!
-  "The transaction hash of the transaction that triggered the event"
-  transactionID: Bytes!
-  "The new account that owns the domain"
-  owner: Account!
-}
-
-type NewResolver implements DomainEvent @entity {
-  "The unique identifier of the event"
-  id: ID!
-  "The domain name associated with the event"
-  domain: Domain!
-  "The block number at which the event occurred"
-  blockNumber: Int!
-  "The transaction hash of the transaction that triggered the event"
-  transactionID: Bytes!
-  "The new resolver contract address associated with the domain"
-  resolver: Resolver!
-}
-
-type Registration @entity {
-  "The unique identifier of the registration"
-  id: ID!
-  "The domain name associated with the registration"
-  domain: Domain!
-  "The registration date of the domain"
-  registrationDate: BigInt!
-  "The expiry date of the domain"
-  expiryDate: BigInt!
-  "The cost associated with the domain registration"
-  cost: BigInt
-  "The account that registered the domain"
-  registrant: Account!
-  "The human-readable label name associated with the domain registration"
-  labelName: String
-  "The events associated with the domain registration"
-  events: [RegistrationEvent!]! @derivedFrom(field: "registration")
-}
-
-interface RegistrationEvent {
-  "The unique identifier of the registration event"
-  id: ID!
-  "The registration associated with the event"
-  registration: Registration!
+  "The TLD to which this history item belongs"
+  tld: Tld!
+  "The percentage of the royalty"
+  percentage: BigInt!
+  "The payout address for the royalty"
+  payoutAddress: Account!
   "The block number of the event"
-  blockNumber: Int!
+  blockNumber: BigInt!
   "The transaction ID associated with the event"
   transactionID: Bytes!
+  "The transaction datetime of the event"
+  transactionDateTime: BigInt!
 }
 
-type NameRegistered implements RegistrationEvent @entity {
-  "The unique identifier of the NameRegistered event"
+
+type Sld @entity {
+  "Unique identifier for the SLD"
   id: ID!
-  "The registration associated with the event"
-  registration: Registration!
+    "The label of the SLD"
+  label: String!
+  "The full name of the SLD"
+  fullName: String!
+  "The account that owns the SLD"
+  owner: Account!
+  "The parent TLD of this SLD"
+  parentTld: Tld!
   "The block number of the event"
-  blockNumber: Int!
+  blockNumber: BigInt!
   "The transaction ID associated with the event"
   transactionID: Bytes!
-  "The account that registered the name"
-  registrant: Account!
-  "The expiry date of the registration"
-  expiryDate: BigInt!
+  "The expiry date of the SLD as a number"
+  expiry: BigInt!
+  "The resolver settings for this TLD"
+  resolver: Resolver
 }
 
-type NameRenewed implements RegistrationEvent @entity {
-  "The unique identifier of the NameRenewed event"
-  id: ID!
-  "The registration associated with the event"
-  registration: Registration!
-  "The block number of the event"
-  blockNumber: Int!
-  "The transaction ID associated with the event"
-  transactionID: Bytes!
-  "The new expiry date of the registration"
-  expiryDate: BigInt!
+
+
+type SaleSettings @entity {
+  id: ID!  # This would be the same as the TLD's id for a one-to-one relation
+  tld: Tld!
+  enabled: Boolean
+  prices: [BigInt!]  # For the LengthCostSet
+  discounts: [BigInt!]  # For the MultiYearDiscountSet
+  premiumPrices: [PremiumPrice!] @derivedFrom(field: "saleSettings")
+  reservedNames: [ReservedName!] @derivedFrom(field: "saleSettings")
+  blockNumber: BigInt
+  blockTimestamp: BigInt
+  transactionHash: Bytes
 }
 
-type NameTransferred implements RegistrationEvent @entity {
-  "The ID of the event"
-  id: ID!
-  "The registration associated with the event"
-  registration: Registration!
-  "The block number of the event"
-  blockNumber: Int!
-  "The transaction ID of the event"
-  transactionID: Bytes!
-  "The new owner of the domain"
-  newOwner: Account!
+type PremiumPrice @entity {
+  id: ID!  # This could be a combination of SaleSettings ID and label for uniqueness
+  saleSettings: SaleSettings!
+  label: String!
+  price: BigInt
 }
+
+type ReservedName @entity {
+  id: ID!  # This could be a combination of SaleSettings ID and label for uniqueness
+  saleSettings: SaleSettings!
+  label: String!
+  claimant: Bytes
+}
+
 
 type Account @entity {
   "The unique identifier for the account"
@@ -300,17 +133,381 @@ type Account @entity {
   registrations: [Registration!] @derivedFrom(field: "registrant")
 }
 
-type PaymentSent @entity {
+type Resolver @entity {
+  "Unique identifier for the Resolver"
   id: ID!
+  "Array of Addresses associated with this Resolver"
+  addresses: [Address!] @derivedFrom(field: "resolver")
+  "Array of Text Records associated with this Resolver"
+  textRecords: [TextRecord!] @derivedFrom(field: "resolver")
+  "Content hash associated with this Resolver"
+  contenthash: Bytes
+  "Array of DNS Records associated with this Resolver"
+  dnsRecords: [DnsRecord!] @derivedFrom(field: "resolver")
+  "DNS Zone hash associated with this Resolver"
+  dnsZonehash: Bytes
+  "Current version number of the Resolver"
+  version: BigInt!
+  "Current delegate address for the domain/owner combination"
+  delegate: Delegate
+}
+
+type Delegate @entity {
+  "Unique identifier for the Delegate, a combination of node and owner"
+  id: ID!
+  "The delegate address"
+  delegate: Bytes
+}
+
+type Address @entity {
+  "Unique identifier for the Address"
+  id: ID!
+  "Address in string format"
+  address: String!
+  "Coin type as a number"
+  cointype: BigInt!
+  "Parent Resolver of this Address"
+  resolver: Resolver!
+}
+
+type TextRecord @entity {
+  "Unique identifier for the Text Record"
+  id: ID!
+  "The key for the Text Record"
+  key: String!
+  "The value for the Text Record"
+  value: String!
+  "Parent Resolver of this Text Record"
+  resolver: Resolver!
+}
+
+type DnsRecord @entity {
+  "Unique identifier for the DNS Record"
+  id: ID!
+  "Node identifier in bytes32 format"
+  node: Bytes!
+  "Name in bytes format"
+  name: Bytes!
+  "Resource type as a uint16"
+  resource: BigInt!
+  "Record in bytes format"
+  record: Bytes!
+  "Parent Resolver of this DNS Record"
+  resolver: Resolver!
+}
+
+
+
+type Registration @entity {
+  "The unique identifier of the registration"
+  id: ID!
+  "The domain name associated with the registration"
+  domain: Domain!
+  "The registration date of the domain"
+  registrationDate: BigInt!
+  "The expiry date of the domain"
+  expiryDate: BigInt!
+  "The account that registered the domain"
+  registrant: Account!
+  "The human-readable label name associated with the domain registration"
+  labelName: String
+  "The block number of the event"
+  blockNumber: Int!
+  "The transaction ID associated with the event"
+  transactionID: Bytes!
+}
+
+type AddrChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  a: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AddressChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  coinType: BigInt! # uint256
+  newAddress: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ContenthashChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  hash: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type DNSRecordChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  name: Bytes! # bytes
+  resource: Int! # uint16
+  record: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type DNSRecordDeleted @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  name: Bytes! # bytes
+  resource: Int! # uint16
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type DNSZonehashChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  lastzonehash: Bytes! # bytes
+  zonehash: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type NameChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  name: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ReverseClaimed @entity(immutable: true) {
+  id: Bytes!
+  _addr: Bytes! # address
+  _domain: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TextChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  indexedKey: Bytes! # bytes32
+  key: String! # string
+  value: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type UpdatedDelegate @entity(immutable: true) {
+  id: Bytes!
+  _owner: Bytes! # address
+  _tokenId: BigInt! # uint256
+  _delegate: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type VersionChanged @entity(immutable: true) {
+  id: Bytes!
+  node: Bytes! # bytes32
+  newVersion: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type AllowedTldMintUpdate @entity(immutable: true) {
+  id: Bytes!
+  _claimant: Bytes! # address
+  _manager: Bytes! # address
+  _label: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Initialized @entity(immutable: true) {
+  id: Bytes!
+  version: Int! # uint8
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type NewLabelValidator @entity(immutable: true) {
+  id: Bytes!
+  _labelValidator: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type NewUsdOracle @entity(immutable: true) {
+  id: Bytes!
+  _usdEthPriceOracle: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TldClaimed @entity(immutable: true) {
+  id: Bytes!
   _to: Bytes! # address
+  _tokenId: BigInt! # uint256
+  _label: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type UpdateAllowedTldManager @entity(immutable: true) {
+  id: Bytes!
+  _addr: Bytes! # address
+  _allowed: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type Approval @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  approved: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ApprovalForAll @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  operator: Bytes! # address
+  approved: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type HandshakeTldOwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RegistrationStrategySet @entity(immutable: true) {
+  id: Bytes!
+  namehash: Bytes! # bytes32
+  strategy: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ResolverSet @entity(immutable: true) {
+  id: Bytes!
+  _nftNamehash: Bytes! # bytes32
+  _resolver: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Transfer @entity(immutable: true) {
+  id: Bytes!
+  from: Bytes! # address
+  to: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type HandshakeSldApproval @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  approved: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type HandshakeSldApprovalForAll @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  operator: Bytes! # address
+  approved: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type HandshakeSldOwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type HandshakeSldResolverSet @entity(immutable: true) {
+  id: Bytes!
+  _nftNamehash: Bytes! # bytes32
+  _resolver: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RoyaltyPayoutAddressSet @entity(immutable: true) {
+  id: Bytes!
+  _nftNamehash: Bytes! # bytes32
+  _payoutAddress: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RoyaltyPayoutAmountSet @entity(immutable: true) {
+  id: Bytes!
+  _nftNamehash: Bytes! # bytes32
   _amount: BigInt! # uint256
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type DiscountSet @entity {
-  id: ID!
+type HandshakeSldTransfer @entity(immutable: true) {
+  id: Bytes!
+  from: Bytes! # address
+  to: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type DiscountSet @entity(immutable: true) {
+  id: Bytes!
   _tokenNamehash: Bytes! # bytes32
   _claimant: Bytes! # address
   _discount_startTimestamp: BigInt! # uint80
@@ -323,8 +520,78 @@ type DiscountSet @entity {
   transactionHash: Bytes!
 }
 
-type EnabledSet @entity {
-  id: ID!
+type SldRegistrationManagerInitialized @entity(immutable: true) {
+  id: Bytes!
+  version: Int! # uint8
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type NewGracePeriod @entity(immutable: true) {
+  id: Bytes!
+  _newGracePeriod: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SldRegistrationManagerNewLabelValidator @entity(immutable: true) {
+  id: Bytes!
+  _labelValidator: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SldRegistrationManagerNewUsdOracle @entity(immutable: true) {
+  id: Bytes!
+  _usdEthPriceOracle: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SldRegistrationManagerOwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type PaymentSent @entity(immutable: true) {
+  id: Bytes!
+  _to: Bytes! # address
+  _amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RegisterSld @entity(immutable: true) {
+  id: Bytes!
+  _tldNamehash: Bytes! # bytes32
+  _secret: Bytes! # bytes32
+  _label: String! # string
+  _expiry: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RenewSld @entity(immutable: true) {
+  id: Bytes!
+  _tldNamehash: Bytes! # bytes32
+  _label: String! # string
+  _expiry: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+type EnabledSet @entity(immutable: true) {
+  id: Bytes!
   _tokenNamehash: Bytes! # bytes32
   _enabled: Boolean! # bool
   blockNumber: BigInt!
@@ -332,8 +599,8 @@ type EnabledSet @entity {
   transactionHash: Bytes!
 }
 
-type LengthCostSet @entity {
-  id: ID!
+type LengthCostSet @entity(immutable: true) {
+  id: Bytes!
   _tokenNamehash: Bytes! # bytes32
   _prices: [BigInt!]! # uint256[]
   blockNumber: BigInt!
@@ -341,8 +608,8 @@ type LengthCostSet @entity {
   transactionHash: Bytes!
 }
 
-type MultiYearDiscountSet @entity {
-  id: ID!
+type MultiYearDiscountSet @entity(immutable: true) {
+  id: Bytes!
   _tokenNamehash: Bytes! # bytes32
   _discounts: [BigInt!]! # uint256[]
   blockNumber: BigInt!
@@ -350,8 +617,8 @@ type MultiYearDiscountSet @entity {
   transactionHash: Bytes!
 }
 
-type PremiumNameSet @entity {
-  id: ID!
+type PremiumNameSet @entity(immutable: true) {
+  id: Bytes!
   _tokenNamehash: Bytes! # bytes32
   _price: BigInt! # uint256
   _label: String! # string
@@ -360,8 +627,8 @@ type PremiumNameSet @entity {
   transactionHash: Bytes!
 }
 
-type ReservedNameSet @entity {
-  id: ID!
+type ReservedNameSet @entity(immutable: true) {
+  id: Bytes!
   _tokenNamehash: Bytes! # bytes32
   _claimant: Bytes! # address
   _label: String! # string
@@ -369,347 +636,11 @@ type ReservedNameSet @entity {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
-
-type ApprovalSld @entity {
-  id: ID!
-  owner: Bytes! # address
-  approved: Bytes! # address
-  tokenId: BigInt! # uint256
+type SldCommitIntentOwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
-
-type ApprovalForAllSld @entity {
-  id: ID!
-  owner: Bytes! # address
-  operator: Bytes! # address
-  approved: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-
-type Resolver @entity {
-  "The unique identifier for this resolver, which is a concatenation of the resolver address and the domain namehash"
-  id: ID!
-  "The domain that this resolver is associated with"
-  domain: Domain
-  "The address of the resolver contract"
-  address: Bytes!
-}
-
-type AddrChanged @entity {
-  id: ID!
-  node: Bytes! # bytes32
-  a: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type AddressChanged @entity {
-  id: ID!
-  node: Bytes! # bytes32
-  coinType: BigInt! # uint256
-  newAddress: Bytes! # bytes
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ContenthashChanged @entity {
-  id: ID!
-  node: Bytes! # bytes32
-  hash: Bytes! # bytes
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type DNSRecordChanged @entity {
-  id: ID!
-  node: Bytes! # bytes32
-  name: Bytes! # bytes
-  resource: Int! # uint16
-  record: Bytes! # bytes
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type DNSRecordDeleted @entity {
-  id: ID!
-  node: Bytes! # bytes32
-  name: Bytes! # bytes
-  resource: Int! # uint16
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type DNSZonehashChanged @entity {
-  id: ID!
-  node: Bytes! # bytes32
-  lastzonehash: Bytes! # bytes
-  zonehash: Bytes! # bytes
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type NameChanged @entity {
-  id: ID!
-  node: Bytes! # bytes32
-  name: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ReverseClaimed @entity {
-  id: ID!
-  _addr: Bytes! # address
-  _domain: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TextChanged @entity {
-  id: ID!
-  node: Bytes! # bytes32
-  indexedKey: Bytes! # bytes32
-  key: String! # string
-  value: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type UpdatedDelegate @entity {
-  id: ID!
-  _owner: Bytes! # address
-  _tokenId: BigInt! # uint256
-  _delegate: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type VersionChanged @entity {
-  id: ID!
-  node: Bytes! # bytes32
-  newVersion: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-#type Initialized @entity {
-#  id: ID!
-#  version: Int! # uint8
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type NewLabelValidator @entity {
-#  id: ID!
-#  _labelValidator: Bytes! # address
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type NewUsdOracle @entity {
-#  id: ID!
-#  _usdEthPriceOracle: Bytes! # address
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type OwnershipTransferred @entity {
-#  id: ID!
-#  previousOwner: Bytes! # address
-#  newOwner: Bytes! # address
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type TldClaimed @entity {
-#  id: ID!
-#  _to: Bytes! # address
-#  _tokenId: BigInt! # uint256
-#  _label: String! # string
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type UpdateAllowedTldManager @entity {
-#  id: ID!
-#  _addr: Bytes! # address
-#  _allowed: Boolean! # bool
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#type Approval @entity {
-#  id: ID!
-#  owner: Bytes! # address
-#  approved: Bytes! # address
-#  tokenId: BigInt! # uint256
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type ApprovalForAll @entity {
-#  id: ID!
-#  owner: Bytes! # address
-#  operator: Bytes! # address
-#  approved: Boolean! # bool
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type HandshakeTldOwnershipTransferred @entity {
-#  id: ID!
-#  previousOwner: Bytes! # address
-#  newOwner: Bytes! # address
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type RegistrationStrategySet @entity {
-#  id: ID!
-#  namehash: Bytes! # bytes32
-#  strategy: Bytes! # address
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type ResolverSet @entity {
-#  id: ID!
-#  _nftNamehash: Bytes! # bytes32
-#  _resolver: Bytes! # address
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type Transfer @entity {
-#  id: ID!
-#  from: Bytes! # address
-#  to: Bytes! # address
-#  tokenId: BigInt! # uint256
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#type HandshakeSldOwnershipTransferred @entity {
-#  id: ID!
-#  previousOwner: Bytes! # address
-#  newOwner: Bytes! # address
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type HandshakeSldResolverSet @entity {
-#  id: ID!
-#  _nftNamehash: Bytes! # bytes32
-#  _resolver: Bytes! # address
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type RoyaltyPayoutAddressSet @entity {
-#  id: ID!
-#  _nftNamehash: Bytes! # bytes32
-#  _payoutAddress: Bytes! # address
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type RoyaltyPayoutAmountSet @entity {
-#  id: ID!
-#  _nftNamehash: Bytes! # bytes32
-#  _amount: BigInt! # uint256
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type HandshakeSldTransfer @entity {
-#  id: ID!
-#  from: Bytes! # address
-#  to: Bytes! # address
-#  tokenId: BigInt! # uint256
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type SldRegistrationManagerInitialized @entity {
-#  id: ID!
-#  version: Int! # uint8
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type NewGracePeriod @entity {
-#  id: ID!
-#  _newGracePeriod: BigInt! # uint256
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type SldRegistrationManagerNewLabelValidator @entity {
-#  id: ID!
-#  _labelValidator: Bytes! # address
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type SldRegistrationManagerNewUsdOracle @entity {
-#  id: ID!
-#  _usdEthPriceOracle: Bytes! # address
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type SldRegistrationManagerOwnershipTransferred @entity {
-#  id: ID!
-#  previousOwner: Bytes! # address
-#  newOwner: Bytes! # address
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-#type RegisterSld @entity {
-#  id: ID!
-#  _tldNamehash: Bytes! # bytes32
-#  _secret: Bytes! # bytes32
-#  _label: String! # string
-#  _expiry: BigInt! # uint256
-#  blockNumber: BigInt!
-#  blockTimestamp: BigInt!
-#  transactionHash: Bytes!
-#}
-#
-
