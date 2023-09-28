@@ -121,9 +121,6 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - HandshakeSldApproval
-        - HandshakeSldApprovalForAll
-        - HandshakeSldOwnershipTransferred
         - HandshakeSldResolverSet
         - RoyaltyPayoutAddressSet
         - RoyaltyPayoutAmountSet
@@ -132,12 +129,6 @@ dataSources:
         - name: HandshakeSld
           file: ./abis/HandshakeSld.json
       eventHandlers:
-        - event: Approval(indexed address,indexed address,indexed uint256)
-          handler: handleApproval
-        - event: ApprovalForAll(indexed address,indexed address,bool)
-          handler: handleApprovalForAll
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
         - event: ResolverSet(indexed bytes32,address)
           handler: handleResolverSet
         - event: RoyaltyPayoutAddressSet(indexed bytes32,address)
@@ -226,23 +217,4 @@ dataSources:
         - event: ReservedNameSet(indexed bytes32,indexed address,string)
           handler: handleReservedNameSet
       file: ./src/default-registration-strategy.ts
-  - kind: ethereum
-    name: SldCommitIntent
-    network: mainnet
-    source:
-      address: "0x0165878A594ca255338adfa4d48449f69242Eb8F"
-      abi: SldCommitIntent
-      startBlock: 0
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - SldCommitIntentOwnershipTransferred
-      abis:
-        - name: SldCommitIntent
-          file: ./abis/SldCommitIntent.json
-      eventHandlers:
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
-      file: ./src/sld-commit-intent.ts
+ 

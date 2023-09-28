@@ -1,7 +1,4 @@
 import {
-  Approval as ApprovalEvent,
-  ApprovalForAll as ApprovalForAllEvent,
-  OwnershipTransferred as OwnershipTransferredEvent,
   ResolverSet as ResolverSetEvent,
   RoyaltyPayoutAddressSet as RoyaltyPayoutAddressSetEvent,
   RoyaltyPayoutAmountSet as RoyaltyPayoutAmountSetEvent,
@@ -9,77 +6,18 @@ import {
 } from "../generated/HandshakeSld/HandshakeSld"
 import {
   Account,
-  Approval,
-  ApprovalForAll,
-  OwnershipTransferred,
-  ResolverSet,
   Royalty,
   RoyaltyHistory,
-  RoyaltyPayoutAddressSet,
-  RoyaltyPayoutAmountSet,
   Sld,
   Tld,
   Transfer
 } from "../generated/schema"
 
-export function handleApproval(event: ApprovalEvent): void {
-  let entity = new Approval(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.owner = event.params.owner
-  entity.approved = event.params.approved
-  entity.tokenId = event.params.tokenId
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
 
-  entity.save()
-}
-
-export function handleApprovalForAll(event: ApprovalForAllEvent): void {
-  let entity = new ApprovalForAll(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.owner = event.params.owner
-  entity.operator = event.params.operator
-  entity.approved = event.params.approved
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleOwnershipTransferred(
-  event: OwnershipTransferredEvent
-): void {
-  let entity = new OwnershipTransferred(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.previousOwner = event.params.previousOwner
-  entity.newOwner = event.params.newOwner
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
+// TODO: will need to implement this
 export function handleResolverSet(event: ResolverSetEvent): void {
-  let entity = new ResolverSet(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity._nftNamehash = event.params._nftNamehash
-  entity._resolver = event.params._resolver
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
 }
 
 export function handleRoyaltyPayoutAddressSet(event: RoyaltyPayoutAddressSetEvent): void {
@@ -130,8 +68,6 @@ export function handleRoyaltyPayoutAmountSet(event: RoyaltyPayoutAmountSetEvent)
   }
 }
 
-
-
 export function handleTransfer(event: TransferEvent): void {
   // Convert the tokenId to its hex string representation
   let sldId = event.params.tokenId.toHexString();
@@ -141,8 +77,14 @@ export function handleTransfer(event: TransferEvent): void {
 
   // Check if the Sld entity exists
   if (sld !== null) {
-    // Create or update the Account entity for the new owner
-    let newOwnerAccount = new Account(event.params.to.toHex());
+    // Create or load the Account entity for the new owner
+    let newOwnerId = event.params.to.toHex();
+    let newOwnerAccount = Account.load(newOwnerId);
+    if (newOwnerAccount == null) {
+      newOwnerAccount = new Account(newOwnerId);
+    }
+    
+    // Other properties can be set or updated for the new owner account here
     newOwnerAccount.save();
 
     // Update the owner field on the Sld entity
@@ -152,3 +94,4 @@ export function handleTransfer(event: TransferEvent): void {
     sld.save();
   }
 }
+

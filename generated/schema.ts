@@ -602,6 +602,19 @@ export class Sld extends Entity {
     this.set("owner", Value.fromString(value));
   }
 
+  get registrant(): string {
+    let value = this.get("registrant");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set registrant(value: string) {
+    this.set("registrant", Value.fromString(value));
+  }
+
   get parentTld(): string {
     let value = this.get("parentTld");
     if (!value || value.kind == ValueKind.NULL) {
@@ -1050,16 +1063,12 @@ export class Account extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get domains(): DomainLoader {
-    return new DomainLoader("Account", this.get("id")!.toString(), "domains");
+  get tlds(): TldLoader {
+    return new TldLoader("Account", this.get("id")!.toString(), "tlds");
   }
 
-  get registrations(): RegistrationLoader {
-    return new RegistrationLoader(
-      "Account",
-      this.get("id")!.toString(),
-      "registrations"
-    );
+  get slds(): SldLoader {
+    return new SldLoader("Account", this.get("id")!.toString(), "slds");
   }
 }
 
@@ -7091,7 +7100,7 @@ export class ReservedNameLoader extends Entity {
   }
 }
 
-export class DomainLoader extends Entity {
+export class TldLoader extends Entity {
   _entity: string;
   _field: string;
   _id: string;
@@ -7103,9 +7112,9 @@ export class DomainLoader extends Entity {
     this._field = field;
   }
 
-  load(): Domain[] {
+  load(): Tld[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
-    return changetype<Domain[]>(value);
+    return changetype<Tld[]>(value);
   }
 }
 

@@ -1,18 +1,9 @@
 import {
-  Approval as ApprovalEvent,
-  ApprovalForAll as ApprovalForAllEvent,
-  OwnershipTransferred as OwnershipTransferredEvent,
   RegistrationStrategySet as RegistrationStrategySetEvent,
   ResolverSet as ResolverSetEvent,
   Transfer as TransferEvent
 } from "../generated/HandshakeTld/HandshakeTld"
 import {
-  Approval,
-  ApprovalForAll,
-  OwnershipTransferred,
-  RegistrationStrategySet,
-  ResolverSet,
-  Transfer,
   Tld,
   Account,
   Delegate,
@@ -22,35 +13,16 @@ import {
 import { log } from '@graphprotocol/graph-ts'
 
 
-
+// TODO: will need to implement this
 export function handleRegistrationStrategySet(
   event: RegistrationStrategySetEvent
 ): void {
-  // let entity = new RegistrationStrategySet(
-  //   event.transaction.hash.concatI32(event.logIndex.toI32())
-  // )
-  // entity.namehash = event.params.namehash
-  // entity.strategy = event.params.strategy
 
-  // entity.blockNumber = event.block.number
-  // entity.blockTimestamp = event.block.timestamp
-  // entity.transactionHash = event.transaction.hash
-
-  // entity.save()
 }
 
+// TODO: will need to implement this
 export function handleResolverSet(event: ResolverSetEvent): void {
-  // let entity = new ResolverSet(
-  //   event.transaction.hash.concatI32(event.logIndex.toI32())
-  // )
-  // entity._nftNamehash = event.params._nftNamehash
-  // entity._resolver = event.params._resolver
 
-  // entity.blockNumber = event.block.number
-  // entity.blockTimestamp = event.block.timestamp
-  // entity.transactionHash = event.transaction.hash
-
-  // entity.save()
 }
 
 export function handleTransfer(event: TransferEvent): void {
@@ -59,20 +31,21 @@ export function handleTransfer(event: TransferEvent): void {
 
   if (tldEntity) {
     // Ensure the recipient account entity exists
-    let recipientAccount = Account.load(event.params.to.toHex());
+    let recipientAccountId = event.params.to.toHex();
+    let recipientAccount = Account.load(recipientAccountId);
     if (!recipientAccount) {
-      recipientAccount = new Account(event.params.to.toHex());
+      recipientAccount = new Account(recipientAccountId);
       recipientAccount.save();
     }
 
     // Update the owner field of the Tld entity
-    tldEntity.owner = recipientAccount.id;
+    tldEntity.owner = recipientAccountId;
 
     // Save the updated Tld entity
     tldEntity.save();
 
     // Generate a unique ID for the Delegate entity by combining the _tokenId and _to
-    let delegateId = tldId.concat("-").concat(event.params.to.toHex());
+    let delegateId = tldId.concat("-").concat(recipientAccountId);
 
     // Try loading the Delegate entity, or create a new one if it doesn't exist
     let delegateEntity = Delegate.load(delegateId);
@@ -92,11 +65,11 @@ export function handleTransfer(event: TransferEvent): void {
       resolverEntity.delegate = delegateEntity.id;
       resolverEntity.save();
     }
-
   } else {
     log.warning('No TLD entity found for ID: {}', [tldId]);
   }
 }
+
 
 
 

@@ -75,7 +75,8 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     let domain = new Sld(nameHash.toHex());
     domain.fullName = fullName;
     domain.owner = account.id;
-    domain.parentTld = parentTld.id;
+    domain.registrant = account.id;
+    domain.parentTld = parentTld.id; // we can set this here but will get overwritten by the transfer event
     domain.blockNumber = event.block.number;
     domain.transactionID = event.transaction.hash;
     domain.expiry = event.params._expiry;
@@ -187,16 +188,20 @@ export function handlePaymentSent(event: PaymentSentEvent): void {
 }
 
 export function handleRenewSld(event: RenewSldEvent): void {
-  let entity = new RenewSld(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity._tldNamehash = event.params._tldNamehash
-  entity._label = event.params._label
-  entity._expiry = event.params._expiry
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+  // Calculate nameHash same as handleRegisterSld
+  let label = event.params._label;
+  let parentHash = event.params._tldNamehash.toHexString();
+  let labelHash = crypto.keccak256(ByteArray.fromUTF8(label));
+  let nameHash = crypto.keccak256(concat(ByteArray.fromHexString(parentHash), labelHash));
 
-  entity.save()
+  // Load the existing Sld entity using nameHash
+  let sldEntity = Sld.load(nameHash.toHex());
+
+  // If the Sld entity exists, update its expiry
+  // it should alwyas exist, but just in case
+  if (sldEntity != null) {
+    sldEntity.expiry = event.params._expiry;
+    sldEntity.save();
+  }
 }

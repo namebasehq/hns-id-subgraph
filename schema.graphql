@@ -82,6 +82,8 @@ type Sld @entity {
   fullName: String!
   "The account that owns the SLD"
   owner: Account!
+  "The account that registered the SLD"
+  registrant: Account!
   "The parent TLD of this SLD"
   parentTld: Tld!
   "The block number of the event"
@@ -127,11 +129,12 @@ type ReservedName @entity {
 type Account @entity {
   "The unique identifier for the account"
   id: ID!
-  "The domains owned by the account"
-  domains: [Domain!]! @derivedFrom(field: "owner")
-  "The Registrations made by the account"
-  registrations: [Registration!] @derivedFrom(field: "registrant")
+  "The TLDs owned by the account"
+  tlds: [Tld!]! @derivedFrom(field: "owner")
+  "The SLDs owned by the account"
+  slds: [Sld!]! @derivedFrom(field: "owner")
 }
+
 
 type Resolver @entity {
   "Unique identifier for the Resolver"

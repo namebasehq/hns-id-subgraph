@@ -1,8 +1,24 @@
 # HNS.ID Subgraph
 
-This Subgraph sources events from the HNS.ID contracts. This includes the registration managers and any resolvers that are created and linked to domains. The resolvers are added through dynamic data sources. More information on all of this can be found at [The Graph Documentation](https://thegraph.com/docs/developer/quick-start/).
+## Overview
 
-### Example Query
+This Subgraph sources events from the HNS.ID contracts, including the registration managers and any resolvers linked to domains. The resolvers are added through dynamic data sources.
+
+For more information on the underlying technology, consult [The Graph Documentation](https://thegraph.com/docs/developer/quick-start/).
+
+### Entities Diagram
+
+![Entities Diagram](./Tld_Entity_Hierarchy_v1.png)
+
+## Table of Contents
+1. [Example Query](#example-query)
+2. [Installing and Running Graph Node Locally with Docker](#installing-and-running-graph-node-locally-with-docker)
+3. [Clearing Postgres Data](#clearing-postgres-data)
+4. [Deploying Subgraphs](#deploying-subgraphs)
+5. [Deployment to Hosted Service](#deployment-to-hosted-service)
+
+
+# Example Query
 ```graphql
 {
   tlds {
@@ -13,6 +29,12 @@ This Subgraph sources events from the HNS.ID contracts. This includes the regist
     }
     owner {
       id
+      tlds {
+        id
+      }
+      slds {
+        id
+      }
     }
     resolver {
       addresses{
@@ -89,7 +111,6 @@ This Subgraph sources events from the HNS.ID contracts. This includes the regist
     }
   }
 }
-
 ```
 
 ## Installing and Running Graph Node Locally with Docker
@@ -129,13 +150,14 @@ This Subgraph sources events from the HNS.ID contracts. This includes the regist
     docker-compose up
     ```
 
+
 ## Clearing Postgres Data
 
 If you need to clear the Postgres data, you can delete the `data` folder under `graph-node/docker`:
 ```bash
 rm -rf ./data
 ```
-# Then, restart the Docker containers
+Then, restart the Docker containers
 ```bash
 docker-compose down
 docker-compose up
@@ -143,25 +165,25 @@ docker-compose up
 # Deploying Subgraphs
 
 ## Creating a Subgraph
-# Before deploying, you'll need to create a subgraph on the Graph Explorer
+Before deploying, you'll need to create a subgraph on the Graph Explorer
 ```bash
-graph create --node http://localhost:8020/ hns-id-subgraph         
+graph create --node http://localhost:8020/ hns-id-subgraph
 ```
 ## Deploying to the Local Node
-# If your schema has not changed, you can build and deploy your subgraph using
+If your schema has not changed, you can build and deploy your subgraph using
 ```bash
 graph build
 graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001/ hns-id-subgraph
 ```
-# If your schema has changed, you'll need to restart the Graph Node
+If your schema has changed, you'll need to restart the Graph Node
 ```bash
 docker-compose down
 docker-compose up
 ```
-# Then build and deploy as mentioned above
+Then build and deploy as mentioned above
 
-# Clearing the Graph
-# To clear the graph and start fresh, you can delete the Postgres data folder
+### Clearing the Graph
+To clear the graph and start fresh, you can delete the Postgres data folder
 ```bash
 rm -rf ./data
 # Then restart the Docker containers
@@ -170,7 +192,25 @@ docker-compose down
 docker-compose up
 ```
 
+
 ## Deployment to Hosted Service
+
+This section provides instructions for deploying your subgraph to a hosted service. It assumes that you have already created and tested the subgraph locally.
+
+### Steps
+
+1. **Authentication:**
+    ```bash
+    graph auth --product hosted-service YOUR_ACCESS_TOKEN
+    ```
+
+2. **Deploy:**
+    ```bash
+    graph deploy --product hosted-service YOUR_SUBGRAPH_NAME
+    ```
+
+This will deploy your subgraph to the hosted service where it will be publicly queryable.
+
 
 ```sh
 # init new subgraph repo from contract
