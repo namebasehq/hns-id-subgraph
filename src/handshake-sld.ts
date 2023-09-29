@@ -9,8 +9,7 @@ import {
   Royalty,
   RoyaltyHistory,
   Sld,
-  Tld,
-  Transfer
+  Tld
 } from "../generated/schema"
 
 

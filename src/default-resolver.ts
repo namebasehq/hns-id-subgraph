@@ -12,54 +12,17 @@ import {
   VersionChanged as VersionChangedEvent,
 } from "../generated/DefaultResolver/DefaultResolver";
 import {
-  AddrChanged,
   Address,
-  AddressChanged,
-  ContenthashChanged,
-  DNSRecordChanged,
-  DNSRecordDeleted,
-  DNSZonehashChanged,
   DnsRecord,
-  NameChanged,
   Resolver,
-  ReverseClaimed,
-  TextChanged,
   TextRecord,
-  Tld,
-  UpdatedDelegate,
-  VersionChanged,
   Delegate
 } from "../generated/schema";
 
 import { BigInt, Bytes, store as GraphStore } from "@graphprotocol/graph-ts";
 
 export function handleAddrChanged(event: AddrChangedEvent): void {
-  /*
-    // Generate a unique ID for the Address entity
-    let addressId = event.params.node.toHex().concat("-614");
-
-
-  // Try loading the Address entity, or create a new one if it doesn't exist
-  let addressEntity = Address.load(addressId);
-  if (addressEntity == null) {
-    addressEntity = new Address(addressId);
-  }
-  // Load or create the parent Resolver entity
-  let resolverEntity = Resolver.load(event.params.node.toHex());
-  if (!resolverEntity) {
-    resolverEntity = new Resolver(event.params.node.toHex());
-    resolverEntity.save();
-  }
-
-  // Update fields on the Address entity
-  addressEntity.address = event.params.a.toHex();
-  addressEntity.cointype = BigInt.fromI32(10);  // Assuming Optimism mainnet
-  addressEntity.resolver = resolverEntity.id;
-
-  // Save the updated Address entity
-  addressEntity.save();
-
-  */
+  
 }
 
 export function handleAddressChanged(event: AddressChangedEvent): void {
@@ -174,31 +137,11 @@ export function handleDNSZonehashChanged(event: DNSZonehashChangedEvent): void {
 }
 
 export function handleNameChanged(event: NameChangedEvent): void {
-  let entity = new NameChanged(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
-  entity.node = event.params.node;
-  entity.name = event.params.name;
 
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
-
-  entity.save();
 }
 
 export function handleReverseClaimed(event: ReverseClaimedEvent): void {
-  let entity = new ReverseClaimed(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  );
-  entity._addr = event.params._addr;
-  entity._domain = event.params._domain;
-
-  entity.blockNumber = event.block.number;
-  entity.blockTimestamp = event.block.timestamp;
-  entity.transactionHash = event.transaction.hash;
-
-  entity.save();
+ 
 }
 
 export function handleTextChanged(event: TextChangedEvent): void {

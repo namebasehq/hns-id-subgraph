@@ -1,33 +1,3 @@
-type Domain @entity {
-  "The namehash of the name"
-  id: ID!
-  "The human readable name"
-  name: String
-  "The human readable label name"
-  labelName: String
-  "keccak256(labelName)"
-  labelhash: Bytes
-  "The time when the domain was created"
-  createdAt: BigInt!
-  "The expiry date for the domain"
-  expiryDate: BigInt
-  "The account that owns the domain"
-  owner: Account!
-  "The account that owns the ERC721 NFT for the domain"
-  registrant: Account
-  "The registration associated with the domain"
-  registration: Registration @derivedFrom(field: "domain")
-}
-
-type Royalty @entity {
-  "Unique identifier for the Royalty"
-  id: ID!
-  "The percentage of royalties to be paid out"
-  percentage: BigInt!
-  "The address to which royalties will be paid"
-  payoutAddress: Account!
-}
-
 type Tld @entity {
   "Unique identifier for the TLD"
   id: ID!
@@ -55,6 +25,15 @@ type Tld @entity {
   resolver: Resolver
 }
 
+type Royalty @entity {
+  "Unique identifier for the Royalty"
+  id: ID!
+  "The percentage of royalties to be paid out"
+  percentage: BigInt!
+  "The address to which royalties will be paid"
+  payoutAddress: Account!
+}
+
 type RoyaltyHistory @entity {
   "Unique identifier for the RoyaltyHistory"
   id: ID!
@@ -76,7 +55,7 @@ type RoyaltyHistory @entity {
 type Sld @entity {
   "Unique identifier for the SLD"
   id: ID!
-    "The label of the SLD"
+  "The label of the SLD"
   label: String!
   "The full name of the SLD"
   fullName: String!
@@ -96,33 +75,27 @@ type Sld @entity {
   resolver: Resolver
 }
 
-
-
 type SaleSettings @entity {
-  id: ID!  # This would be the same as the TLD's id for a one-to-one relation
+  "Unique identifier for the SaleSettings, same as the TLD's id for a one-to-one relation"
+  id: ID!
+  "The TLD associated with these sale settings"
   tld: Tld!
+  "Indicates if the sale is enabled"
   enabled: Boolean
-  prices: [BigInt!]  # For the LengthCostSet
-  discounts: [BigInt!]  # For the MultiYearDiscountSet
+  "Array of prices, each corresponding to the length of the label for the TLD"
+  prices: [BigInt!]  
+  "Array of discounts for multiple years"
+  discounts: [BigInt!]
+  "Premium prices for specific labels"
   premiumPrices: [PremiumPrice!] @derivedFrom(field: "saleSettings")
+  "List of reserved names"
   reservedNames: [ReservedName!] @derivedFrom(field: "saleSettings")
+  "Block number when the settings were last updated"
   blockNumber: BigInt
+  "Block timestamp when the settings were last updated"
   blockTimestamp: BigInt
+  "Transaction hash of the last update"
   transactionHash: Bytes
-}
-
-type PremiumPrice @entity {
-  id: ID!  # This could be a combination of SaleSettings ID and label for uniqueness
-  saleSettings: SaleSettings!
-  label: String!
-  price: BigInt
-}
-
-type ReservedName @entity {
-  id: ID!  # This could be a combination of SaleSettings ID and label for uniqueness
-  saleSettings: SaleSettings!
-  label: String!
-  claimant: Bytes
 }
 
 
@@ -134,7 +107,6 @@ type Account @entity {
   "The SLDs owned by the account"
   slds: [Sld!]! @derivedFrom(field: "owner")
 }
-
 
 type Resolver @entity {
   "Unique identifier for the Resolver"
@@ -199,451 +171,25 @@ type DnsRecord @entity {
   resolver: Resolver!
 }
 
-
-
-type Registration @entity {
-  "The unique identifier of the registration"
+type PremiumPrice @entity {
+  "Unique identifier for PremiumPrice, could be a combination of SaleSettings ID and label for uniqueness"
   id: ID!
-  "The domain name associated with the registration"
-  domain: Domain!
-  "The registration date of the domain"
-  registrationDate: BigInt!
-  "The expiry date of the domain"
-  expiryDate: BigInt!
-  "The account that registered the domain"
-  registrant: Account!
-  "The human-readable label name associated with the domain registration"
-  labelName: String
-  "The block number of the event"
-  blockNumber: Int!
-  "The transaction ID associated with the event"
-  transactionID: Bytes!
+  "The sale settings associated with this premium price"
+  saleSettings: SaleSettings!
+  "The label for which the premium price is set"
+  label: String!
+  "The premium price in BigInt"
+  price: BigInt
 }
 
-type AddrChanged @entity(immutable: true) {
-  id: Bytes!
-  node: Bytes! # bytes32
-  a: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+type ReservedName @entity {
+  "Unique identifier for ReservedName, could be a combination of SaleSettings ID and label for uniqueness"
+  id: ID!
+  "The sale settings associated with this reserved name"
+  saleSettings: SaleSettings!
+  "The label that is reserved"
+  label: String!
+  "The claimant of the reserved name"
+  claimant: Bytes
 }
 
-type AddressChanged @entity(immutable: true) {
-  id: Bytes!
-  node: Bytes! # bytes32
-  coinType: BigInt! # uint256
-  newAddress: Bytes! # bytes
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ContenthashChanged @entity(immutable: true) {
-  id: Bytes!
-  node: Bytes! # bytes32
-  hash: Bytes! # bytes
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type DNSRecordChanged @entity(immutable: true) {
-  id: Bytes!
-  node: Bytes! # bytes32
-  name: Bytes! # bytes
-  resource: Int! # uint16
-  record: Bytes! # bytes
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type DNSRecordDeleted @entity(immutable: true) {
-  id: Bytes!
-  node: Bytes! # bytes32
-  name: Bytes! # bytes
-  resource: Int! # uint16
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type DNSZonehashChanged @entity(immutable: true) {
-  id: Bytes!
-  node: Bytes! # bytes32
-  lastzonehash: Bytes! # bytes
-  zonehash: Bytes! # bytes
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type NameChanged @entity(immutable: true) {
-  id: Bytes!
-  node: Bytes! # bytes32
-  name: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ReverseClaimed @entity(immutable: true) {
-  id: Bytes!
-  _addr: Bytes! # address
-  _domain: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TextChanged @entity(immutable: true) {
-  id: Bytes!
-  node: Bytes! # bytes32
-  indexedKey: Bytes! # bytes32
-  key: String! # string
-  value: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type UpdatedDelegate @entity(immutable: true) {
-  id: Bytes!
-  _owner: Bytes! # address
-  _tokenId: BigInt! # uint256
-  _delegate: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type VersionChanged @entity(immutable: true) {
-  id: Bytes!
-  node: Bytes! # bytes32
-  newVersion: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type AllowedTldMintUpdate @entity(immutable: true) {
-  id: Bytes!
-  _claimant: Bytes! # address
-  _manager: Bytes! # address
-  _label: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Initialized @entity(immutable: true) {
-  id: Bytes!
-  version: Int! # uint8
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type NewLabelValidator @entity(immutable: true) {
-  id: Bytes!
-  _labelValidator: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type NewUsdOracle @entity(immutable: true) {
-  id: Bytes!
-  _usdEthPriceOracle: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type OwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type TldClaimed @entity(immutable: true) {
-  id: Bytes!
-  _to: Bytes! # address
-  _tokenId: BigInt! # uint256
-  _label: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type UpdateAllowedTldManager @entity(immutable: true) {
-  id: Bytes!
-  _addr: Bytes! # address
-  _allowed: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type Approval @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  approved: Bytes! # address
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ApprovalForAll @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  operator: Bytes! # address
-  approved: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type HandshakeTldOwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RegistrationStrategySet @entity(immutable: true) {
-  id: Bytes!
-  namehash: Bytes! # bytes32
-  strategy: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ResolverSet @entity(immutable: true) {
-  id: Bytes!
-  _nftNamehash: Bytes! # bytes32
-  _resolver: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type Transfer @entity(immutable: true) {
-  id: Bytes!
-  from: Bytes! # address
-  to: Bytes! # address
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type HandshakeSldApproval @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  approved: Bytes! # address
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type HandshakeSldApprovalForAll @entity(immutable: true) {
-  id: Bytes!
-  owner: Bytes! # address
-  operator: Bytes! # address
-  approved: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type HandshakeSldOwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type HandshakeSldResolverSet @entity(immutable: true) {
-  id: Bytes!
-  _nftNamehash: Bytes! # bytes32
-  _resolver: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RoyaltyPayoutAddressSet @entity(immutable: true) {
-  id: Bytes!
-  _nftNamehash: Bytes! # bytes32
-  _payoutAddress: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RoyaltyPayoutAmountSet @entity(immutable: true) {
-  id: Bytes!
-  _nftNamehash: Bytes! # bytes32
-  _amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type HandshakeSldTransfer @entity(immutable: true) {
-  id: Bytes!
-  from: Bytes! # address
-  to: Bytes! # address
-  tokenId: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type DiscountSet @entity(immutable: true) {
-  id: Bytes!
-  _tokenNamehash: Bytes! # bytes32
-  _claimant: Bytes! # address
-  _discount_startTimestamp: BigInt! # uint80
-  _discount_endTimestamp: BigInt! # uint80
-  _discount_discountPercentage: Int! # uint8
-  _discount_isRegistration: Boolean! # bool
-  _discount_isRenewal: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type SldRegistrationManagerInitialized @entity(immutable: true) {
-  id: Bytes!
-  version: Int! # uint8
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type NewGracePeriod @entity(immutable: true) {
-  id: Bytes!
-  _newGracePeriod: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type SldRegistrationManagerNewLabelValidator @entity(immutable: true) {
-  id: Bytes!
-  _labelValidator: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type SldRegistrationManagerNewUsdOracle @entity(immutable: true) {
-  id: Bytes!
-  _usdEthPriceOracle: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type SldRegistrationManagerOwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type PaymentSent @entity(immutable: true) {
-  id: Bytes!
-  _to: Bytes! # address
-  _amount: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RegisterSld @entity(immutable: true) {
-  id: Bytes!
-  _tldNamehash: Bytes! # bytes32
-  _secret: Bytes! # bytes32
-  _label: String! # string
-  _expiry: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type RenewSld @entity(immutable: true) {
-  id: Bytes!
-  _tldNamehash: Bytes! # bytes32
-  _label: String! # string
-  _expiry: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type EnabledSet @entity(immutable: true) {
-  id: Bytes!
-  _tokenNamehash: Bytes! # bytes32
-  _enabled: Boolean! # bool
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type LengthCostSet @entity(immutable: true) {
-  id: Bytes!
-  _tokenNamehash: Bytes! # bytes32
-  _prices: [BigInt!]! # uint256[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type MultiYearDiscountSet @entity(immutable: true) {
-  id: Bytes!
-  _tokenNamehash: Bytes! # bytes32
-  _discounts: [BigInt!]! # uint256[]
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type PremiumNameSet @entity(immutable: true) {
-  id: Bytes!
-  _tokenNamehash: Bytes! # bytes32
-  _price: BigInt! # uint256
-  _label: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type ReservedNameSet @entity(immutable: true) {
-  id: Bytes!
-  _tokenNamehash: Bytes! # bytes32
-  _claimant: Bytes! # address
-  _label: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-type SldCommitIntentOwnershipTransferred @entity(immutable: true) {
-  id: Bytes!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}

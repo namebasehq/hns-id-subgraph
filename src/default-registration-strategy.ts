@@ -7,13 +7,8 @@ import {
   ReservedNameSet as ReservedNameSetEvent
 } from "../generated/DefaultRegistrationStrategy/DefaultRegistrationStrategy"
 import {
-  EnabledSet,
-  LengthCostSet,
-  MultiYearDiscountSet,
-  PremiumNameSet,
   PremiumPrice,
   ReservedName,
-  ReservedNameSet,
   SaleSettings,
   Tld
 } from "../generated/schema"
@@ -54,17 +49,7 @@ export function handleLengthCostSet(event: LengthCostSetEvent): void {
 export function handleMultiYearDiscountSet(
   event: MultiYearDiscountSetEvent
 ): void {
-  let entity = new MultiYearDiscountSet(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity._tokenNamehash = event.params._tokenNamehash
-  entity._discounts = event.params._discounts
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
 }
 
 export function handlePremiumNameSet(event: PremiumNameSetEvent): void {
