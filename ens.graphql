@@ -350,3 +350,5 @@ type VersionChanged implements ResolverEvent @entity {
   "The new version number of the resolver"
   version: BigInt!
 }
+
+

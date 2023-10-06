@@ -365,6 +365,87 @@ export class RoyaltyHistory extends Entity {
   }
 }
 
+export class ResolverHistory extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ResolverHistory entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ResolverHistory must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("ResolverHistory", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): ResolverHistory | null {
+    return changetype<ResolverHistory | null>(
+      store.get_in_block("ResolverHistory", id)
+    );
+  }
+
+  static load(id: string): ResolverHistory | null {
+    return changetype<ResolverHistory | null>(store.get("ResolverHistory", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get resolverSnapshot(): string {
+    let value = this.get("resolverSnapshot");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set resolverSnapshot(value: string) {
+    this.set("resolverSnapshot", Value.fromString(value));
+  }
+
+  get changeType(): string {
+    let value = this.get("changeType");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set changeType(value: string) {
+    this.set("changeType", Value.fromString(value));
+  }
+
+  get changedAt(): BigInt {
+    let value = this.get("changedAt");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set changedAt(value: BigInt) {
+    this.set("changedAt", Value.fromBigInt(value));
+  }
+}
+
 export class Sld extends Entity {
   constructor(id: string) {
     super();
@@ -1358,6 +1439,250 @@ export class ReservedName extends Entity {
     } else {
       this.set("claimant", Value.fromBytes(<Bytes>value));
     }
+  }
+}
+
+export class TextRecordHistory extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save TextRecordHistory entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type TextRecordHistory must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("TextRecordHistory", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): TextRecordHistory | null {
+    return changetype<TextRecordHistory | null>(
+      store.get_in_block("TextRecordHistory", id)
+    );
+  }
+
+  static load(id: string): TextRecordHistory | null {
+    return changetype<TextRecordHistory | null>(
+      store.get("TextRecordHistory", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get resolver(): string {
+    let value = this.get("resolver");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set resolver(value: string) {
+    this.set("resolver", Value.fromString(value));
+  }
+
+  get key(): string {
+    let value = this.get("key");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set key(value: string) {
+    this.set("key", Value.fromString(value));
+  }
+
+  get value(): string {
+    let value = this.get("value");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set value(value: string) {
+    this.set("value", Value.fromString(value));
+  }
+
+  get changedAt(): BigInt {
+    let value = this.get("changedAt");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set changedAt(value: BigInt) {
+    this.set("changedAt", Value.fromBigInt(value));
+  }
+
+  get changeType(): string {
+    let value = this.get("changeType");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set changeType(value: string) {
+    this.set("changeType", Value.fromString(value));
+  }
+}
+
+export class DnsRecordHistory extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save DnsRecordHistory entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type DnsRecordHistory must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("DnsRecordHistory", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): DnsRecordHistory | null {
+    return changetype<DnsRecordHistory | null>(
+      store.get_in_block("DnsRecordHistory", id)
+    );
+  }
+
+  static load(id: string): DnsRecordHistory | null {
+    return changetype<DnsRecordHistory | null>(
+      store.get("DnsRecordHistory", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get resolver(): string {
+    let value = this.get("resolver");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set resolver(value: string) {
+    this.set("resolver", Value.fromString(value));
+  }
+
+  get node(): Bytes {
+    let value = this.get("node");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set node(value: Bytes) {
+    this.set("node", Value.fromBytes(value));
+  }
+
+  get name(): Bytes {
+    let value = this.get("name");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set name(value: Bytes) {
+    this.set("name", Value.fromBytes(value));
+  }
+
+  get resource(): BigInt {
+    let value = this.get("resource");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set resource(value: BigInt) {
+    this.set("resource", Value.fromBigInt(value));
+  }
+
+  get record(): Bytes {
+    let value = this.get("record");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set record(value: Bytes) {
+    this.set("record", Value.fromBytes(value));
+  }
+
+  get changedAt(): BigInt {
+    let value = this.get("changedAt");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set changedAt(value: BigInt) {
+    this.set("changedAt", Value.fromBigInt(value));
+  }
+
+  get changeType(): string {
+    let value = this.get("changeType");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set changeType(value: string) {
+    this.set("changeType", Value.fromString(value));
   }
 }
 

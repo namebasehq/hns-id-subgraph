@@ -51,6 +51,18 @@ type RoyaltyHistory @entity {
   transactionDateTime: BigInt!
 }
 
+type ResolverHistory @entity {
+  "Unique identifier for the ResolverHistory"
+  id: ID!
+  "Snapshot of Resolver entity"
+  resolverSnapshot: Resolver!
+  "Type of change: added, modified, deleted"
+  changeType: String!
+  "Timestamp of the change"
+  changedAt: BigInt!
+}
+
+
 
 type Sld @entity {
   "Unique identifier for the SLD"
@@ -191,5 +203,25 @@ type ReservedName @entity {
   label: String!
   "The claimant of the reserved name"
   claimant: Bytes
+}
+
+type TextRecordHistory @entity {
+  id: ID!
+  resolver: String! # Link back to parent Resolver
+  key: String!
+  value: String!
+  changedAt: BigInt!
+  changeType: String!  # Could be 'Created', 'Updated', 'Deleted'
+}
+
+type DnsRecordHistory @entity {
+  id: ID!
+  resolver: String! # Link back to parent Resolver
+  node: Bytes!
+  name: Bytes!
+  resource: BigInt!
+  record: Bytes!
+  changedAt: BigInt!
+  changeType: String!  # Could be 'Created', 'Updated', 'Deleted'
 }
 

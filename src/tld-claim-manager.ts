@@ -1,15 +1,13 @@
-import {
-  TldClaimed as TldClaimedEvent
-} from "../generated/TldClaimManager/TldClaimManager";
+import { TldClaimed as TldClaimedEvent } from "../generated/TldClaimManager/TldClaimManager";
 import {
   Account,
   Resolver,
   Royalty,
   Tld,
-  Address
+  Address,
+  ResolverHistory,
 } from "../generated/schema";
-import { BigInt } from '@graphprotocol/graph-ts';
-
+import { BigInt } from "@graphprotocol/graph-ts";
 
 export function handleTldClaimed(event: TldClaimedEvent): void {
   let tldEntity = new Tld(event.params._tokenId.toHexString());
@@ -33,23 +31,33 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
   let resolverId = event.params._tokenId.toHexString();
   let resolverEntity = new Resolver(resolverId);
 
-    // All EVM coin types. Can initialise other fields here if required.
-    const defaultCoinTypes = [60, 614, 9006, 966, 9001, 9000, 9005];
+  // All EVM coin types. Can initialise other fields here if required.
+  const defaultCoinTypes = [60, 614, 9006, 966, 9001, 9000, 9005];
 
-    for (let i = 0; i < defaultCoinTypes.length; i++) {
-      let coinType = defaultCoinTypes[i];
-      let addressId = resolverId.concat("-").concat(coinType.toString());
-      let addressEntity = new Address(addressId);
-      addressEntity.cointype = BigInt.fromI32(coinType); // Using BigInt.fromI32
-      addressEntity.address = event.params._to.toHex();
-      addressEntity.resolver = resolverEntity.id;
-      addressEntity.save();
-    }
+  for (let i = 0; i < defaultCoinTypes.length; i++) {
+    let coinType = defaultCoinTypes[i];
+    let addressId = resolverId.concat("-").concat(coinType.toString());
+    let addressEntity = new Address(addressId);
+    addressEntity.cointype = BigInt.fromI32(coinType); // Using BigInt.fromI32
+    addressEntity.address = event.params._to.toHex();
+    addressEntity.resolver = resolverEntity.id;
+    addressEntity.save();
+  }
 
-    // default version number
-    resolverEntity.version = BigInt.fromI32(0);
-   
-    resolverEntity.save();
+  // default version number
+  resolverEntity.version = BigInt.fromI32(0);
+
+  resolverEntity.save();
+
+  // Create ResolverHistory Entity
+  let resolverHistoryId = resolverId
+    .concat("-")
+    .concat(event.block.timestamp.toString());
+  let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
+  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+  resolverHistoryEntity.changeType = "added";
+  resolverHistoryEntity.changedAt = event.block.timestamp;
+  resolverHistoryEntity.save();
 
   // For this scenario, the claimant and owner are the same at the start.
   tldEntity.claimant = claimantAccount.id;
@@ -61,7 +69,6 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
   tldEntity.blockNumber = event.block.number;
   tldEntity.transactionID = event.transaction.hash;
   tldEntity.resolver = resolverId;
-  
+
   tldEntity.save();
 }
-

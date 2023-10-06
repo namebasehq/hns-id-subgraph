@@ -16,14 +16,15 @@ import {
   DnsRecord,
   Resolver,
   TextRecord,
-  Delegate
+  Delegate,
+  ResolverHistory,
+  DnsRecordHistory,
+  TextRecordHistory,
 } from "../generated/schema";
 
 import { BigInt, Bytes, store as GraphStore } from "@graphprotocol/graph-ts";
 
-export function handleAddrChanged(event: AddrChangedEvent): void {
-  
-}
+export function handleAddrChanged(event: AddrChangedEvent): void {}
 
 export function handleAddressChanged(event: AddressChangedEvent): void {
   // Generate a unique ID for the Address entity
@@ -52,6 +53,16 @@ export function handleAddressChanged(event: AddressChangedEvent): void {
 
   // Save the updated Address entity
   addressEntity.save();
+
+  // Create ResolverHistory Entity
+  let resolverHistoryId = resolverEntity.id
+    .concat("-")
+    .concat(event.block.timestamp.toString());
+  let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
+  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+  resolverHistoryEntity.changeType = "addressChanged";
+  resolverHistoryEntity.changedAt = event.block.timestamp;
+  resolverHistoryEntity.save();
 }
 
 export function handleContenthashChanged(event: ContenthashChangedEvent): void {
@@ -69,6 +80,16 @@ export function handleContenthashChanged(event: ContenthashChangedEvent): void {
   // Update the content hash on the Resolver entity
   resolverEntity.contenthash = event.params.hash;
   resolverEntity.save();
+
+  // Create ResolverHistory Entity
+  let resolverHistoryId = resolverEntity.id
+    .concat("-")
+    .concat(event.block.timestamp.toString());
+  let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
+  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+  resolverHistoryEntity.changeType = "contenthashChanged";
+  resolverHistoryEntity.changedAt = event.block.timestamp;
+  resolverHistoryEntity.save();
 }
 
 export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
@@ -102,6 +123,30 @@ export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
 
   // Save the updated DnsRecord entity
   dnsRecordEntity.save();
+
+  // Create ResolverHistory Entity
+  let resolverHistoryId = resolverEntity.id
+    .concat("-")
+    .concat(event.block.timestamp.toString());
+  let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
+  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+  resolverHistoryEntity.changeType = "dnsRecordChanged";
+  resolverHistoryEntity.changedAt = event.block.timestamp;
+  resolverHistoryEntity.save();
+
+  // Create DnsRecordHistory Entity
+  let dnsRecordHistoryId = dnsRecordEntity.id
+    .concat("-")
+    .concat(event.block.timestamp.toString());
+  let dnsRecordHistoryEntity = new DnsRecordHistory(dnsRecordHistoryId);
+  dnsRecordHistoryEntity.resolver = resolverEntity.id;
+  dnsRecordHistoryEntity.node = dnsRecordEntity.node;
+  dnsRecordHistoryEntity.name = dnsRecordEntity.name;
+  dnsRecordHistoryEntity.resource = dnsRecordEntity.resource;
+  dnsRecordHistoryEntity.record = dnsRecordEntity.record;
+  dnsRecordHistoryEntity.changedAt = event.block.timestamp;
+  dnsRecordHistoryEntity.changeType = "Updated"; // Or 'Created' if it's a new entity
+  dnsRecordHistoryEntity.save();
 }
 
 export function handleDNSRecordDeleted(event: DNSRecordDeletedEvent): void {
@@ -113,10 +158,44 @@ export function handleDNSRecordDeleted(event: DNSRecordDeletedEvent): void {
 
   // Load the DnsRecord entity
   let dnsRecordEntity = DnsRecord.load(dnsRecordId);
+
+  // Load or create the parent Resolver entity
+  let resolverId = event.params.node.toHex();
+  let resolverEntity = Resolver.load(resolverId);
+  if (!resolverEntity) {
+    resolverEntity = new Resolver(resolverId);
+    resolverEntity.save();
+  }
+
   if (dnsRecordEntity != null) {
+    // Create DnsRecordHistory Entity
+    let dnsRecordHistoryId = dnsRecordEntity.id
+      .concat("-")
+      .concat(event.block.timestamp.toString());
+    let dnsRecordHistoryEntity = new DnsRecordHistory(dnsRecordHistoryId);
+    dnsRecordHistoryEntity.resolver = resolverEntity.id;
+    dnsRecordHistoryEntity.node = dnsRecordEntity.node;
+    dnsRecordHistoryEntity.name = dnsRecordEntity.name;
+    dnsRecordHistoryEntity.resource = dnsRecordEntity.resource;
+    dnsRecordHistoryEntity.record = dnsRecordEntity.record;
+    dnsRecordHistoryEntity.changedAt = event.block.timestamp;
+    dnsRecordHistoryEntity.changeType = "Deleted";
+
+    dnsRecordHistoryEntity.save();
+
     // Remove the DnsRecord entity
     GraphStore.remove("DnsRecord", dnsRecordId);
   }
+
+  // Create ResolverHistory Entity
+  let resolverHistoryId = resolverEntity.id
+    .concat("-")
+    .concat(event.block.timestamp.toString());
+  let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
+  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+  resolverHistoryEntity.changeType = "dnsRecordDeleted";
+  resolverHistoryEntity.changedAt = event.block.timestamp;
+  resolverHistoryEntity.save();
 }
 
 export function handleDNSZonehashChanged(event: DNSZonehashChangedEvent): void {
@@ -134,15 +213,21 @@ export function handleDNSZonehashChanged(event: DNSZonehashChangedEvent): void {
   // Update the content hash on the Resolver entity
   resolverEntity.dnsZonehash = event.params.zonehash;
   resolverEntity.save();
+
+  // Create ResolverHistory Entity
+  let resolverHistoryId = resolverEntity.id
+    .concat("-")
+    .concat(event.block.timestamp.toString());
+  let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
+  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+  resolverHistoryEntity.changeType = "dnsZonehashChanged";
+  resolverHistoryEntity.changedAt = event.block.timestamp;
+  resolverHistoryEntity.save();
 }
 
-export function handleNameChanged(event: NameChangedEvent): void {
+export function handleNameChanged(event: NameChangedEvent): void {}
 
-}
-
-export function handleReverseClaimed(event: ReverseClaimedEvent): void {
- 
-}
+export function handleReverseClaimed(event: ReverseClaimedEvent): void {}
 
 export function handleTextChanged(event: TextChangedEvent): void {
   // Generate a unique ID for the TextRecord entity
@@ -174,11 +259,42 @@ export function handleTextChanged(event: TextChangedEvent): void {
 
   // Save the updated TextRecord entity
   textRecordEntity.save();
+
+  // Create ResolverHistory Entity
+  let resolverHistoryId = resolverEntity.id
+    .concat("-")
+    .concat(event.block.timestamp.toString());
+  let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
+  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+  resolverHistoryEntity.changeType = "textChanged";
+  resolverHistoryEntity.changedAt = event.block.timestamp;
+  resolverHistoryEntity.save();
+
+  // Create TextRecordHistory Entity
+  let textRecordHistoryId = textRecordEntity.id
+    .concat("-")
+    .concat(event.block.timestamp.toString());
+  let textRecordHistoryEntity = new TextRecordHistory(textRecordHistoryId);
+  textRecordHistoryEntity.resolver = resolverEntity.id;
+  textRecordHistoryEntity.key = textRecordEntity.key;
+  textRecordHistoryEntity.value = textRecordEntity.value;
+  textRecordHistoryEntity.changedAt = event.block.timestamp;
+
+  if (textRecordEntity.value == "") {
+    textRecordHistoryEntity.changeType = "Deleted";
+  } else {
+    textRecordHistoryEntity.changeType = "Updated";
+  }
+
+  textRecordHistoryEntity.save();
 }
 
 export function handleUpdatedDelegate(event: UpdatedDelegateEvent): void {
   // Generate a unique ID for the Delegate entity by combining the _tokenId and _owner
-  let delegateId = event.params._tokenId.toHexString().concat("-").concat(event.params._owner.toHex());
+  let delegateId = event.params._tokenId
+    .toHexString()
+    .concat("-")
+    .concat(event.params._owner.toHex());
 
   // Try loading the Delegate entity, or create a new one if it doesn't exist
   let delegateEntity = Delegate.load(delegateId);
@@ -198,11 +314,18 @@ export function handleUpdatedDelegate(event: UpdatedDelegateEvent): void {
   if (resolverEntity) {
     resolverEntity.delegate = delegateEntity.id;
     resolverEntity.save();
+
+    // Create ResolverHistory Entity
+    let resolverHistoryId = resolverEntity.id
+      .concat("-")
+      .concat(event.block.timestamp.toString());
+    let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
+    resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+    resolverHistoryEntity.changeType = "delegateUpdated";
+    resolverHistoryEntity.changedAt = event.block.timestamp;
+    resolverHistoryEntity.save();
   }
 }
 
-
 // TODO: need to remove the child entities and reset the resolver
-export function handleVersionChanged(event: VersionChangedEvent): void {
-  
-}
+export function handleVersionChanged(event: VersionChangedEvent): void {}

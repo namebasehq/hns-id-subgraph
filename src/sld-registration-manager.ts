@@ -7,15 +7,16 @@ import {
   OwnershipTransferred as OwnershipTransferredEvent,
   PaymentSent as PaymentSentEvent,
   RegisterSld as RegisterSldEvent,
-  RenewSld as RenewSldEvent
-} from "../generated/SldRegistrationManager/SldRegistrationManager"
+  RenewSld as RenewSldEvent,
+} from "../generated/SldRegistrationManager/SldRegistrationManager";
 import {
   Account,
   Address,
   Resolver,
+  ResolverHistory,
   Sld,
-  Tld
-} from "../generated/schema"
+  Tld,
+} from "../generated/schema";
 import { concat } from "./utils";
 import { BigInt, ByteArray, Bytes, crypto } from "@graphprotocol/graph-ts";
 import { HandshakeSld } from "../generated/HandshakeSld/HandshakeSld";
@@ -25,7 +26,9 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
   let label = event.params._label;
   let parentHash = event.params._tldNamehash.toHexString();
   let labelHash = crypto.keccak256(ByteArray.fromUTF8(label));
-  let nameHash = crypto.keccak256(concat(ByteArray.fromHexString(parentHash), labelHash));
+  let nameHash = crypto.keccak256(
+    concat(ByteArray.fromHexString(parentHash), labelHash)
+  );
 
   // Account Entity
   let account = new Account(event.transaction.from.toHex());
@@ -37,12 +40,11 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     let parentLabel = parentTld.label;
 
     // Construct the full domain name
-    let fullName = label + '.' + parentLabel;
+    let fullName = label + "." + parentLabel;
 
-
-     // Create and save the resolver entity
-  let resolverId = nameHash.toHexString();
-  let resolverEntity = new Resolver(resolverId);
+    // Create and save the resolver entity
+    let resolverId = nameHash.toHexString();
+    let resolverEntity = new Resolver(resolverId);
 
     // All EVM coin types. Can initialise other fields here if required.
     const defaultCoinTypes = [60, 614, 9006, 966, 9001, 9000, 9005];
@@ -59,8 +61,18 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
 
     // default version number
     resolverEntity.version = BigInt.fromI32(0);
-   
+
     resolverEntity.save();
+
+    // Create ResolverHistory Entity
+    let resolverHistoryId = resolverId
+      .concat("-")
+      .concat(event.block.timestamp.toString());
+    let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
+    resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+    resolverHistoryEntity.changeType = "added";
+    resolverHistoryEntity.changedAt = event.block.timestamp;
+    resolverHistoryEntity.save();
 
     // Sld Entity
     let domain = new Sld(nameHash.toHex());
@@ -76,43 +88,30 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
   }
 }
 
-export function handleDiscountSet(event: DiscountSetEvent): void {
+export function handleDiscountSet(event: DiscountSetEvent): void {}
 
-}
+export function handleInitialized(event: InitializedEvent): void {}
 
-export function handleInitialized(event: InitializedEvent): void {
- 
-}
+export function handleNewGracePeriod(event: NewGracePeriodEvent): void {}
 
-export function handleNewGracePeriod(event: NewGracePeriodEvent): void {
+export function handleNewLabelValidator(event: NewLabelValidatorEvent): void {}
 
-}
-
-export function handleNewLabelValidator(event: NewLabelValidatorEvent): void {
- 
-}
-
-export function handleNewUsdOracle(event: NewUsdOracleEvent): void {
- 
-}
+export function handleNewUsdOracle(event: NewUsdOracleEvent): void {}
 
 export function handleOwnershipTransferred(
   event: OwnershipTransferredEvent
-): void {
- 
-}
+): void {}
 
-export function handlePaymentSent(event: PaymentSentEvent): void {
- 
-}
+export function handlePaymentSent(event: PaymentSentEvent): void {}
 
 export function handleRenewSld(event: RenewSldEvent): void {
-
   // Calculate nameHash same as handleRegisterSld
   let label = event.params._label;
   let parentHash = event.params._tldNamehash.toHexString();
   let labelHash = crypto.keccak256(ByteArray.fromUTF8(label));
-  let nameHash = crypto.keccak256(concat(ByteArray.fromHexString(parentHash), labelHash));
+  let nameHash = crypto.keccak256(
+    concat(ByteArray.fromHexString(parentHash), labelHash)
+  );
 
   // Load the existing Sld entity using nameHash
   let sldEntity = Sld.load(nameHash.toHex());
