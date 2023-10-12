@@ -55,7 +55,7 @@ type ResolverHistory @entity {
   "Unique identifier for the ResolverHistory"
   id: ID!
   "Snapshot of Resolver entity"
-  resolverSnapshot: Resolver!
+  resolver: Resolver!
   "Type of change: added, modified, deleted"
   changeType: String!
   "Timestamp of the change"
@@ -127,10 +127,16 @@ type Resolver @entity {
   addresses: [Address!] @derivedFrom(field: "resolver")
   "Array of Text Records associated with this Resolver"
   textRecords: [TextRecord!] @derivedFrom(field: "resolver")
+  "Array of Text Record History items associated with this Resolver"
+  textRecordHistory: [TextRecordHistory!] @derivedFrom(field: "resolver")
   "Content hash associated with this Resolver"
   contenthash: Bytes
   "Array of DNS Records associated with this Resolver"
   dnsRecords: [DnsRecord!] @derivedFrom(field: "resolver")
+  "Array of DNS Record History items associated with this Resolver"
+  dnsRecordHistory: [DnsRecordHistory!] @derivedFrom(field: "resolver")
+  "Array of Resolver History items associated with this Resolver"
+  resolverHistory: [ResolverHistory!]! @derivedFrom(field: "resolver")
   "DNS Zone hash associated with this Resolver"
   dnsZonehash: Bytes
   "Current version number of the Resolver"
@@ -138,6 +144,7 @@ type Resolver @entity {
   "Current delegate address for the domain/owner combination"
   delegate: Delegate
 }
+
 
 type Delegate @entity {
   "Unique identifier for the Delegate, a combination of node and owner"
@@ -207,7 +214,7 @@ type ReservedName @entity {
 
 type TextRecordHistory @entity {
   id: ID!
-  resolver: String! # Link back to parent Resolver
+  resolver: Resolver! 
   key: String!
   value: String!
   changedAt: BigInt!
@@ -216,7 +223,7 @@ type TextRecordHistory @entity {
 
 type DnsRecordHistory @entity {
   id: ID!
-  resolver: String! # Link back to parent Resolver
+  resolver: Resolver! 
   node: Bytes!
   name: Bytes!
   resource: BigInt!
@@ -224,4 +231,5 @@ type DnsRecordHistory @entity {
   changedAt: BigInt!
   changeType: String!  # Could be 'Created', 'Updated', 'Deleted'
 }
+
 

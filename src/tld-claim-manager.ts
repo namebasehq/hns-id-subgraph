@@ -54,7 +54,7 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
     .concat("-")
     .concat(event.block.timestamp.toString());
   let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
-  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+  resolverHistoryEntity.resolver = resolverEntity.id;
   resolverHistoryEntity.changeType = "added";
   resolverHistoryEntity.changedAt = event.block.timestamp;
   resolverHistoryEntity.save();

@@ -59,7 +59,7 @@ export function handleAddressChanged(event: AddressChangedEvent): void {
     .concat("-")
     .concat(event.block.timestamp.toString());
   let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
-  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+  resolverHistoryEntity.resolver = resolverEntity.id;
   resolverHistoryEntity.changeType = "addressChanged";
   resolverHistoryEntity.changedAt = event.block.timestamp;
   resolverHistoryEntity.save();
@@ -86,7 +86,7 @@ export function handleContenthashChanged(event: ContenthashChangedEvent): void {
     .concat("-")
     .concat(event.block.timestamp.toString());
   let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
-  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+  resolverHistoryEntity.resolver = resolverEntity.id;
   resolverHistoryEntity.changeType = "contenthashChanged";
   resolverHistoryEntity.changedAt = event.block.timestamp;
   resolverHistoryEntity.save();
@@ -129,7 +129,7 @@ export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
     .concat("-")
     .concat(event.block.timestamp.toString());
   let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
-  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+  resolverHistoryEntity.resolver = resolverEntity.id;
   resolverHistoryEntity.changeType = "dnsRecordChanged";
   resolverHistoryEntity.changedAt = event.block.timestamp;
   resolverHistoryEntity.save();
@@ -192,7 +192,7 @@ export function handleDNSRecordDeleted(event: DNSRecordDeletedEvent): void {
     .concat("-")
     .concat(event.block.timestamp.toString());
   let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
-  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+  resolverHistoryEntity.resolver = resolverEntity.id;
   resolverHistoryEntity.changeType = "dnsRecordDeleted";
   resolverHistoryEntity.changedAt = event.block.timestamp;
   resolverHistoryEntity.save();
@@ -219,7 +219,7 @@ export function handleDNSZonehashChanged(event: DNSZonehashChangedEvent): void {
     .concat("-")
     .concat(event.block.timestamp.toString());
   let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
-  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+  resolverHistoryEntity.resolver = resolverEntity.id;
   resolverHistoryEntity.changeType = "dnsZonehashChanged";
   resolverHistoryEntity.changedAt = event.block.timestamp;
   resolverHistoryEntity.save();
@@ -236,10 +236,14 @@ export function handleTextChanged(event: TextChangedEvent): void {
     .concat("-")
     .concat(event.params.key.toString());
 
+  // Flag to indicate if the TextRecord is newly created
+  let isNewTextRecord = false;
+
   // Try loading the TextRecord entity, or create a new one if it doesn't exist
   let textRecordEntity = TextRecord.load(textRecordId);
   if (textRecordEntity == null) {
     textRecordEntity = new TextRecord(textRecordId);
+    isNewTextRecord = true;  // Set the flag
   }
 
   // Update fields on the TextRecord entity
@@ -260,16 +264,6 @@ export function handleTextChanged(event: TextChangedEvent): void {
   // Save the updated TextRecord entity
   textRecordEntity.save();
 
-  // Create ResolverHistory Entity
-  let resolverHistoryId = resolverEntity.id
-    .concat("-")
-    .concat(event.block.timestamp.toString());
-  let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
-  resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
-  resolverHistoryEntity.changeType = "textChanged";
-  resolverHistoryEntity.changedAt = event.block.timestamp;
-  resolverHistoryEntity.save();
-
   // Create TextRecordHistory Entity
   let textRecordHistoryId = textRecordEntity.id
     .concat("-")
@@ -280,7 +274,10 @@ export function handleTextChanged(event: TextChangedEvent): void {
   textRecordHistoryEntity.value = textRecordEntity.value;
   textRecordHistoryEntity.changedAt = event.block.timestamp;
 
-  if (textRecordEntity.value == "") {
+  // Determine changeType based on the isNewTextRecord flag and value
+  if (isNewTextRecord) {
+    textRecordHistoryEntity.changeType = "Created";
+  } else if (textRecordEntity.value == "") {
     textRecordHistoryEntity.changeType = "Deleted";
   } else {
     textRecordHistoryEntity.changeType = "Updated";
@@ -288,6 +285,7 @@ export function handleTextChanged(event: TextChangedEvent): void {
 
   textRecordHistoryEntity.save();
 }
+
 
 export function handleUpdatedDelegate(event: UpdatedDelegateEvent): void {
   // Generate a unique ID for the Delegate entity by combining the _tokenId and _owner
@@ -320,7 +318,7 @@ export function handleUpdatedDelegate(event: UpdatedDelegateEvent): void {
       .concat("-")
       .concat(event.block.timestamp.toString());
     let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
-    resolverHistoryEntity.resolverSnapshot = resolverEntity.id;
+    resolverHistoryEntity.resolver = resolverEntity.id;
     resolverHistoryEntity.changeType = "delegateUpdated";
     resolverHistoryEntity.changedAt = event.block.timestamp;
     resolverHistoryEntity.save();

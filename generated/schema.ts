@@ -406,8 +406,8 @@ export class ResolverHistory extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get resolverSnapshot(): string {
-    let value = this.get("resolverSnapshot");
+  get resolver(): string {
+    let value = this.get("resolver");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -415,8 +415,8 @@ export class ResolverHistory extends Entity {
     }
   }
 
-  set resolverSnapshot(value: string) {
-    this.set("resolverSnapshot", Value.fromString(value));
+  set resolver(value: string) {
+    this.set("resolver", Value.fromString(value));
   }
 
   get changeType(): string {
@@ -879,6 +879,14 @@ export class Resolver extends Entity {
     );
   }
 
+  get textRecordHistory(): TextRecordHistoryLoader {
+    return new TextRecordHistoryLoader(
+      "Resolver",
+      this.get("id")!.toString(),
+      "textRecordHistory"
+    );
+  }
+
   get contenthash(): Bytes | null {
     let value = this.get("contenthash");
     if (!value || value.kind == ValueKind.NULL) {
@@ -901,6 +909,22 @@ export class Resolver extends Entity {
       "Resolver",
       this.get("id")!.toString(),
       "dnsRecords"
+    );
+  }
+
+  get dnsRecordHistory(): DnsRecordHistoryLoader {
+    return new DnsRecordHistoryLoader(
+      "Resolver",
+      this.get("id")!.toString(),
+      "dnsRecordHistory"
+    );
+  }
+
+  get resolverHistory(): ResolverHistoryLoader {
+    return new ResolverHistoryLoader(
+      "Resolver",
+      this.get("id")!.toString(),
+      "resolverHistory"
     );
   }
 
@@ -1830,6 +1854,24 @@ export class TextRecordLoader extends Entity {
   }
 }
 
+export class TextRecordHistoryLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): TextRecordHistory[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<TextRecordHistory[]>(value);
+  }
+}
+
 export class DnsRecordLoader extends Entity {
   _entity: string;
   _field: string;
@@ -1845,5 +1887,41 @@ export class DnsRecordLoader extends Entity {
   load(): DnsRecord[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<DnsRecord[]>(value);
+  }
+}
+
+export class DnsRecordHistoryLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): DnsRecordHistory[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<DnsRecordHistory[]>(value);
+  }
+}
+
+export class ResolverHistoryLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): ResolverHistory[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<ResolverHistory[]>(value);
   }
 }
