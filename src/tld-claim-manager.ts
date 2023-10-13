@@ -67,8 +67,11 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
   tldEntity.tokenId = event.params._tokenId;
   tldEntity.label = event.params._label;
   tldEntity.blockNumber = event.block.number;
-  tldEntity.transactionID = event.transaction.hash;
   tldEntity.resolver = resolverId;
+
+  tldEntity.blockNumber = event.block.number;
+  tldEntity.blockTimestamp = event.block.timestamp;
+  tldEntity.transactionHash = event.transaction.hash;
 
   tldEntity.save();
 }

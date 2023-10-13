@@ -258,6 +258,7 @@ export function handleTextChanged(event: TextChangedEvent): void {
     resolverEntity.save();
   }
 
+
   // Set the parent Resolver of this TextRecord
   textRecordEntity.resolver = resolverEntity.id;
 

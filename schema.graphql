@@ -11,8 +11,10 @@ type Tld @entity {
   label: String!
   "The block number of the event"
   blockNumber: BigInt!
-  "The transaction ID associated with the event"
-  transactionID: Bytes!
+  "Block timestamp when the settings were last updated"
+  blockTimestamp: BigInt
+  "Transaction hash of the last update"
+  transactionHash: Bytes
   "The sales settings for this TLD"
   saleSettings: SaleSettings @derivedFrom(field: "tld")
   "The array of SLDs associated with this TLD"
@@ -29,9 +31,9 @@ type Royalty @entity {
   "Unique identifier for the Royalty"
   id: ID!
   "The percentage of royalties to be paid out"
-  percentage: BigInt!
+  percentage: BigInt
   "The address to which royalties will be paid"
-  payoutAddress: Account!
+  payoutAddress: Account
 }
 
 type RoyaltyHistory @entity {
@@ -40,15 +42,15 @@ type RoyaltyHistory @entity {
   "The TLD to which this history item belongs"
   tld: Tld!
   "The percentage of the royalty"
-  percentage: BigInt!
+  percentage: BigInt
   "The payout address for the royalty"
-  payoutAddress: Account!
+  payoutAddress: Account
   "The block number of the event"
   blockNumber: BigInt!
-  "The transaction ID associated with the event"
-  transactionID: Bytes!
-  "The transaction datetime of the event"
-  transactionDateTime: BigInt!
+  "Block timestamp when the settings were last updated"
+  blockTimestamp: BigInt
+  "Transaction hash of the last update"
+  transactionHash: Bytes
 }
 
 type ResolverHistory @entity {
@@ -79,8 +81,10 @@ type Sld @entity {
   parentTld: Tld!
   "The block number of the event"
   blockNumber: BigInt!
-  "The transaction ID associated with the event"
-  transactionID: Bytes!
+  "Block timestamp when the settings were last updated"
+  blockTimestamp: BigInt
+  "Transaction hash of the last update"
+  transactionHash: Bytes
   "The expiry date of the SLD as a number"
   expiry: BigInt!
   "The resolver settings for this TLD"

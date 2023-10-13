@@ -22,95 +22,124 @@ For more information on the underlying technology, consult [The Graph Documentat
 ```graphql
 {
   tlds {
-    label
     id
-    claimant {
-      id
-    }
-    owner {
-      id
-      tlds {
-        id
-      }
-      slds {
-        id
-      }
-    }
-    resolver {
-      addresses{
-        id
-        cointype
-        address
-      }
-      textRecords{
-        key
-        value
-        resolver {
-          id
-        }
-      }
-      dnsRecords{
-        id
-        name
-        resource
-        record
-        resolver {
-          id
-        }
-      }
-      contenthash
-    }
     tokenId
+    label
     blockNumber
-    transactionID
+    blockTimestamp
+    transactionHash
     saleSettings {
+      id
       enabled
       prices
+      discounts
+      blockNumber
+      blockTimestamp
+      transactionHash
       premiumPrices {
+        id
         label
         price
       }
       reservedNames {
+        id
         label
-        claimant {
-          id
-        }
+        claimant
       }
     }
     slds {
       id
-      fullName
       label
-      
+      fullName
       owner {
+        id
+      }
+      registrant {
         id
       }
       parentTld {
         id
       }
       blockNumber
-      transactionID
+      blockTimestamp
+      transactionHash
       expiry
+      resolver {
+        id
+        addresses {
+          id
+          address
+          cointype
+        }
+        textRecords {
+          id
+          key
+          value
+        }
+        contenthash
+        dnsRecords {
+          id
+          node
+          name
+          resource
+          record
+        }
+        dnsZonehash
+        version
+        delegate {
+          id
+          delegate
+        }
+      }
     }
     royalty {
       id
+      percentage
       payoutAddress {
         id
       }
-      percentage
     }
     royaltyHistory {
       id
+      percentage
       payoutAddress {
         id
       }
-      percentage
       blockNumber
-      transactionID
-      transactionDateTime
+      blockTimestamp
+      transactionHash
+      blockTimestamp
+    }
+    resolver {
+      id
+      addresses {
+        id
+        address
+        cointype
+      }
+      textRecords {
+        id
+        key
+        value
+      }
+      contenthash
+      dnsRecords {
+        id
+        node
+        name
+        resource
+        record
+      }
+      dnsZonehash
+      version
+      delegate {
+        id
+        delegate
+      }
     }
   }
 }
+
 ```
 
 ## Installing and Running Graph Node Locally with Docker

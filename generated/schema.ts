@@ -115,17 +115,38 @@ export class Tld extends Entity {
     this.set("blockNumber", Value.fromBigInt(value));
   }
 
-  get transactionID(): Bytes {
-    let value = this.get("transactionID");
+  get blockTimestamp(): BigInt | null {
+    let value = this.get("blockTimestamp");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockTimestamp(value: BigInt | null) {
+    if (!value) {
+      this.unset("blockTimestamp");
+    } else {
+      this.set("blockTimestamp", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get transactionHash(): Bytes | null {
+    let value = this.get("transactionHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
     } else {
       return value.toBytes();
     }
   }
 
-  set transactionID(value: Bytes) {
-    this.set("transactionID", Value.fromBytes(value));
+  set transactionHash(value: Bytes | null) {
+    if (!value) {
+      this.unset("transactionHash");
+    } else {
+      this.set("transactionHash", Value.fromBytes(<Bytes>value));
+    }
   }
 
   get saleSettings(): SaleSettingsLoader {
@@ -218,30 +239,38 @@ export class Royalty extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get percentage(): BigInt {
+  get percentage(): BigInt | null {
     let value = this.get("percentage");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toBigInt();
     }
   }
 
-  set percentage(value: BigInt) {
-    this.set("percentage", Value.fromBigInt(value));
+  set percentage(value: BigInt | null) {
+    if (!value) {
+      this.unset("percentage");
+    } else {
+      this.set("percentage", Value.fromBigInt(<BigInt>value));
+    }
   }
 
-  get payoutAddress(): string {
+  get payoutAddress(): string | null {
     let value = this.get("payoutAddress");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toString();
     }
   }
 
-  set payoutAddress(value: string) {
-    this.set("payoutAddress", Value.fromString(value));
+  set payoutAddress(value: string | null) {
+    if (!value) {
+      this.unset("payoutAddress");
+    } else {
+      this.set("payoutAddress", Value.fromString(<string>value));
+    }
   }
 }
 
@@ -299,30 +328,38 @@ export class RoyaltyHistory extends Entity {
     this.set("tld", Value.fromString(value));
   }
 
-  get percentage(): BigInt {
+  get percentage(): BigInt | null {
     let value = this.get("percentage");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toBigInt();
     }
   }
 
-  set percentage(value: BigInt) {
-    this.set("percentage", Value.fromBigInt(value));
+  set percentage(value: BigInt | null) {
+    if (!value) {
+      this.unset("percentage");
+    } else {
+      this.set("percentage", Value.fromBigInt(<BigInt>value));
+    }
   }
 
-  get payoutAddress(): string {
+  get payoutAddress(): string | null {
     let value = this.get("payoutAddress");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toString();
     }
   }
 
-  set payoutAddress(value: string) {
-    this.set("payoutAddress", Value.fromString(value));
+  set payoutAddress(value: string | null) {
+    if (!value) {
+      this.unset("payoutAddress");
+    } else {
+      this.set("payoutAddress", Value.fromString(<string>value));
+    }
   }
 
   get blockNumber(): BigInt {
@@ -338,30 +375,38 @@ export class RoyaltyHistory extends Entity {
     this.set("blockNumber", Value.fromBigInt(value));
   }
 
-  get transactionID(): Bytes {
-    let value = this.get("transactionID");
+  get blockTimestamp(): BigInt | null {
+    let value = this.get("blockTimestamp");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBytes();
-    }
-  }
-
-  set transactionID(value: Bytes) {
-    this.set("transactionID", Value.fromBytes(value));
-  }
-
-  get transactionDateTime(): BigInt {
-    let value = this.get("transactionDateTime");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toBigInt();
     }
   }
 
-  set transactionDateTime(value: BigInt) {
-    this.set("transactionDateTime", Value.fromBigInt(value));
+  set blockTimestamp(value: BigInt | null) {
+    if (!value) {
+      this.unset("blockTimestamp");
+    } else {
+      this.set("blockTimestamp", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get transactionHash(): Bytes | null {
+    let value = this.get("transactionHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transactionHash(value: Bytes | null) {
+    if (!value) {
+      this.unset("transactionHash");
+    } else {
+      this.set("transactionHash", Value.fromBytes(<Bytes>value));
+    }
   }
 }
 
@@ -563,17 +608,38 @@ export class Sld extends Entity {
     this.set("blockNumber", Value.fromBigInt(value));
   }
 
-  get transactionID(): Bytes {
-    let value = this.get("transactionID");
+  get blockTimestamp(): BigInt | null {
+    let value = this.get("blockTimestamp");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockTimestamp(value: BigInt | null) {
+    if (!value) {
+      this.unset("blockTimestamp");
+    } else {
+      this.set("blockTimestamp", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get transactionHash(): Bytes | null {
+    let value = this.get("transactionHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
     } else {
       return value.toBytes();
     }
   }
 
-  set transactionID(value: Bytes) {
-    this.set("transactionID", Value.fromBytes(value));
+  set transactionHash(value: Bytes | null) {
+    if (!value) {
+      this.unset("transactionHash");
+    } else {
+      this.set("transactionHash", Value.fromBytes(<Bytes>value));
+    }
   }
 
   get expiry(): BigInt {

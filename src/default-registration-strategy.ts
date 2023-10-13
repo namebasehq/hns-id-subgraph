@@ -25,6 +25,10 @@ export function handleEnabledSet(event: EnabledSetEvent): void {
       saleSetting.tld = tldId; // Assign the tld field to the SaleSettings entity
     }
 
+    saleSetting.blockNumber = event.block.number;
+    saleSetting.blockTimestamp = event.block.timestamp;
+    saleSetting.transactionHash = event.transaction.hash;
+
     saleSetting.enabled = event.params._enabled;
     saleSetting.save();
   }
@@ -40,6 +44,9 @@ export function handleLengthCostSet(event: LengthCostSetEvent): void {
       saleSetting = new SaleSettings(tldId); // Initialize if doesn't exist
       saleSetting.tld = tldId; // Assign the tld field to the SaleSettings entity
     }
+    saleSetting.blockNumber = event.block.number;
+    saleSetting.blockTimestamp = event.block.timestamp;
+    saleSetting.transactionHash = event.transaction.hash;
 
     saleSetting.prices = event.params._prices;
     saleSetting.save();
@@ -60,6 +67,10 @@ export function handleMultiYearDiscountSet(
       saleSetting.tld = tldId; // Assign the tld field to the SaleSettings entity
     }
 
+    saleSetting.blockNumber = event.block.number;
+    saleSetting.blockTimestamp = event.block.timestamp;
+    saleSetting.transactionHash = event.transaction.hash;
+
     saleSetting.discounts = event.params._discounts;
     saleSetting.save();
   }
@@ -73,9 +84,13 @@ export function handlePremiumNameSet(event: PremiumNameSetEvent): void {
     saleSetting = new SaleSettings(tldId);
     saleSetting.tld = tldId;  // Set the relation to the TLD entity
     // Initialize other fields if necessary
-    saleSetting.save();
+
   }
 
+  saleSetting.blockNumber = event.block.number;
+  saleSetting.blockTimestamp = event.block.timestamp;
+  saleSetting.transactionHash = event.transaction.hash;
+    saleSetting.save();
   // Process the premium price
   let premiumPriceId = tldId.concat('-').concat(event.params._label);
   
@@ -105,9 +120,15 @@ export function handleReservedNameSet(event: ReservedNameSetEvent): void {
     saleSetting = new SaleSettings(tldId);
     saleSetting.tld = tldId;  // Set the relation to the TLD entity
     // Initialize other fields if necessary
-    saleSetting.save();
   }
+  
 
+  saleSetting.blockNumber = event.block.number;
+  saleSetting.blockTimestamp = event.block.timestamp;
+  saleSetting.transactionHash = event.transaction.hash;
+  saleSetting.save();
+
+  
   // Process the reserved name
   let reservedNameId = tldId.concat('-').concat(event.params._label);
 

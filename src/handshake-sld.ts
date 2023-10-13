@@ -32,12 +32,13 @@ export function handleRoyaltyPayoutAddressSet(event: RoyaltyPayoutAddressSetEven
       historyEntity.percentage = royaltyEntity.percentage;
       historyEntity.payoutAddress = event.params._payoutAddress.toHex();
       historyEntity.blockNumber = event.block.number;
-      historyEntity.transactionID = event.transaction.hash;
-      historyEntity.transactionDateTime = event.block.timestamp;
+      historyEntity.blockTimestamp = event.block.timestamp;
+      historyEntity.transactionHash = event.transaction.hash;
       historyEntity.save();
 
       // Update the current Royalty entity
       royaltyEntity.payoutAddress = event.params._payoutAddress.toHex();
+
       royaltyEntity.save();
     }
   }
@@ -56,8 +57,8 @@ export function handleRoyaltyPayoutAmountSet(event: RoyaltyPayoutAmountSetEvent)
       historyEntity.percentage = event.params._amount;
       historyEntity.payoutAddress = royaltyEntity.payoutAddress;
       historyEntity.blockNumber = event.block.number;
-      historyEntity.transactionID = event.transaction.hash;
-      historyEntity.transactionDateTime = event.block.timestamp;
+      historyEntity.blockTimestamp = event.block.timestamp;
+      historyEntity.transactionHash = event.transaction.hash;
       historyEntity.save();
 
       // Update the current Royalty entity

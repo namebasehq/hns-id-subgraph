@@ -81,7 +81,8 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     domain.registrant = account.id;
     domain.parentTld = parentTld.id; // we can set this here but will get overwritten by the transfer event
     domain.blockNumber = event.block.number;
-    domain.transactionID = event.transaction.hash;
+    domain.blockTimestamp = event.block.timestamp;
+    domain.transactionHash = event.transaction.hash;
     domain.expiry = event.params._expiry;
     domain.label = event.params._label;
     domain.save();
