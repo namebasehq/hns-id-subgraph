@@ -16,17 +16,22 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - AddrChanged
-        - AddressChanged
-        - ContenthashChanged
-        - DNSRecordChanged
-        - DNSRecordDeleted
-        - DNSZonehashChanged
-        - NameChanged
-        - ReverseClaimed
-        - TextChanged
-        - UpdatedDelegate
-        - VersionChanged
+        - Tld
+        - Royalty
+        - RoyaltyHistory
+        - ResolverHistory
+        - Sld
+        - SaleSettings
+        - Account
+        - Resolver
+        - Delegate
+        - Address
+        - TextRecord
+        - DnsRecord
+        - PremiumPrice
+        - ReservedName
+        - TextRecordHistory
+        - DnsRecordHistory
       abis:
         - name: DefaultResolver
           file: ./abis/DefaultResolver.json
@@ -66,13 +71,22 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - AllowedTldMintUpdate
-        - Initialized
-        - NewLabelValidator
-        - NewUsdOracle
-        - OwnershipTransferred
-        - TldClaimed
-        - UpdateAllowedTldManager
+        - Tld
+        - Royalty
+        - RoyaltyHistory
+        - ResolverHistory
+        - Sld
+        - SaleSettings
+        - Account
+        - Resolver
+        - Delegate
+        - Address
+        - TextRecord
+        - DnsRecord
+        - PremiumPrice
+        - ReservedName
+        - TextRecordHistory
+        - DnsRecordHistory
       abis:
         - name: TldClaimManager
           file: ./abis/TldClaimManager.json
@@ -92,12 +106,22 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - Approval
-        - ApprovalForAll
-        - HandshakeTldOwnershipTransferred
-        - RegistrationStrategySet
-        - ResolverSet
-        - Transfer
+        - Tld
+        - Royalty
+        - RoyaltyHistory
+        - ResolverHistory
+        - Sld
+        - SaleSettings
+        - Account
+        - Resolver
+        - Delegate
+        - Address
+        - TextRecord
+        - DnsRecord
+        - PremiumPrice
+        - ReservedName
+        - TextRecordHistory
+        - DnsRecordHistory
       abis:
         - name: HandshakeTld
           file: ./abis/HandshakeTld.json
@@ -121,10 +145,22 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - HandshakeSldResolverSet
-        - RoyaltyPayoutAddressSet
-        - RoyaltyPayoutAmountSet
-        - HandshakeSldTransfer
+        - Tld
+        - Royalty
+        - RoyaltyHistory
+        - ResolverHistory
+        - Sld
+        - SaleSettings
+        - Account
+        - Resolver
+        - Delegate
+        - Address
+        - TextRecord
+        - DnsRecord
+        - PremiumPrice
+        - ReservedName
+        - TextRecordHistory
+        - DnsRecordHistory
       abis:
         - name: HandshakeSld
           file: ./abis/HandshakeSld.json
@@ -150,18 +186,22 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - DiscountSet
-        - SldRegistrationManagerInitialized
-        - NewGracePeriod
-        - SldRegistrationManagerNewLabelValidator
-        - SldRegistrationManagerNewUsdOracle
-        - SldRegistrationManagerOwnershipTransferred
-        - PaymentSent
-        - RegisterSld
-        - RenewSld
+        - Tld
+        - Royalty
+        - RoyaltyHistory
+        - ResolverHistory
+        - Sld
+        - SaleSettings
         - Account
-        - Domain
-        - Registration
+        - Resolver
+        - Delegate
+        - Address
+        - TextRecord
+        - DnsRecord
+        - PremiumPrice
+        - ReservedName
+        - TextRecordHistory
+        - DnsRecordHistory
       abis:
         - name: SldRegistrationManager
           file: ./abis/SldRegistrationManager.json
@@ -197,11 +237,22 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - EnabledSet
-        - LengthCostSet
-        - MultiYearDiscountSet
-        - PremiumNameSet
-        - ReservedNameSet
+        - Tld
+        - Royalty
+        - RoyaltyHistory
+        - ResolverHistory
+        - Sld
+        - SaleSettings
+        - Account
+        - Resolver
+        - Delegate
+        - Address
+        - TextRecord
+        - DnsRecord
+        - PremiumPrice
+        - ReservedName
+        - TextRecordHistory
+        - DnsRecordHistory
       abis:
         - name: DefaultRegistrationStrategy
           file: ./abis/DefaultRegistrationStrategy.json

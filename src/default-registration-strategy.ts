@@ -50,6 +50,19 @@ export function handleMultiYearDiscountSet(
   event: MultiYearDiscountSetEvent
 ): void {
 
+  let tldId = event.params._tokenNamehash.toHexString();
+  let tld = Tld.load(tldId);
+
+  if (tld) {
+    let saleSetting = SaleSettings.load(tldId);
+    if (!saleSetting) {
+      saleSetting = new SaleSettings(tldId); // Initialize if doesn't exist
+      saleSetting.tld = tldId; // Assign the tld field to the SaleSettings entity
+    }
+
+    saleSetting.discounts = event.params._discounts;
+    saleSetting.save();
+  }
 }
 
 export function handlePremiumNameSet(event: PremiumNameSetEvent): void {
