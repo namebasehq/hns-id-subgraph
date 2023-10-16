@@ -2,9 +2,9 @@ type Tld @entity {
   "Unique identifier for the TLD"
   id: ID!
   "The account that claimed the TLD"
-  claimant: Account!
+  claimant: Account
   "The account that owns the TLD"
-  owner: Account!
+  owner: Account
   "The unique token ID associated with the TLD"
   tokenId: BigInt!
   "The label of the TLD"
@@ -20,7 +20,7 @@ type Tld @entity {
   "The array of SLDs associated with this TLD"
   slds: [Sld!] @derivedFrom(field: "parentTld")
   "The royalty settings for this TLD"
-  royalty: Royalty!
+  royalty: Royalty
   "The history of royalty changes for this TLD"
   royaltyHistory: [RoyaltyHistory!] @derivedFrom(field: "tld")
   "The resolver settings for this TLD"

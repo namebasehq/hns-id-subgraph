@@ -10,7 +10,6 @@ import {
   Transfer
 } from "../generated/HandshakeSld/HandshakeSld"
 import { RegisterSld, RenewSld } from "../generated/SldRegistrationManager/SldRegistrationManager";
-import { TransferSld } from "../generated/schema";
 
 export function createRegisterSldEvent(
   _tldNamehash: Bytes,

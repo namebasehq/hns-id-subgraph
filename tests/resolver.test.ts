@@ -1,44 +1,39 @@
-import { afterAll, assert, beforeAll, clearStore, describe, test } from "matchstick-as/assembly/index"
-import { Address, Bytes } from "@graphprotocol/graph-ts"
-import { handleAddrChanged } from "../src/resolver"
-import { createAddrChangedEvent } from "./resolver-utils"
+import { assert, describe, test, beforeAll, afterAll, clearStore } from "matchstick-as/assembly/index";
+import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
+import { 
+  handleAddressChanged,
+  handleContenthashChanged,
+  handleDNSRecordChanged,
+  handleDNSRecordDeleted,
+  handleDNSZonehashChanged,
+  handleTextChanged,
+  handleUpdatedDelegate
+} from "../src/default-resolver";
+import { createAddressChangedEvent, createContenthashChangedEvent, createDNSRecordChangedEvent, createDNSRecordDeletedEvent, createDNSZonehashChangedEvent, createTextChangedEvent, createUpdatedDelegateEvent } from "./resolver-utils";
 
-// Tests structure (matchstick-as >=0.5.0)
-// https://thegraph.com/docs/en/developer/matchstick/#tests-structure-0-5-0
-
-describe("Describe entity assertions", () => {
+describe("Resolver entity assertions", () => {
+  
   beforeAll(() => {
-    let node = Bytes.fromHexString("0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0")
-    let a = Address.fromString("0x0000000000000000000000000000000000000001")
-    let newAddrChangedEvent = createAddrChangedEvent(node, a)
-    handleAddrChanged(newAddrChangedEvent)
-  })
+    // Initialize with default values or mock events
+  });
 
   afterAll(() => {
-    clearStore()
-  })
+    clearStore();
+  });
 
-  // For more test scenarios, see:
-  // https://thegraph.com/docs/en/developer/matchstick/#write-a-unit-test
-
-  test("AddrChanged created and stored", () => {
-    assert.entityCount("AddrChanged", 1)
-
-    // 0xa16081f360e3847006db660bae1c6d1b2e17ec2a is the default address used in newMockEvent() function
-    assert.fieldEquals(
-      "AddrChanged",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "node",
-      "0x4f5b812789fc606be1b3b16908db13fc7a9adf7ca72641f84d75b47069d3d7f0"
-    )
-    assert.fieldEquals(
-      "AddrChanged",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "a",
-      "0x0000000000000000000000000000000000000001"
-    )
-
-    // More assert options:
-    // https://thegraph.com/docs/en/developer/matchstick/#asserts
-  })
-})
+  test("AddressChanged handler works correctly", () => {
+    // Mock event with three arguments
+    let mockEvent = createAddressChangedEvent(Bytes.fromHexString("0x123") as Bytes, BigInt.fromI32(60), Bytes.fromHexString("0x456") as Bytes);
+    
+    // Handle the mock event
+    handleAddressChanged(mockEvent);
+    
+    // Assertions
+    // Replace 'yourEntityID' with the actual entity ID, and 'expectedValue' with the value you expect to be set in the "Address" entity
+    assert.fieldEquals("Address", "yourEntityID", "yourAddressField", "expectedValue");
+    assert.entityCount("Address", 1);
+    assert.entityCount("ResolverHistory", 1);
+  });
+  
+  
+});

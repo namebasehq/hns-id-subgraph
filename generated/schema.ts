@@ -50,30 +50,38 @@ export class Tld extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get claimant(): string {
+  get claimant(): string | null {
     let value = this.get("claimant");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toString();
     }
   }
 
-  set claimant(value: string) {
-    this.set("claimant", Value.fromString(value));
+  set claimant(value: string | null) {
+    if (!value) {
+      this.unset("claimant");
+    } else {
+      this.set("claimant", Value.fromString(<string>value));
+    }
   }
 
-  get owner(): string {
+  get owner(): string | null {
     let value = this.get("owner");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toString();
     }
   }
 
-  set owner(value: string) {
-    this.set("owner", Value.fromString(value));
+  set owner(value: string | null) {
+    if (!value) {
+      this.unset("owner");
+    } else {
+      this.set("owner", Value.fromString(<string>value));
+    }
   }
 
   get tokenId(): BigInt {
@@ -161,17 +169,21 @@ export class Tld extends Entity {
     return new SldLoader("Tld", this.get("id")!.toString(), "slds");
   }
 
-  get royalty(): string {
+  get royalty(): string | null {
     let value = this.get("royalty");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toString();
     }
   }
 
-  set royalty(value: string) {
-    this.set("royalty", Value.fromString(value));
+  set royalty(value: string | null) {
+    if (!value) {
+      this.unset("royalty");
+    } else {
+      this.set("royalty", Value.fromString(<string>value));
+    }
   }
 
   get royaltyHistory(): RoyaltyHistoryLoader {

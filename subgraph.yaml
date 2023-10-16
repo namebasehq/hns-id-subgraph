@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: DefaultResolver
-    network: optimism-goerli
+    network: mainnet
     source:
-      address: "0x4Ba663871353123aA233859dDDdE3B8Af74c3B10"
+      address: "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c"
       abi: DefaultResolver
-      startBlock: 10275589
+      startBlock: 0
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -61,11 +61,11 @@ dataSources:
       file: ./src/default-resolver.ts
   - kind: ethereum
     name: TldClaimManager
-    network: optimism-goerli
+    network: mainnet
     source:
-      address: "0x82eba02627F0b67B0eabdE7e7c2390183AE4bF4D"
+      address: "0x0B306BF915C4d645ff596e518fAf3F9669b97016"
       abi: TldClaimManager
-      startBlock: 10275589
+      startBlock: 0
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -96,11 +96,11 @@ dataSources:
       file: ./src/tld-claim-manager.ts
   - kind: ethereum
     name: HandshakeTld
-    network: optimism-goerli
+    network: mainnet
     source:
-      address: "0xE6027c24e762e9dC41EDF1B31f97cb6B06d68Ff4"
+      address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0"
       abi: HandshakeTld
-      startBlock: 10275589
+      startBlock: 0
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -135,11 +135,11 @@ dataSources:
       file: ./src/handshake-tld.ts
   - kind: ethereum
     name: HandshakeSld
-    network: optimism-goerli
+    network: mainnet
     source:
-      address: "0x816402e0327735cbDdb7705Da94766e5B3a8A6fB"
+      address: "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"
       abi: HandshakeSld
-      startBlock: 10275589
+      startBlock: 0
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -176,11 +176,11 @@ dataSources:
       file: ./src/handshake-sld.ts
   - kind: ethereum
     name: SldRegistrationManager
-    network: optimism-goerli
+    network: mainnet
     source:
-      address: "0x529B2b5B576c27769Ae0aB811F1655012f756C00"
+      address: "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0"
       abi: SldRegistrationManager
-      startBlock: 10275589
+      startBlock: 0
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -227,11 +227,11 @@ dataSources:
       file: ./src/sld-registration-manager.ts
   - kind: ethereum
     name: DefaultRegistrationStrategy
-    network: optimism-goerli
+    network: mainnet
     source:
-      address: "0xB36F7dC9B46499509617f92cCa8a95BFE1F1dAf2"
+      address: "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82"
       abi: DefaultRegistrationStrategy
-      startBlock: 10275589
+      startBlock: 0
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -268,3 +268,4 @@ dataSources:
         - event: ReservedNameSet(indexed bytes32,indexed address,string)
           handler: handleReservedNameSet
       file: ./src/default-registration-strategy.ts
+ 

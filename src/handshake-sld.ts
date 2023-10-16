@@ -22,8 +22,8 @@ export function handleResolverSet(event: ResolverSetEvent): void {
 export function handleRoyaltyPayoutAddressSet(event: RoyaltyPayoutAddressSetEvent): void {
   let tldId = event.params._nftNamehash.toHexString();
   let tldEntity = Tld.load(tldId);
-  if (tldEntity) {
-    let royaltyEntity = Royalty.load(tldEntity.royalty);
+  if (tldEntity && tldEntity.royalty) {
+    let royaltyEntity = Royalty.load(tldEntity.royalty as string);
     if (royaltyEntity) {
       // Create a new RoyaltyHistory entity
       let historyId = event.transaction.hash.concatI32(event.logIndex.toI32()).toHex();
@@ -47,8 +47,8 @@ export function handleRoyaltyPayoutAddressSet(event: RoyaltyPayoutAddressSetEven
 export function handleRoyaltyPayoutAmountSet(event: RoyaltyPayoutAmountSetEvent): void {
   let tldId = event.params._nftNamehash.toHexString();
   let tldEntity = Tld.load(tldId);
-  if (tldEntity) {
-    let royaltyEntity = Royalty.load(tldEntity.royalty);
+  if (tldEntity && tldEntity.royalty) {
+    let royaltyEntity = Royalty.load(tldEntity.royalty as string);
     if (royaltyEntity) {
       // Create a new RoyaltyHistory entity
       let historyId = event.transaction.hash.concatI32(event.logIndex.toI32()).toHex();
