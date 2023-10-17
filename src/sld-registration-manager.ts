@@ -12,12 +12,13 @@ import {
 import {
   Account,
   Address,
+  RenewalEvent,
   Resolver,
   ResolverHistory,
   Sld,
   Tld,
 } from "../generated/schema";
-import { concat } from "./utils";
+import { concat, createOrUpdateResolver } from "./utils";
 import { BigInt, ByteArray, Bytes, crypto } from "@graphprotocol/graph-ts";
 import { HandshakeSld } from "../generated/HandshakeSld/HandshakeSld";
 
@@ -42,37 +43,19 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     // Construct the full domain name
     let fullName = label + "." + parentLabel;
 
-    // Create and save the resolver entity
     let resolverId = nameHash.toHexString();
-    let resolverEntity = new Resolver(resolverId);
-
-    // All EVM coin types. Can initialise other fields here if required.
-    const defaultCoinTypes = [60, 614, 9006, 966, 9001, 9000, 9005];
-
-    for (let i = 0; i < defaultCoinTypes.length; i++) {
-      let coinType = defaultCoinTypes[i];
-      let addressId = resolverId.concat("-").concat(coinType.toString());
-      let addressEntity = new Address(addressId);
-      addressEntity.cointype = BigInt.fromI32(coinType); // Using BigInt.fromI32
-      addressEntity.address = ""; // TODO: get owner or set using transfer event for the SLD
-      addressEntity.resolver = resolverEntity.id;
-      addressEntity.save();
-    }
-
-    // default version number
-    resolverEntity.version = BigInt.fromI32(0);
-
-    resolverEntity.save();
-
+    createOrUpdateResolver(resolverId, event.block.timestamp);
     // Create ResolverHistory Entity
     let resolverHistoryId = resolverId
       .concat("-")
       .concat(event.block.timestamp.toString());
     let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
-    resolverHistoryEntity.resolver = resolverEntity.id;
+    resolverHistoryEntity.resolver = resolverId;
     resolverHistoryEntity.changeType = "added";
     resolverHistoryEntity.changedAt = event.block.timestamp;
     resolverHistoryEntity.save();
+
+
 
     // Sld Entity
     let domain = new Sld(nameHash.toHex());
@@ -85,7 +68,11 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     domain.transactionHash = event.transaction.hash;
     domain.expiry = event.params._expiry;
     domain.label = event.params._label;
+    domain.resolver = resolverId;
     domain.save();
+
+
+
   }
 }
 
@@ -106,7 +93,7 @@ export function handleOwnershipTransferred(
 export function handlePaymentSent(event: PaymentSentEvent): void {}
 
 export function handleRenewSld(event: RenewSldEvent): void {
-  // Calculate nameHash same as handleRegisterSld
+  // Existing code for calculating nameHash
   let label = event.params._label;
   let parentHash = event.params._tldNamehash.toHexString();
   let labelHash = crypto.keccak256(ByteArray.fromUTF8(label));
@@ -118,9 +105,36 @@ export function handleRenewSld(event: RenewSldEvent): void {
   let sldEntity = Sld.load(nameHash.toHex());
 
   // If the Sld entity exists, update its expiry
-  // it should alwyas exist, but just in case
+  // it should always exist, but just in case
   if (sldEntity != null) {
     sldEntity.expiry = event.params._expiry;
+
+    // Create a new RenewalEvent entity
+    let renewalEventId =
+      event.transaction.hash.toHex() + "-" + event.logIndex.toString();
+    let renewalEvent = new RenewalEvent(renewalEventId);
+
+    let renewerAccountId = event.transaction.from.toHex();
+    let renewerAccount = Account.load(renewerAccountId);
+
+    if (!renewerAccount) {
+      renewerAccount = new Account(renewerAccountId);
+      renewerAccount.save();
+    }
+
+    // Populate RenewalEvent fields
+    renewalEvent.expiry = event.params._expiry;
+    renewalEvent.sld = sldEntity.id;
+    renewalEvent.owner = sldEntity.owner;
+    renewalEvent.renewer = renewerAccountId;
+    renewalEvent.blockNumber = event.block.number;
+    renewalEvent.blockTimestamp = event.block.timestamp;
+    renewalEvent.transactionHash = event.transaction.hash;
+
+    // Save RenewalEvent entity
+    renewalEvent.save();
+
+    // Save Sld entity (with updated expiry)
     sldEntity.save();
   }
 }

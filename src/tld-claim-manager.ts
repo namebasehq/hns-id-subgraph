@@ -8,6 +8,7 @@ import {
   ResolverHistory,
 } from "../generated/schema";
 import { BigInt, log } from "@graphprotocol/graph-ts";
+import { createOrUpdateResolver } from "./utils";
 
 export function handleTldClaimed(event: TldClaimedEvent): void {
   let tldId = event.params._tokenId.toHexString();
@@ -40,29 +41,8 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
 
   // Create and save the resolver entity
   let resolverId = event.params._tokenId.toHexString();
-  let resolverEntity = new Resolver(resolverId);
-  resolverEntity.version = BigInt.fromI32(0);  // Initialize with default version number
-  resolverEntity.save();
-
-  // Initialize addresses for all EVM coin types
-  const defaultCoinTypes = [60, 614, 9006, 966, 9001, 9000, 9005];
-  for (let i = 0; i < defaultCoinTypes.length; i++) {
-    let coinType = defaultCoinTypes[i];
-    let addressId = resolverId.concat("-").concat(coinType.toString());
-    let addressEntity = new Address(addressId);
-    addressEntity.cointype = BigInt.fromI32(coinType);
-    addressEntity.address = event.params._to.toHex();
-    addressEntity.resolver = resolverEntity.id;
-    addressEntity.save();
-  }
-
-  // Create ResolverHistory Entity
-  let resolverHistoryId = resolverId.concat("-").concat(event.block.timestamp.toString());
-  let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
-  resolverHistoryEntity.resolver = resolverEntity.id;
-  resolverHistoryEntity.changeType = "added";
-  resolverHistoryEntity.changedAt = event.block.timestamp;
-  resolverHistoryEntity.save();
+  createOrUpdateResolver(resolverId, event.block.timestamp);
+  tldEntity.resolver = resolverId;
 
   // Set claimant and owner fields
   tldEntity.claimant = claimantAccount.id;

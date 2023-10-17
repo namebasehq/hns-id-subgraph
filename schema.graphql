@@ -89,6 +89,20 @@ type Sld @entity {
   expiry: BigInt!
   "The resolver settings for this TLD"
   resolver: Resolver
+  "array of renewals of the SLD"
+  renewals: [RenewalEvent!]! @derivedFrom(field: "sld")
+}
+
+type RenewalEvent @entity {
+  id: ID!
+  expiry: BigInt!
+  sld: Sld!
+  owner: Account!
+  "The person who performed the renewal"
+  renewer: Account! 
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
 }
 
 type SaleSettings @entity {

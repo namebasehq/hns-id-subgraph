@@ -1,6 +1,6 @@
 // Import types and APIs from graph-ts
 import { BigInt, ByteArray, ethereum, log } from "@graphprotocol/graph-ts";
-import { Account, Sld, Tld } from "../generated/schema";
+import { Account, Address, Resolver, ResolverHistory, Sld, Tld } from "../generated/schema";
 
 // using TX hash + log index
 export function createEventID(event: ethereum.Event): string {
@@ -36,6 +36,33 @@ export function concat(a: ByteArray, b: ByteArray): ByteArray {
   // return out as ByteArray
   return changetype<ByteArray>(out);
 }
+
+export function createOrUpdateResolver(resolverId: string, blockTimestamp: BigInt): void {
+  let resolverEntity = new Resolver(resolverId);
+  resolverEntity.version = BigInt.fromI32(0);  // Initialize with default version number
+  resolverEntity.save();
+
+  // Initialize addresses for all EVM coin types
+  const defaultCoinTypes = [60, 614, 9006, 966, 9001, 9000, 9005];
+  for (let i = 0; i < defaultCoinTypes.length; i++) {
+    let coinType = defaultCoinTypes[i];
+    let addressId = resolverId.concat("-").concat(coinType.toString());
+    let addressEntity = new Address(addressId);
+    addressEntity.cointype = BigInt.fromI32(coinType);
+    addressEntity.address = "";  // TODO: Set address appropriately
+    addressEntity.resolver = resolverEntity.id;
+    addressEntity.save();
+  }
+
+  // Create ResolverHistory Entity
+  let resolverHistoryId = resolverId.concat("-").concat(blockTimestamp.toString());
+  let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
+  resolverHistoryEntity.resolver = resolverEntity.id;
+  resolverHistoryEntity.changeType = "added";
+  resolverHistoryEntity.changedAt = blockTimestamp;
+  resolverHistoryEntity.save();
+}
+
 
 export function byteArrayFromHex(s: string): ByteArray {
   if (s.length % 2 !== 0) {

@@ -683,6 +683,147 @@ export class Sld extends Entity {
       this.set("resolver", Value.fromString(<string>value));
     }
   }
+
+  get renewals(): RenewalEventLoader {
+    return new RenewalEventLoader(
+      "Sld",
+      this.get("id")!.toString(),
+      "renewals"
+    );
+  }
+}
+
+export class RenewalEvent extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save RenewalEvent entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type RenewalEvent must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("RenewalEvent", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): RenewalEvent | null {
+    return changetype<RenewalEvent | null>(
+      store.get_in_block("RenewalEvent", id)
+    );
+  }
+
+  static load(id: string): RenewalEvent | null {
+    return changetype<RenewalEvent | null>(store.get("RenewalEvent", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get expiry(): BigInt {
+    let value = this.get("expiry");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set expiry(value: BigInt) {
+    this.set("expiry", Value.fromBigInt(value));
+  }
+
+  get sld(): string {
+    let value = this.get("sld");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set sld(value: string) {
+    this.set("sld", Value.fromString(value));
+  }
+
+  get owner(): string {
+    let value = this.get("owner");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set owner(value: string) {
+    this.set("owner", Value.fromString(value));
+  }
+
+  get renewer(): string {
+    let value = this.get("renewer");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set renewer(value: string) {
+    this.set("renewer", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
+  get blockTimestamp(): BigInt {
+    let value = this.get("blockTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockTimestamp(value: BigInt) {
+    this.set("blockTimestamp", Value.fromBigInt(value));
+  }
+
+  get transactionHash(): Bytes {
+    let value = this.get("transactionHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transactionHash(value: Bytes) {
+    this.set("transactionHash", Value.fromBytes(value));
+  }
 }
 
 export class SaleSettings extends Entity {
@@ -1839,6 +1980,24 @@ export class RoyaltyHistoryLoader extends Entity {
   load(): RoyaltyHistory[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
     return changetype<RoyaltyHistory[]>(value);
+  }
+}
+
+export class RenewalEventLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): RenewalEvent[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<RenewalEvent[]>(value);
   }
 }
 
