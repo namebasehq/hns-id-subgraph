@@ -23,11 +23,25 @@ For more information on the underlying technology, consult [The Graph Documentat
 {
   tlds {
     id
+    claimant {
+      id
+    }
+    owner {
+      id
+      tlds {
+        id
+      }
+      slds {
+        id
+      }
+    }
     tokenId
     label
-    blockNumber
-    blockTimestamp
-    transactionHash
+    registrationBlockNumber
+    registrationBlockTimestamp
+    lastUpdateBlockNumber
+    lastUpdateTimestamp
+    transferCount
     saleSettings {
       id
       enabled
@@ -35,7 +49,6 @@ For more information on the underlying technology, consult [The Graph Documentat
       discounts
       blockNumber
       blockTimestamp
-      transactionHash
       premiumPrices {
         id
         label
@@ -57,13 +70,11 @@ For more information on the underlying technology, consult [The Graph Documentat
       registrant {
         id
       }
-      parentTld {
-        id
-      }
-      blockNumber
-      blockTimestamp
-      transactionHash
-      expiry
+      registrationBlockNumber
+      registrationTimestamp
+      lastUpdateBlockNumber
+      lastUpdateTimestamp
+      expirationTimestamp
       resolver {
         id
         addresses {
@@ -76,7 +87,6 @@ For more information on the underlying technology, consult [The Graph Documentat
           key
           value
         }
-        contenthash
         dnsRecords {
           id
           node
@@ -90,6 +100,33 @@ For more information on the underlying technology, consult [The Graph Documentat
           id
           delegate
         }
+      }
+      renewalCount
+      renewals {
+        id
+        expirationTimestamp
+        owner {
+          id
+        }
+        renewer {
+          id
+        }
+        blockNumber
+        blockTimestamp
+        transactionHash
+      }
+      transferCount
+      transfers {
+        id
+        oldOwner {
+          id
+        }
+        newOwner {
+          id
+        }
+        blockNumber
+        blockTimestamp
+        transactionHash
       }
     }
     royalty {
@@ -108,7 +145,6 @@ For more information on the underlying technology, consult [The Graph Documentat
       blockNumber
       blockTimestamp
       transactionHash
-      blockTimestamp
     }
     resolver {
       id
@@ -122,7 +158,6 @@ For more information on the underlying technology, consult [The Graph Documentat
         key
         value
       }
-      contenthash
       dnsRecords {
         id
         node
@@ -137,8 +172,21 @@ For more information on the underlying technology, consult [The Graph Documentat
         delegate
       }
     }
+    transfers {
+      id
+      oldOwner {
+        id
+      }
+      newOwner {
+        id
+      }
+      blockNumber
+      blockTimestamp
+      transactionHash
+    }
   }
 }
+
 
 ```
 
