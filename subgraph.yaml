@@ -6,11 +6,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: DefaultResolver
-    network: optimism-goerli
+    network: optimism
     source:
-      address: "0x4Ba663871353123aA233859dDDdE3B8Af74c3B10"
+      address: "0xDDa56f06D80f3D8E3E35159701A63753f39c3BCB"
       abi: DefaultResolver
-      startBlock: 10275589
+      startBlock: 108382221 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -61,11 +61,11 @@ dataSources:
       file: ./src/default-resolver.ts
   - kind: ethereum
     name: TldClaimManager
-    network: optimism-goerli
+    network: optimism
     source:
-      address: "0x82eba02627F0b67B0eabdE7e7c2390183AE4bF4D"
+      address: "0x9209397263427413817Afc6957A434cF62C02c68"
       abi: TldClaimManager
-      startBlock: 10275589
+      startBlock: 108382221 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -96,11 +96,11 @@ dataSources:
       file: ./src/tld-claim-manager.ts
   - kind: ethereum
     name: HandshakeTld
-    network: optimism-goerli
+    network: optimism
     source:
-      address: "0xE6027c24e762e9dC41EDF1B31f97cb6B06d68Ff4"
+      address: "0x01eBCf32e4b5da0167eaacEA1050B2be63122B6f"
       abi: HandshakeTld
-      startBlock: 10275589
+      startBlock: 108382221 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -135,32 +135,20 @@ dataSources:
       file: ./src/handshake-tld.ts
   - kind: ethereum
     name: HandshakeSld
-    network: optimism-goerli
+    network: optimism
     source:
-      address: "0x816402e0327735cbDdb7705Da94766e5B3a8A6fB"
+      address: "0x7963bfA8F8f914b9776ac6259a8C39965d26f42F"
       abi: HandshakeSld
-      startBlock: 10275589
+      startBlock: 108382221 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - Tld
-        - Royalty
-        - RoyaltyHistory
-        - ResolverHistory
-        - Sld
-        - SaleSettings
-        - Account
-        - Resolver
-        - Delegate
-        - Address
-        - TextRecord
-        - DnsRecord
-        - PremiumPrice
-        - ReservedName
-        - TextRecordHistory
-        - DnsRecordHistory
+        - HandshakeSldResolverSet
+        - RoyaltyPayoutAddressSet
+        - RoyaltyPayoutAmountSet
+        - HandshakeSldTransfer
       abis:
         - name: HandshakeSld
           file: ./abis/HandshakeSld.json
@@ -176,11 +164,11 @@ dataSources:
       file: ./src/handshake-sld.ts
   - kind: ethereum
     name: SldRegistrationManager
-    network: optimism-goerli
+    network: optimism
     source:
-      address: "0x529B2b5B576c27769Ae0aB811F1655012f756C00"
+      address: "0xfda87cc032cd641ac192027353e5b25261dfe6b3"
       abi: SldRegistrationManager
-      startBlock: 10275589
+      startBlock: 108382221 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -227,11 +215,11 @@ dataSources:
       file: ./src/sld-registration-manager.ts
   - kind: ethereum
     name: DefaultRegistrationStrategy
-    network: optimism-goerli
+    network: optimism
     source:
-      address: "0xB36F7dC9B46499509617f92cCa8a95BFE1F1dAf2"
+      address: "0x0F1143972197B63053709794f718e60599Ce4730"
       abi: DefaultRegistrationStrategy
-      startBlock: 10275589
+      startBlock: 108382221 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -268,3 +256,4 @@ dataSources:
         - event: ReservedNameSet(indexed bytes32,indexed address,string)
           handler: handleReservedNameSet
       file: ./src/default-registration-strategy.ts
+ 
