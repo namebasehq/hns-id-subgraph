@@ -8,7 +8,7 @@ For more information on the underlying technology, consult [The Graph Documentat
 
 ### Entities Diagram
 
-![Entities Diagram](./Tld_Entity_Hierarchy_v1.png)
+![Entities Diagram](./Tld_Entity_Hierarchy_v2.png)
 
 ## Table of Contents
 1. [Example Query](#example-query)
