@@ -9,12 +9,18 @@ type Tld @entity {
   tokenId: BigInt!
   "The label of the TLD"
   label: String!
-  "The block number of the event"
-  blockNumber: BigInt!
-  "Block timestamp when the settings were last updated"
-  blockTimestamp: BigInt
+  "The block number of the registration event"
+  registrationBlockNumber: BigInt!
+  "Block timestamp when the TLD was registered"
+  registrationBlockTimestamp: BigInt
+  "Transaction hash of the registration"
+  registrationTransactionHash: Bytes
+  "The block number of the last update event"
+  lastUpdateBlockNumber: BigInt!
+  "Block timestamp when the tld was last updated"
+  lastUpdateTimestamp: BigInt
   "Transaction hash of the last update"
-  transactionHash: Bytes
+  lastUpdateTransactionHash: Bytes
   "The sales settings for this TLD"
   saleSettings: SaleSettings @derivedFrom(field: "tld")
   "The array of SLDs associated with this TLD"
@@ -25,6 +31,10 @@ type Tld @entity {
   royaltyHistory: [RoyaltyHistory!] @derivedFrom(field: "tld")
   "The resolver settings for this TLD"
   resolver: Resolver
+  "Count of transfers"
+  transferCount: BigInt!
+  "array of transfers of the TLD"
+  transfers: [TldTransfer!]! @derivedFrom(field: "tld")
 }
 
 type Royalty @entity {
@@ -79,27 +89,59 @@ type Sld @entity {
   registrant: Account!
   "The parent TLD of this SLD"
   parentTld: Tld!
-  "The block number of the event"
-  blockNumber: BigInt!
-  "Block timestamp when the settings were last updated"
-  blockTimestamp: BigInt
+  "The block number of the registration event"
+  registrationBlockNumber: BigInt!
+  "Block timestamp when the sld was registered"
+  registrationTimestamp: BigInt
+  "Transaction hash of the registration"
+  registrationTransactionHash: Bytes
+  "The block number of the last update event"
+  lastUpdateBlockNumber: BigInt!
+  "Block timestamp when the sld was last updated"
+  lastUpdateTimestamp: BigInt
   "Transaction hash of the last update"
-  transactionHash: Bytes
+  lastUpdateTransactionHash: Bytes
   "The expiry date of the SLD as a number"
-  expiry: BigInt!
+  expirationTimestamp: BigInt!
   "The resolver settings for this TLD"
   resolver: Resolver
+  "Count of renewals of the SLD"
+  renewalCount: BigInt!
   "array of renewals of the SLD"
-  renewals: [RenewalEvent!]! @derivedFrom(field: "sld")
+  renewals: [Renewal!]! @derivedFrom(field: "sld")
+    "Count of transfers"
+  transferCount: BigInt!
+  "array of transfers of the SLD"
+  transfers: [SldTransfer!]! @derivedFrom(field: "sld")
 }
 
-type RenewalEvent @entity {
+type Renewal @entity {
   id: ID!
-  expiry: BigInt!
+  expirationTimestamp: BigInt!
   sld: Sld!
   owner: Account!
   "The person who performed the renewal"
   renewer: Account! 
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SldTransfer @entity {
+  id: ID!
+  sld: Sld!
+  oldOwner: Account!
+  newOwner: Account!
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type TldTransfer @entity {
+  id: ID!
+  tld: Tld!
+  oldOwner: Account!
+  newOwner: Account!
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

@@ -9,9 +9,11 @@ import {
   Royalty,
   RoyaltyHistory,
   Sld,
+  SldTransfer,
   Tld
 } from "../generated/schema"
 
+import { BigInt, ByteArray, Bytes, crypto } from "@graphprotocol/graph-ts";
 
 
 // TODO: will need to implement this
@@ -82,13 +84,42 @@ export function handleTransfer(event: TransferEvent): void {
     let newOwnerAccount = Account.load(newOwnerId);
     if (newOwnerAccount == null) {
       newOwnerAccount = new Account(newOwnerId);
+      newOwnerAccount.save();
     }
-    
-    // Other properties can be set or updated for the new owner account here
-    newOwnerAccount.save();
+
+    // Create or load the Account entity for the old owner
+    let oldOwnerId = event.params.from.toHex();
+    let oldOwnerAccount = Account.load(oldOwnerId);
+    if (oldOwnerAccount == null) {
+      oldOwnerAccount = new Account(oldOwnerId);
+      oldOwnerAccount.save();
+    }
 
     // Update the owner field on the Sld entity
     sld.owner = newOwnerAccount.id;
+    
+    // Update other fields on the Sld entity
+    sld.lastUpdateBlockNumber = event.block.number;
+    sld.lastUpdateTimestamp = event.block.timestamp;
+    sld.lastUpdateTransactionHash = event.transaction.hash;
+
+    // Increment the transferCount
+    sld.transferCount = sld.transferCount.plus(BigInt.fromI32(1));
+
+    // Create a new SldTransfer entity
+    let transferEventId = sld.id + "-" + sld.transferCount.toString();
+    let transferEvent = new SldTransfer(transferEventId);
+
+    // Populate SldTransfer fields
+    transferEvent.sld = sld.id;
+    transferEvent.oldOwner = oldOwnerAccount.id;
+    transferEvent.newOwner = newOwnerAccount.id;
+    transferEvent.blockNumber = event.block.number;
+    transferEvent.blockTimestamp = event.block.timestamp;
+    transferEvent.transactionHash = event.transaction.hash;
+
+    // Save SldTransfer entity
+    transferEvent.save();
 
     // Save the updated Sld entity back to the store
     sld.save();

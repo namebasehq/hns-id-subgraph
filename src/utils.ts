@@ -37,7 +37,7 @@ export function concat(a: ByteArray, b: ByteArray): ByteArray {
   return changetype<ByteArray>(out);
 }
 
-export function createOrUpdateResolver(resolverId: string, blockTimestamp: BigInt): void {
+export function createOrUpdateResolver(resolverId: string, blockTimestamp: BigInt, addr: string): void {
   let resolverEntity = new Resolver(resolverId);
   resolverEntity.version = BigInt.fromI32(0);  // Initialize with default version number
   resolverEntity.save();
@@ -49,7 +49,7 @@ export function createOrUpdateResolver(resolverId: string, blockTimestamp: BigIn
     let addressId = resolverId.concat("-").concat(coinType.toString());
     let addressEntity = new Address(addressId);
     addressEntity.cointype = BigInt.fromI32(coinType);
-    addressEntity.address = "";  // TODO: Set address appropriately
+    addressEntity.address = addr;
     addressEntity.resolver = resolverEntity.id;
     addressEntity.save();
   }

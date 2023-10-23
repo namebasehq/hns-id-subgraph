@@ -110,8 +110,8 @@ export class Tld extends Entity {
     this.set("label", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
-    let value = this.get("blockNumber");
+  get registrationBlockNumber(): BigInt {
+    let value = this.get("registrationBlockNumber");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -119,12 +119,12 @@ export class Tld extends Entity {
     }
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set registrationBlockNumber(value: BigInt) {
+    this.set("registrationBlockNumber", Value.fromBigInt(value));
   }
 
-  get blockTimestamp(): BigInt | null {
-    let value = this.get("blockTimestamp");
+  get registrationBlockTimestamp(): BigInt | null {
+    let value = this.get("registrationBlockTimestamp");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -132,16 +132,16 @@ export class Tld extends Entity {
     }
   }
 
-  set blockTimestamp(value: BigInt | null) {
+  set registrationBlockTimestamp(value: BigInt | null) {
     if (!value) {
-      this.unset("blockTimestamp");
+      this.unset("registrationBlockTimestamp");
     } else {
-      this.set("blockTimestamp", Value.fromBigInt(<BigInt>value));
+      this.set("registrationBlockTimestamp", Value.fromBigInt(<BigInt>value));
     }
   }
 
-  get transactionHash(): Bytes | null {
-    let value = this.get("transactionHash");
+  get registrationTransactionHash(): Bytes | null {
+    let value = this.get("registrationTransactionHash");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -149,11 +149,58 @@ export class Tld extends Entity {
     }
   }
 
-  set transactionHash(value: Bytes | null) {
+  set registrationTransactionHash(value: Bytes | null) {
     if (!value) {
-      this.unset("transactionHash");
+      this.unset("registrationTransactionHash");
     } else {
-      this.set("transactionHash", Value.fromBytes(<Bytes>value));
+      this.set("registrationTransactionHash", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get lastUpdateBlockNumber(): BigInt {
+    let value = this.get("lastUpdateBlockNumber");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set lastUpdateBlockNumber(value: BigInt) {
+    this.set("lastUpdateBlockNumber", Value.fromBigInt(value));
+  }
+
+  get lastUpdateTimestamp(): BigInt | null {
+    let value = this.get("lastUpdateTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set lastUpdateTimestamp(value: BigInt | null) {
+    if (!value) {
+      this.unset("lastUpdateTimestamp");
+    } else {
+      this.set("lastUpdateTimestamp", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get lastUpdateTransactionHash(): Bytes | null {
+    let value = this.get("lastUpdateTransactionHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set lastUpdateTransactionHash(value: Bytes | null) {
+    if (!value) {
+      this.unset("lastUpdateTransactionHash");
+    } else {
+      this.set("lastUpdateTransactionHash", Value.fromBytes(<Bytes>value));
     }
   }
 
@@ -209,6 +256,27 @@ export class Tld extends Entity {
     } else {
       this.set("resolver", Value.fromString(<string>value));
     }
+  }
+
+  get transferCount(): BigInt {
+    let value = this.get("transferCount");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set transferCount(value: BigInt) {
+    this.set("transferCount", Value.fromBigInt(value));
+  }
+
+  get transfers(): TldTransferLoader {
+    return new TldTransferLoader(
+      "Tld",
+      this.get("id")!.toString(),
+      "transfers"
+    );
   }
 }
 
@@ -607,8 +675,8 @@ export class Sld extends Entity {
     this.set("parentTld", Value.fromString(value));
   }
 
-  get blockNumber(): BigInt {
-    let value = this.get("blockNumber");
+  get registrationBlockNumber(): BigInt {
+    let value = this.get("registrationBlockNumber");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -616,12 +684,12 @@ export class Sld extends Entity {
     }
   }
 
-  set blockNumber(value: BigInt) {
-    this.set("blockNumber", Value.fromBigInt(value));
+  set registrationBlockNumber(value: BigInt) {
+    this.set("registrationBlockNumber", Value.fromBigInt(value));
   }
 
-  get blockTimestamp(): BigInt | null {
-    let value = this.get("blockTimestamp");
+  get registrationTimestamp(): BigInt | null {
+    let value = this.get("registrationTimestamp");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -629,16 +697,16 @@ export class Sld extends Entity {
     }
   }
 
-  set blockTimestamp(value: BigInt | null) {
+  set registrationTimestamp(value: BigInt | null) {
     if (!value) {
-      this.unset("blockTimestamp");
+      this.unset("registrationTimestamp");
     } else {
-      this.set("blockTimestamp", Value.fromBigInt(<BigInt>value));
+      this.set("registrationTimestamp", Value.fromBigInt(<BigInt>value));
     }
   }
 
-  get transactionHash(): Bytes | null {
-    let value = this.get("transactionHash");
+  get registrationTransactionHash(): Bytes | null {
+    let value = this.get("registrationTransactionHash");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
@@ -646,16 +714,16 @@ export class Sld extends Entity {
     }
   }
 
-  set transactionHash(value: Bytes | null) {
+  set registrationTransactionHash(value: Bytes | null) {
     if (!value) {
-      this.unset("transactionHash");
+      this.unset("registrationTransactionHash");
     } else {
-      this.set("transactionHash", Value.fromBytes(<Bytes>value));
+      this.set("registrationTransactionHash", Value.fromBytes(<Bytes>value));
     }
   }
 
-  get expiry(): BigInt {
-    let value = this.get("expiry");
+  get lastUpdateBlockNumber(): BigInt {
+    let value = this.get("lastUpdateBlockNumber");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -663,8 +731,55 @@ export class Sld extends Entity {
     }
   }
 
-  set expiry(value: BigInt) {
-    this.set("expiry", Value.fromBigInt(value));
+  set lastUpdateBlockNumber(value: BigInt) {
+    this.set("lastUpdateBlockNumber", Value.fromBigInt(value));
+  }
+
+  get lastUpdateTimestamp(): BigInt | null {
+    let value = this.get("lastUpdateTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set lastUpdateTimestamp(value: BigInt | null) {
+    if (!value) {
+      this.unset("lastUpdateTimestamp");
+    } else {
+      this.set("lastUpdateTimestamp", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get lastUpdateTransactionHash(): Bytes | null {
+    let value = this.get("lastUpdateTransactionHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set lastUpdateTransactionHash(value: Bytes | null) {
+    if (!value) {
+      this.unset("lastUpdateTransactionHash");
+    } else {
+      this.set("lastUpdateTransactionHash", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get expirationTimestamp(): BigInt {
+    let value = this.get("expirationTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set expirationTimestamp(value: BigInt) {
+    this.set("expirationTimestamp", Value.fromBigInt(value));
   }
 
   get resolver(): string | null {
@@ -684,16 +799,46 @@ export class Sld extends Entity {
     }
   }
 
-  get renewals(): RenewalEventLoader {
-    return new RenewalEventLoader(
+  get renewalCount(): BigInt {
+    let value = this.get("renewalCount");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set renewalCount(value: BigInt) {
+    this.set("renewalCount", Value.fromBigInt(value));
+  }
+
+  get renewals(): RenewalLoader {
+    return new RenewalLoader("Sld", this.get("id")!.toString(), "renewals");
+  }
+
+  get transferCount(): BigInt {
+    let value = this.get("transferCount");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set transferCount(value: BigInt) {
+    this.set("transferCount", Value.fromBigInt(value));
+  }
+
+  get transfers(): SldTransferLoader {
+    return new SldTransferLoader(
       "Sld",
       this.get("id")!.toString(),
-      "renewals"
+      "transfers"
     );
   }
 }
 
-export class RenewalEvent extends Entity {
+export class Renewal extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -701,24 +846,22 @@ export class RenewalEvent extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save RenewalEvent entity without an ID");
+    assert(id != null, "Cannot save Renewal entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type RenewalEvent must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type Renewal must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("RenewalEvent", id.toString(), this);
+      store.set("Renewal", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: string): RenewalEvent | null {
-    return changetype<RenewalEvent | null>(
-      store.get_in_block("RenewalEvent", id)
-    );
+  static loadInBlock(id: string): Renewal | null {
+    return changetype<Renewal | null>(store.get_in_block("Renewal", id));
   }
 
-  static load(id: string): RenewalEvent | null {
-    return changetype<RenewalEvent | null>(store.get("RenewalEvent", id));
+  static load(id: string): Renewal | null {
+    return changetype<Renewal | null>(store.get("Renewal", id));
   }
 
   get id(): string {
@@ -734,8 +877,8 @@ export class RenewalEvent extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get expiry(): BigInt {
-    let value = this.get("expiry");
+  get expirationTimestamp(): BigInt {
+    let value = this.get("expirationTimestamp");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -743,8 +886,8 @@ export class RenewalEvent extends Entity {
     }
   }
 
-  set expiry(value: BigInt) {
-    this.set("expiry", Value.fromBigInt(value));
+  set expirationTimestamp(value: BigInt) {
+    this.set("expirationTimestamp", Value.fromBigInt(value));
   }
 
   get sld(): string {
@@ -784,6 +927,246 @@ export class RenewalEvent extends Entity {
 
   set renewer(value: string) {
     this.set("renewer", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
+  get blockTimestamp(): BigInt {
+    let value = this.get("blockTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockTimestamp(value: BigInt) {
+    this.set("blockTimestamp", Value.fromBigInt(value));
+  }
+
+  get transactionHash(): Bytes {
+    let value = this.get("transactionHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transactionHash(value: Bytes) {
+    this.set("transactionHash", Value.fromBytes(value));
+  }
+}
+
+export class SldTransfer extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save SldTransfer entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type SldTransfer must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("SldTransfer", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): SldTransfer | null {
+    return changetype<SldTransfer | null>(
+      store.get_in_block("SldTransfer", id)
+    );
+  }
+
+  static load(id: string): SldTransfer | null {
+    return changetype<SldTransfer | null>(store.get("SldTransfer", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get sld(): string {
+    let value = this.get("sld");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set sld(value: string) {
+    this.set("sld", Value.fromString(value));
+  }
+
+  get oldOwner(): string {
+    let value = this.get("oldOwner");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set oldOwner(value: string) {
+    this.set("oldOwner", Value.fromString(value));
+  }
+
+  get newOwner(): string {
+    let value = this.get("newOwner");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set newOwner(value: string) {
+    this.set("newOwner", Value.fromString(value));
+  }
+
+  get blockNumber(): BigInt {
+    let value = this.get("blockNumber");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockNumber(value: BigInt) {
+    this.set("blockNumber", Value.fromBigInt(value));
+  }
+
+  get blockTimestamp(): BigInt {
+    let value = this.get("blockTimestamp");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set blockTimestamp(value: BigInt) {
+    this.set("blockTimestamp", Value.fromBigInt(value));
+  }
+
+  get transactionHash(): Bytes {
+    let value = this.get("transactionHash");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBytes();
+    }
+  }
+
+  set transactionHash(value: Bytes) {
+    this.set("transactionHash", Value.fromBytes(value));
+  }
+}
+
+export class TldTransfer extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save TldTransfer entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type TldTransfer must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("TldTransfer", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): TldTransfer | null {
+    return changetype<TldTransfer | null>(
+      store.get_in_block("TldTransfer", id)
+    );
+  }
+
+  static load(id: string): TldTransfer | null {
+    return changetype<TldTransfer | null>(store.get("TldTransfer", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get tld(): string {
+    let value = this.get("tld");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set tld(value: string) {
+    this.set("tld", Value.fromString(value));
+  }
+
+  get oldOwner(): string {
+    let value = this.get("oldOwner");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set oldOwner(value: string) {
+    this.set("oldOwner", Value.fromString(value));
+  }
+
+  get newOwner(): string {
+    let value = this.get("newOwner");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set newOwner(value: string) {
+    this.set("newOwner", Value.fromString(value));
   }
 
   get blockNumber(): BigInt {
@@ -1983,7 +2366,7 @@ export class RoyaltyHistoryLoader extends Entity {
   }
 }
 
-export class RenewalEventLoader extends Entity {
+export class TldTransferLoader extends Entity {
   _entity: string;
   _field: string;
   _id: string;
@@ -1995,9 +2378,45 @@ export class RenewalEventLoader extends Entity {
     this._field = field;
   }
 
-  load(): RenewalEvent[] {
+  load(): TldTransfer[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
-    return changetype<RenewalEvent[]>(value);
+    return changetype<TldTransfer[]>(value);
+  }
+}
+
+export class RenewalLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): Renewal[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<Renewal[]>(value);
+  }
+}
+
+export class SldTransferLoader extends Entity {
+  _entity: string;
+  _field: string;
+  _id: string;
+
+  constructor(entity: string, id: string, field: string) {
+    super();
+    this._entity = entity;
+    this._id = id;
+    this._field = field;
+  }
+
+  load(): SldTransfer[] {
+    let value = store.loadRelated(this._entity, this._id, this._field);
+    return changetype<SldTransfer[]>(value);
   }
 }
 

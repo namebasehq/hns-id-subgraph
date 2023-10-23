@@ -1,11 +1,7 @@
 import { TldClaimed as TldClaimedEvent } from "../generated/TldClaimManager/TldClaimManager";
 import {
   Account,
-  Resolver,
-  Royalty,
   Tld,
-  Address,
-  ResolverHistory,
 } from "../generated/schema";
 import { BigInt, log } from "@graphprotocol/graph-ts";
 import { createOrUpdateResolver } from "./utils";
@@ -18,15 +14,13 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
     log.info('Creating new TLD entity for ID: {}', [tldId]);
     tldEntity = new Tld(tldId);
     // Initialize other properties of tldEntity
-    tldEntity.label = "";  // Example initialization
+    tldEntity.label = "";  
     tldEntity.tokenId = event.params._tokenId;
-    tldEntity.blockNumber = event.block.number;
-    tldEntity.blockTimestamp = event.block.timestamp;
-    tldEntity.transactionHash = event.transaction.hash;
-    // Add other initializations here
-  } else {
-    log.info('TLD entity found for ID: {}', [tldId]);
-  }
+    tldEntity.transferCount = BigInt.fromI32(0);
+    tldEntity.registrationBlockNumber = event.block.number;
+    tldEntity.registrationBlockTimestamp = event.block.timestamp;
+    tldEntity.registrationTransactionHash = event.transaction.hash;   
+  } 
 
   // Ensure the claimant account entity exists
   let claimantAccountId = event.params._to.toHex();
@@ -35,13 +29,11 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
     log.info('Creating new claimant account: {}', [claimantAccountId]);
     claimantAccount = new Account(claimantAccountId);
     claimantAccount.save();
-  } else {
-    log.info('Claimant account already exists: {}', [claimantAccountId]);
   }
 
   // Create and save the resolver entity
   let resolverId = event.params._tokenId.toHexString();
-  createOrUpdateResolver(resolverId, event.block.timestamp);
+  createOrUpdateResolver(resolverId, event.block.timestamp, claimantAccount.id);
   tldEntity.resolver = resolverId;
 
   // Set claimant and owner fields
@@ -51,9 +43,9 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
   // Set other non-nullable fields
   tldEntity.tokenId = event.params._tokenId;
   tldEntity.label = event.params._label;
-  tldEntity.blockNumber = event.block.number;
-  tldEntity.blockTimestamp = event.block.timestamp;
-  tldEntity.transactionHash = event.transaction.hash;
+  tldEntity.registrationBlockNumber = event.block.number;
+  tldEntity.registrationBlockTimestamp = event.block.timestamp;
+  tldEntity.registrationTransactionHash = event.transaction.hash;
   tldEntity.resolver = resolverId;
 
   tldEntity.save();
