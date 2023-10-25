@@ -35,6 +35,8 @@ type Tld @entity {
   transferCount: BigInt!
   "array of transfers of the TLD"
   transfers: [TldTransfer!]! @derivedFrom(field: "tld")
+  "Current version number of the Resolver"
+  resolverVersion: BigInt!
 }
 
 type Royalty @entity {
@@ -113,6 +115,8 @@ type Sld @entity {
   transferCount: BigInt!
   "array of transfers of the SLD"
   transfers: [SldTransfer!]! @derivedFrom(field: "sld")
+  "Current version number of the Resolver"
+  resolverVersion: BigInt!
 }
 
 type Renewal @entity {
@@ -199,8 +203,6 @@ type Resolver @entity {
   resolverHistory: [ResolverHistory!]! @derivedFrom(field: "resolver")
   "DNS Zone hash associated with this Resolver"
   dnsZonehash: Bytes
-  "Current version number of the Resolver"
-  version: BigInt!
   "Current delegate address for the domain/owner combination"
   delegate: Delegate
 }

@@ -21,18 +21,20 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
     tldEntity.registrationBlockTimestamp = event.block.timestamp;
     tldEntity.registrationTransactionHash = event.transaction.hash;   
   } 
+  else{
+    tldEntity.resolverVersion = BigInt.fromI32(0);
+  }
 
-  // Ensure the claimant account entity exists
   let claimantAccountId = event.params._to.toHex();
   let claimantAccount = Account.load(claimantAccountId);
   if (!claimantAccount) {
-    log.info('Creating new claimant account: {}', [claimantAccountId]);
+
     claimantAccount = new Account(claimantAccountId);
     claimantAccount.save();
   }
 
   // Create and save the resolver entity
-  let resolverId = event.params._tokenId.toHexString();
+  let resolverId = event.params._tokenId.toHexString() + "-" + tldEntity.resolverVersion.toString();
   createOrUpdateResolver(resolverId, event.block.timestamp, claimantAccount.id);
   tldEntity.resolver = resolverId;
 
@@ -47,7 +49,6 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
   tldEntity.registrationBlockTimestamp = event.block.timestamp;
   tldEntity.registrationTransactionHash = event.transaction.hash;
   tldEntity.resolver = resolverId;
-
   tldEntity.save();
 
   log.info('Saved TLD entity: {}', [tldId]);

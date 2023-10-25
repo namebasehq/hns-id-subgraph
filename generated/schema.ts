@@ -278,6 +278,19 @@ export class Tld extends Entity {
       "transfers"
     );
   }
+
+  get resolverVersion(): BigInt {
+    let value = this.get("resolverVersion");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set resolverVersion(value: BigInt) {
+    this.set("resolverVersion", Value.fromBigInt(value));
+  }
 }
 
 export class Royalty extends Entity {
@@ -835,6 +848,19 @@ export class Sld extends Entity {
       this.get("id")!.toString(),
       "transfers"
     );
+  }
+
+  get resolverVersion(): BigInt {
+    let value = this.get("resolverVersion");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set resolverVersion(value: BigInt) {
+    this.set("resolverVersion", Value.fromBigInt(value));
   }
 }
 
@@ -1545,19 +1571,6 @@ export class Resolver extends Entity {
     } else {
       this.set("dnsZonehash", Value.fromBytes(<Bytes>value));
     }
-  }
-
-  get version(): BigInt {
-    let value = this.get("version");
-    if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
-    } else {
-      return value.toBigInt();
-    }
-  }
-
-  set version(value: BigInt) {
-    this.set("version", Value.fromBigInt(value));
   }
 
   get delegate(): string | null {

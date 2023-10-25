@@ -44,7 +44,15 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     // Construct the full domain name
     let fullName = label + "." + parentLabel;
 
-    let resolverId = nameHash.toHexString();
+    let domain = Sld.load(nameHash.toHex());
+    
+    if(!domain) {
+      domain = new Sld(nameHash.toHex());
+      domain.resolverVersion = BigInt.fromI32(0);
+    }
+
+
+    let resolverId = nameHash.toHexString() + "-" + domain.resolverVersion.toString();
     createOrUpdateResolver(resolverId, event.block.timestamp, account.id);
     // Create ResolverHistory Entity
     let resolverHistoryId = resolverId
@@ -57,9 +65,6 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     resolverHistoryEntity.save();
 
 
-
-    // Sld Entity
-    let domain = new Sld(nameHash.toHex());
     domain.renewalCount = BigInt.fromI32(0);
     domain.fullName = fullName;
     domain.owner = account.id;
@@ -75,6 +80,7 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     domain.label = event.params._label;
     domain.resolver = resolverId;
     domain.transferCount = BigInt.fromI32(0);
+
     domain.save();
 
   }

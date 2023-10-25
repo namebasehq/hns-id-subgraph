@@ -39,7 +39,6 @@ export function concat(a: ByteArray, b: ByteArray): ByteArray {
 
 export function createOrUpdateResolver(resolverId: string, blockTimestamp: BigInt, addr: string): void {
   let resolverEntity = new Resolver(resolverId);
-  resolverEntity.version = BigInt.fromI32(0);  // Initialize with default version number
   resolverEntity.save();
 
   // Initialize addresses for all EVM coin types
