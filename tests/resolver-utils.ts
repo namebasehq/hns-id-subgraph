@@ -186,7 +186,7 @@ export function createReverseClaimedEvent(
 
 export function createTextChangedEvent(
   node: Bytes,
-  indexedKey: string,
+  indexedKey: Bytes,
   key: string,
   value: string
 ): TextChanged {
@@ -198,7 +198,7 @@ export function createTextChangedEvent(
     new ethereum.EventParam("node", ethereum.Value.fromFixedBytes(node))
   )
   textChangedEvent.parameters.push(
-    new ethereum.EventParam("indexedKey", ethereum.Value.fromString(indexedKey))
+    new ethereum.EventParam("indexedKey", ethereum.Value.fromFixedBytes(indexedKey))
   )
   textChangedEvent.parameters.push(
     new ethereum.EventParam("key", ethereum.Value.fromString(key))

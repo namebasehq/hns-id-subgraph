@@ -1,18 +1,28 @@
 {
   "name": "hns-id",
-  "license": "UNLICENSED",
+  "version": "0.2.0",
+  "repository": "https://github.com/namebasehq/hns-id-subgraph",
+  "license": "MIT",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ hns-id",
-    "create-local": "graph create --node http://localhost:8020/ hns-id",
-    "remove-local": "graph remove --node http://localhost:8020/ hns-id",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 hns-id",
+    "predeploy": "dotenv -e .env && graph codegen && graph build",
+    "deploy:local": "npm run predeploy && graph deploy --node $LOCAL_NODE --ipfs $LOCAL_IPFS hns-id",
+    "deploy:goerli": "npm run predeploy && graph deploy --node $GOERLI_NODE hns-id",
+    "deploy:mainnet": "npm run predeploy && graph deploy --node $MAINNET_NODE hns-id",
+    "create-local": "graph create --node $LOCAL_NODE hns-id",
+    "remove-local": "graph remove --node $LOCAL_NODE hns-id",
     "test": "graph test"
   },
-  "dependencies": {
-    "@graphprotocol/graph-cli": "0.57.0",
-    "@graphprotocol/graph-ts": "0.30.0"
+  "devDependencies": {
+    "@graphprotocol/graph-cli": "^0.51.2",
+    "@graphprotocol/graph-ts": "^0.31.0",
+    "assemblyscript": "^0.19.0",
+    "dotenv-cli": "^7.3.0",
+    "matchstick-as": "^0.5.2",
+    "typescript": "^4.9.4"
   },
-  "devDependencies": { "matchstick-as": "0.5.0" }
+  "dependencies": {
+    "dotenv": "^16.3.1"
+  }
 }

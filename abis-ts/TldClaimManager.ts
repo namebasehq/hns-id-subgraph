@@ -93,19 +93,19 @@ export const abi = [
       {
         indexed: true,
         internalType: "address",
-        name: "_to",
+        name: "to",
         type: "address",
       },
       {
         indexed: true,
         internalType: "uint256",
-        name: "_id",
+        name: "tokenId",
         type: "uint256",
       },
       {
         indexed: false,
         internalType: "string",
-        name: "_label",
+        name: "label",
         type: "string",
       },
     ],
