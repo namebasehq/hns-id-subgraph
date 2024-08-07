@@ -1,4 +1,34 @@
 {
+  "optimism-sepolia": {
+    "DefaultResolver": {
+      "address": "0x342d6524829bedfF5Ce9f56cd56d5baAcf3dbC58",
+      "startBlock": 3778191
+    },
+    "HandshakeSld": {
+      "address": "0x816402e0327735cbDdb7705Da94766e5B3a8A6fB",
+      "startBlock": 3778191
+    },
+    "HandshakeTld": {
+      "address": "0xE6027c24e762e9dC41EDF1B31f97cb6B06d68Ff4",
+      "startBlock": 3778191
+    },
+    "ISldRegistrationStrategy": {
+      "address": "0xB36F7dC9B46499509617f92cCa8a95BFE1F1dAf2",
+      "startBlock": 3778191
+    },
+    "SldCommitIntent": {
+      "address": "0x47E807D9Cf0db4c642aDCf54a88f000da28Fc228",
+      "startBlock": 3778191
+    },
+    "SldRegistrationManager": {
+      "address": "0x529B2b5B576c27769Ae0aB811F1655012f756C00",
+      "startBlock": 3778191
+    },
+    "TldClaimManager": {
+      "address": "0x82eba02627F0b67B0eabdE7e7c2390183AE4bF4D",
+      "startBlock": 3778191
+    }
+  },
   "optimism": {
     "HandshakeTld": {
       "address": "0x01eBCf32e4b5da0167eaacEA1050B2be63122B6f",

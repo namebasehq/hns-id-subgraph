@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class EnabledSet extends ethereum.Event {
@@ -132,7 +132,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
   static bind(address: Address): DefaultRegistrationStrategy {
     return new DefaultRegistrationStrategy(
       "DefaultRegistrationStrategy",
-      address
+      address,
     );
   }
 
@@ -141,7 +141,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
     _parentNamehash: Bytes,
     _label: string,
     _registrationLength: BigInt,
-    _isRenewal: boolean
+    _isRenewal: boolean,
   ): BigInt {
     let result = super.call(
       "getPriceInDollars",
@@ -151,8 +151,8 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
         ethereum.Value.fromFixedBytes(_parentNamehash),
         ethereum.Value.fromString(_label),
         ethereum.Value.fromUnsignedBigInt(_registrationLength),
-        ethereum.Value.fromBoolean(_isRenewal)
-      ]
+        ethereum.Value.fromBoolean(_isRenewal),
+      ],
     );
 
     return result[0].toBigInt();
@@ -163,7 +163,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
     _parentNamehash: Bytes,
     _label: string,
     _registrationLength: BigInt,
-    _isRenewal: boolean
+    _isRenewal: boolean,
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "getPriceInDollars",
@@ -173,8 +173,8 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
         ethereum.Value.fromFixedBytes(_parentNamehash),
         ethereum.Value.fromString(_label),
         ethereum.Value.fromUnsignedBigInt(_registrationLength),
-        ethereum.Value.fromBoolean(_isRenewal)
-      ]
+        ethereum.Value.fromBoolean(_isRenewal),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -185,7 +185,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
 
   isEnabled(param0: Bytes): boolean {
     let result = super.call("isEnabled", "isEnabled(bytes32):(bool)", [
-      ethereum.Value.fromFixedBytes(param0)
+      ethereum.Value.fromFixedBytes(param0),
     ]);
 
     return result[0].toBoolean();
@@ -193,7 +193,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
 
   try_isEnabled(param0: Bytes): ethereum.CallResult<boolean> {
     let result = super.tryCall("isEnabled", "isEnabled(bytes32):(bool)", [
-      ethereum.Value.fromFixedBytes(param0)
+      ethereum.Value.fromFixedBytes(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -208,8 +208,8 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
       "lengthCost(bytes32,uint256):(uint256)",
       [
         ethereum.Value.fromFixedBytes(param0),
-        ethereum.Value.fromUnsignedBigInt(param1)
-      ]
+        ethereum.Value.fromUnsignedBigInt(param1),
+      ],
     );
 
     return result[0].toBigInt();
@@ -221,8 +221,8 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
       "lengthCost(bytes32,uint256):(uint256)",
       [
         ethereum.Value.fromFixedBytes(param0),
-        ethereum.Value.fromUnsignedBigInt(param1)
-      ]
+        ethereum.Value.fromUnsignedBigInt(param1),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -237,8 +237,8 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
       "multiYearDiscount(bytes32,uint256):(uint256)",
       [
         ethereum.Value.fromFixedBytes(param0),
-        ethereum.Value.fromUnsignedBigInt(param1)
-      ]
+        ethereum.Value.fromUnsignedBigInt(param1),
+      ],
     );
 
     return result[0].toBigInt();
@@ -246,15 +246,15 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
 
   try_multiYearDiscount(
     param0: Bytes,
-    param1: BigInt
+    param1: BigInt,
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "multiYearDiscount",
       "multiYearDiscount(bytes32,uint256):(uint256)",
       [
         ethereum.Value.fromFixedBytes(param0),
-        ethereum.Value.fromUnsignedBigInt(param1)
-      ]
+        ethereum.Value.fromUnsignedBigInt(param1),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -265,7 +265,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
 
   multicall(data: Array<Bytes>): Array<Bytes> {
     let result = super.call("multicall", "multicall(bytes[]):(bytes[])", [
-      ethereum.Value.fromBytesArray(data)
+      ethereum.Value.fromBytesArray(data),
     ]);
 
     return result[0].toBytesArray();
@@ -273,7 +273,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
 
   try_multicall(data: Array<Bytes>): ethereum.CallResult<Array<Bytes>> {
     let result = super.tryCall("multicall", "multicall(bytes[]):(bytes[])", [
-      ethereum.Value.fromBytesArray(data)
+      ethereum.Value.fromBytesArray(data),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -288,8 +288,8 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
       "multicallWithNodeCheck(bytes32,bytes[]):(bytes[])",
       [
         ethereum.Value.fromFixedBytes(nodehash),
-        ethereum.Value.fromBytesArray(data)
-      ]
+        ethereum.Value.fromBytesArray(data),
+      ],
     );
 
     return result[0].toBytesArray();
@@ -297,15 +297,15 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
 
   try_multicallWithNodeCheck(
     nodehash: Bytes,
-    data: Array<Bytes>
+    data: Array<Bytes>,
   ): ethereum.CallResult<Array<Bytes>> {
     let result = super.tryCall(
       "multicallWithNodeCheck",
       "multicallWithNodeCheck(bytes32,bytes[]):(bytes[])",
       [
         ethereum.Value.fromFixedBytes(nodehash),
-        ethereum.Value.fromBytesArray(data)
-      ]
+        ethereum.Value.fromBytesArray(data),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -316,7 +316,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
 
   premiumNames(param0: Bytes): BigInt {
     let result = super.call("premiumNames", "premiumNames(bytes32):(uint256)", [
-      ethereum.Value.fromFixedBytes(param0)
+      ethereum.Value.fromFixedBytes(param0),
     ]);
 
     return result[0].toBigInt();
@@ -326,7 +326,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
     let result = super.tryCall(
       "premiumNames",
       "premiumNames(bytes32):(uint256)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -339,7 +339,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
     let result = super.call(
       "registrationManager",
       "registrationManager():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -349,7 +349,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
     let result = super.tryCall(
       "registrationManager",
       "registrationManager():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -362,7 +362,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
     let result = super.call(
       "reservedNames",
       "reservedNames(bytes32):(address)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
 
     return result[0].toAddress();
@@ -372,7 +372,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
     let result = super.tryCall(
       "reservedNames",
       "reservedNames(bytes32):(address)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -385,7 +385,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
     let result = super.call(
       "supportsInterface",
       "supportsInterface(bytes4):(bool)",
-      [ethereum.Value.fromFixedBytes(interfaceId)]
+      [ethereum.Value.fromFixedBytes(interfaceId)],
     );
 
     return result[0].toBoolean();
@@ -395,7 +395,7 @@ export class DefaultRegistrationStrategy extends ethereum.SmartContract {
     let result = super.tryCall(
       "supportsInterface",
       "supportsInterface(bytes4):(bool)",
-      [ethereum.Value.fromFixedBytes(interfaceId)]
+      [ethereum.Value.fromFixedBytes(interfaceId)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();

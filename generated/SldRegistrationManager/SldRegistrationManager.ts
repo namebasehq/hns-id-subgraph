@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class DiscountSet extends ethereum.Event {
@@ -33,7 +33,7 @@ export class DiscountSet__Params {
 
   get _discount(): DiscountSet_discountStruct {
     return changetype<DiscountSet_discountStruct>(
-      this._event.parameters[2].value.toTuple()
+      this._event.parameters[2].value.toTuple(),
     );
   }
 }
@@ -244,7 +244,7 @@ export class SldRegistrationManager__addressDiscountsResult {
     value1: BigInt,
     value2: i32,
     value3: boolean,
-    value4: boolean
+    value4: boolean,
   ) {
     this.value0 = value0;
     this.value1 = value1;
@@ -259,7 +259,7 @@ export class SldRegistrationManager__addressDiscountsResult {
     map.set("value1", ethereum.Value.fromUnsignedBigInt(this.value1));
     map.set(
       "value2",
-      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value2))
+      ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(this.value2)),
     );
     map.set("value3", ethereum.Value.fromBoolean(this.value3));
     map.set("value4", ethereum.Value.fromBoolean(this.value4));
@@ -328,7 +328,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     let result = super.call(
       "DOMAIN_SEPARATOR",
       "DOMAIN_SEPARATOR():(bytes32)",
-      []
+      [],
     );
 
     return result[0].toBytes();
@@ -338,7 +338,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "DOMAIN_SEPARATOR",
       "DOMAIN_SEPARATOR():(bytes32)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -349,7 +349,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
 
   ValidSigner(param0: Address): boolean {
     let result = super.call("ValidSigner", "ValidSigner(address):(bool)", [
-      ethereum.Value.fromAddress(param0)
+      ethereum.Value.fromAddress(param0),
     ]);
 
     return result[0].toBoolean();
@@ -357,7 +357,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
 
   try_ValidSigner(param0: Address): ethereum.CallResult<boolean> {
     let result = super.tryCall("ValidSigner", "ValidSigner(address):(bool)", [
-      ethereum.Value.fromAddress(param0)
+      ethereum.Value.fromAddress(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -368,15 +368,15 @@ export class SldRegistrationManager extends ethereum.SmartContract {
 
   addressDiscounts(
     param0: Bytes,
-    param1: Address
+    param1: Address,
   ): SldRegistrationManager__addressDiscountsResult {
     let result = super.call(
       "addressDiscounts",
       "addressDiscounts(bytes32,address):(uint80,uint80,uint8,bool,bool)",
       [
         ethereum.Value.fromFixedBytes(param0),
-        ethereum.Value.fromAddress(param1)
-      ]
+        ethereum.Value.fromAddress(param1),
+      ],
     );
 
     return new SldRegistrationManager__addressDiscountsResult(
@@ -384,21 +384,21 @@ export class SldRegistrationManager extends ethereum.SmartContract {
       result[1].toBigInt(),
       result[2].toI32(),
       result[3].toBoolean(),
-      result[4].toBoolean()
+      result[4].toBoolean(),
     );
   }
 
   try_addressDiscounts(
     param0: Bytes,
-    param1: Address
+    param1: Address,
   ): ethereum.CallResult<SldRegistrationManager__addressDiscountsResult> {
     let result = super.tryCall(
       "addressDiscounts",
       "addressDiscounts(bytes32,address):(uint80,uint80,uint8,bool,bool)",
       [
         ethereum.Value.fromFixedBytes(param0),
-        ethereum.Value.fromAddress(param1)
-      ]
+        ethereum.Value.fromAddress(param1),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -410,8 +410,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
         value[1].toBigInt(),
         value[2].toI32(),
         value[3].toBoolean(),
-        value[4].toBoolean()
-      )
+        value[4].toBoolean(),
+      ),
     );
   }
 
@@ -420,7 +420,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     subdomainHash: Bytes,
     v: i32,
     r: Bytes,
-    s: Bytes
+    s: Bytes,
   ): Address {
     let result = super.call(
       "checkSignatureValid",
@@ -430,8 +430,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
         ethereum.Value.fromFixedBytes(subdomainHash),
         ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(v)),
         ethereum.Value.fromFixedBytes(r),
-        ethereum.Value.fromFixedBytes(s)
-      ]
+        ethereum.Value.fromFixedBytes(s),
+      ],
     );
 
     return result[0].toAddress();
@@ -442,7 +442,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     subdomainHash: Bytes,
     v: i32,
     r: Bytes,
-    s: Bytes
+    s: Bytes,
   ): ethereum.CallResult<Address> {
     let result = super.tryCall(
       "checkSignatureValid",
@@ -452,8 +452,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
         ethereum.Value.fromFixedBytes(subdomainHash),
         ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(v)),
         ethereum.Value.fromFixedBytes(r),
-        ethereum.Value.fromFixedBytes(s)
-      ]
+        ethereum.Value.fromFixedBytes(s),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -481,7 +481,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     let result = super.call(
       "feeWalletPayoutAddress",
       "feeWalletPayoutAddress():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -491,7 +491,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "feeWalletPayoutAddress",
       "feeWalletPayoutAddress():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -506,7 +506,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     _parentNamehash: Bytes,
     _label: string,
     _registrationLength: BigInt,
-    _isRenewal: boolean
+    _isRenewal: boolean,
   ): BigInt {
     let result = super.call(
       "getRegistrationBasePrice",
@@ -517,8 +517,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
         ethereum.Value.fromFixedBytes(_parentNamehash),
         ethereum.Value.fromString(_label),
         ethereum.Value.fromUnsignedBigInt(_registrationLength),
-        ethereum.Value.fromBoolean(_isRenewal)
-      ]
+        ethereum.Value.fromBoolean(_isRenewal),
+      ],
     );
 
     return result[0].toBigInt();
@@ -530,7 +530,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     _parentNamehash: Bytes,
     _label: string,
     _registrationLength: BigInt,
-    _isRenewal: boolean
+    _isRenewal: boolean,
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "getRegistrationBasePrice",
@@ -541,8 +541,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
         ethereum.Value.fromFixedBytes(_parentNamehash),
         ethereum.Value.fromString(_label),
         ethereum.Value.fromUnsignedBigInt(_registrationLength),
-        ethereum.Value.fromBoolean(_isRenewal)
-      ]
+        ethereum.Value.fromBoolean(_isRenewal),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -557,8 +557,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
       "getRegistrationHash(address,bytes32):(bytes32)",
       [
         ethereum.Value.fromAddress(buyer),
-        ethereum.Value.fromFixedBytes(subdomainHash)
-      ]
+        ethereum.Value.fromFixedBytes(subdomainHash),
+      ],
     );
 
     return result[0].toBytes();
@@ -566,15 +566,15 @@ export class SldRegistrationManager extends ethereum.SmartContract {
 
   try_getRegistrationHash(
     buyer: Address,
-    subdomainHash: Bytes
+    subdomainHash: Bytes,
   ): ethereum.CallResult<Bytes> {
     let result = super.tryCall(
       "getRegistrationHash",
       "getRegistrationHash(address,bytes32):(bytes32)",
       [
         ethereum.Value.fromAddress(buyer),
-        ethereum.Value.fromFixedBytes(subdomainHash)
-      ]
+        ethereum.Value.fromFixedBytes(subdomainHash),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -588,7 +588,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     _addr: Address,
     _parentNamehash: Bytes,
     _label: string,
-    _registrationLength: BigInt
+    _registrationLength: BigInt,
   ): BigInt {
     let result = super.call(
       "getRegistrationPrice",
@@ -598,8 +598,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
         ethereum.Value.fromAddress(_addr),
         ethereum.Value.fromFixedBytes(_parentNamehash),
         ethereum.Value.fromString(_label),
-        ethereum.Value.fromUnsignedBigInt(_registrationLength)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_registrationLength),
+      ],
     );
 
     return result[0].toBigInt();
@@ -610,7 +610,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     _addr: Address,
     _parentNamehash: Bytes,
     _label: string,
-    _registrationLength: BigInt
+    _registrationLength: BigInt,
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "getRegistrationPrice",
@@ -620,8 +620,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
         ethereum.Value.fromAddress(_addr),
         ethereum.Value.fromFixedBytes(_parentNamehash),
         ethereum.Value.fromString(_label),
-        ethereum.Value.fromUnsignedBigInt(_registrationLength)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_registrationLength),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -634,7 +634,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     _addr: Address,
     _parentNamehash: Bytes,
     _label: string,
-    _registrationLength: BigInt
+    _registrationLength: BigInt,
   ): BigInt {
     let result = super.call(
       "getRenewalPrice",
@@ -643,8 +643,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
         ethereum.Value.fromAddress(_addr),
         ethereum.Value.fromFixedBytes(_parentNamehash),
         ethereum.Value.fromString(_label),
-        ethereum.Value.fromUnsignedBigInt(_registrationLength)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_registrationLength),
+      ],
     );
 
     return result[0].toBigInt();
@@ -654,7 +654,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     _addr: Address,
     _parentNamehash: Bytes,
     _label: string,
-    _registrationLength: BigInt
+    _registrationLength: BigInt,
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "getRenewalPrice",
@@ -663,8 +663,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
         ethereum.Value.fromAddress(_addr),
         ethereum.Value.fromFixedBytes(_parentNamehash),
         ethereum.Value.fromString(_label),
-        ethereum.Value.fromUnsignedBigInt(_registrationLength)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_registrationLength),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -677,7 +677,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     _addr: Address,
     _parentNamehash: Bytes,
     _label: string,
-    _registrationLength: BigInt
+    _registrationLength: BigInt,
   ): BigInt {
     let result = super.call(
       "getRenewalPricePerDay",
@@ -686,8 +686,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
         ethereum.Value.fromAddress(_addr),
         ethereum.Value.fromFixedBytes(_parentNamehash),
         ethereum.Value.fromString(_label),
-        ethereum.Value.fromUnsignedBigInt(_registrationLength)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_registrationLength),
+      ],
     );
 
     return result[0].toBigInt();
@@ -697,7 +697,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     _addr: Address,
     _parentNamehash: Bytes,
     _label: string,
-    _registrationLength: BigInt
+    _registrationLength: BigInt,
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "getRenewalPricePerDay",
@@ -706,8 +706,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
         ethereum.Value.fromAddress(_addr),
         ethereum.Value.fromFixedBytes(_parentNamehash),
         ethereum.Value.fromString(_label),
-        ethereum.Value.fromUnsignedBigInt(_registrationLength)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_registrationLength),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -720,19 +720,19 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     let result = super.call(
       "getTenYearGuarenteedPricing",
       "getTenYearGuarenteedPricing(bytes32):(uint80[10])",
-      [ethereum.Value.fromFixedBytes(_sldNamehash)]
+      [ethereum.Value.fromFixedBytes(_sldNamehash)],
     );
 
     return result[0].toBigIntArray();
   }
 
   try_getTenYearGuarenteedPricing(
-    _sldNamehash: Bytes
+    _sldNamehash: Bytes,
   ): ethereum.CallResult<Array<BigInt>> {
     let result = super.tryCall(
       "getTenYearGuarenteedPricing",
       "getTenYearGuarenteedPricing(bytes32):(uint80[10])",
-      [ethereum.Value.fromFixedBytes(_sldNamehash)]
+      [ethereum.Value.fromFixedBytes(_sldNamehash)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -745,7 +745,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     let result = super.call(
       "getWeiValueOfDollar",
       "getWeiValueOfDollar():(uint256)",
-      []
+      [],
     );
 
     return result[0].toBigInt();
@@ -755,7 +755,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "getWeiValueOfDollar",
       "getWeiValueOfDollar():(uint256)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -774,7 +774,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "globalStrategy",
       "globalStrategy():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -808,7 +808,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "labelValidator",
       "labelValidator():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -836,7 +836,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     let result = super.call(
       "percentCommission",
       "percentCommission():(uint256)",
-      []
+      [],
     );
 
     return result[0].toBigInt();
@@ -846,7 +846,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "percentCommission",
       "percentCommission():(uint256)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -861,8 +861,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
       "pricesAtRegistration(bytes32,uint256):(uint80)",
       [
         ethereum.Value.fromFixedBytes(param0),
-        ethereum.Value.fromUnsignedBigInt(param1)
-      ]
+        ethereum.Value.fromUnsignedBigInt(param1),
+      ],
     );
 
     return result[0].toBigInt();
@@ -870,15 +870,15 @@ export class SldRegistrationManager extends ethereum.SmartContract {
 
   try_pricesAtRegistration(
     param0: Bytes,
-    param1: BigInt
+    param1: BigInt,
   ): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "pricesAtRegistration",
       "pricesAtRegistration(bytes32,uint256):(uint80)",
       [
         ethereum.Value.fromFixedBytes(param0),
-        ethereum.Value.fromUnsignedBigInt(param1)
-      ]
+        ethereum.Value.fromUnsignedBigInt(param1),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -903,28 +903,28 @@ export class SldRegistrationManager extends ethereum.SmartContract {
   }
 
   sldRegistrationHistory(
-    param0: Bytes
+    param0: Bytes,
   ): SldRegistrationManager__sldRegistrationHistoryResult {
     let result = super.call(
       "sldRegistrationHistory",
       "sldRegistrationHistory(bytes32):(uint80,uint80,uint96)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
 
     return new SldRegistrationManager__sldRegistrationHistoryResult(
       result[0].toBigInt(),
       result[1].toBigInt(),
-      result[2].toBigInt()
+      result[2].toBigInt(),
     );
   }
 
   try_sldRegistrationHistory(
-    param0: Bytes
+    param0: Bytes,
   ): ethereum.CallResult<SldRegistrationManager__sldRegistrationHistoryResult> {
     let result = super.tryCall(
       "sldRegistrationHistory",
       "sldRegistrationHistory(bytes32):(uint80,uint80,uint96)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -934,8 +934,8 @@ export class SldRegistrationManager extends ethereum.SmartContract {
       new SldRegistrationManager__sldRegistrationHistoryResult(
         value[0].toBigInt(),
         value[1].toBigInt(),
-        value[2].toBigInt()
-      )
+        value[2].toBigInt(),
+      ),
     );
   }
 
@@ -943,7 +943,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     let result = super.call(
       "subdomainRegistrationNonce",
       "subdomainRegistrationNonce(bytes32):(uint256)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
 
     return result[0].toBigInt();
@@ -953,7 +953,7 @@ export class SldRegistrationManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "subdomainRegistrationNonce",
       "subdomainRegistrationNonce(bytes32):(uint256)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -1301,9 +1301,7 @@ export class SetAddressDiscountsCall__Inputs {
   }
 
   get _discounts(): Array<SetAddressDiscountsCall_discountsStruct> {
-    return this._call.inputValues[2].value.toTupleArray<
-      SetAddressDiscountsCall_discountsStruct
-    >();
+    return this._call.inputValues[2].value.toTupleArray<SetAddressDiscountsCall_discountsStruct>();
   }
 }
 

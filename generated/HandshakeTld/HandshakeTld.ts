@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class Approval extends ethereum.Event {
@@ -186,7 +186,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   balanceOf(owner: Address): BigInt {
     let result = super.call("balanceOf", "balanceOf(address):(uint256)", [
-      ethereum.Value.fromAddress(owner)
+      ethereum.Value.fromAddress(owner),
     ]);
 
     return result[0].toBigInt();
@@ -194,7 +194,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   try_balanceOf(owner: Address): ethereum.CallResult<BigInt> {
     let result = super.tryCall("balanceOf", "balanceOf(address):(uint256)", [
-      ethereum.Value.fromAddress(owner)
+      ethereum.Value.fromAddress(owner),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -222,7 +222,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.call(
       "defaultResolver",
       "defaultResolver():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -232,7 +232,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.tryCall(
       "defaultResolver",
       "defaultResolver():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -243,7 +243,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   exists(tokenId: BigInt): boolean {
     let result = super.call("exists", "exists(uint256):(bool)", [
-      ethereum.Value.fromUnsignedBigInt(tokenId)
+      ethereum.Value.fromUnsignedBigInt(tokenId),
     ]);
 
     return result[0].toBoolean();
@@ -251,7 +251,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   try_exists(tokenId: BigInt): ethereum.CallResult<boolean> {
     let result = super.tryCall("exists", "exists(uint256):(bool)", [
-      ethereum.Value.fromUnsignedBigInt(tokenId)
+      ethereum.Value.fromUnsignedBigInt(tokenId),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -262,7 +262,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   expiry(_namehash: Bytes): BigInt {
     let result = super.call("expiry", "expiry(bytes32):(uint256)", [
-      ethereum.Value.fromFixedBytes(_namehash)
+      ethereum.Value.fromFixedBytes(_namehash),
     ]);
 
     return result[0].toBigInt();
@@ -270,7 +270,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   try_expiry(_namehash: Bytes): ethereum.CallResult<BigInt> {
     let result = super.tryCall("expiry", "expiry(bytes32):(uint256)", [
-      ethereum.Value.fromFixedBytes(_namehash)
+      ethereum.Value.fromFixedBytes(_namehash),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -281,7 +281,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   getApproved(tokenId: BigInt): Address {
     let result = super.call("getApproved", "getApproved(uint256):(address)", [
-      ethereum.Value.fromUnsignedBigInt(tokenId)
+      ethereum.Value.fromUnsignedBigInt(tokenId),
     ]);
 
     return result[0].toAddress();
@@ -291,7 +291,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.tryCall(
       "getApproved",
       "getApproved(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(tokenId)]
+      [ethereum.Value.fromUnsignedBigInt(tokenId)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -304,7 +304,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.call(
       "isApprovedForAll",
       "isApprovedForAll(address,address):(bool)",
-      [ethereum.Value.fromAddress(owner), ethereum.Value.fromAddress(operator)]
+      [ethereum.Value.fromAddress(owner), ethereum.Value.fromAddress(operator)],
     );
 
     return result[0].toBoolean();
@@ -312,12 +312,12 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   try_isApprovedForAll(
     owner: Address,
-    operator: Address
+    operator: Address,
   ): ethereum.CallResult<boolean> {
     let result = super.tryCall(
       "isApprovedForAll",
       "isApprovedForAll(address,address):(bool)",
-      [ethereum.Value.fromAddress(owner), ethereum.Value.fromAddress(operator)]
+      [ethereum.Value.fromAddress(owner), ethereum.Value.fromAddress(operator)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -332,8 +332,8 @@ export class HandshakeTld extends ethereum.SmartContract {
       "isApprovedOrOwner(address,uint256):(bool)",
       [
         ethereum.Value.fromAddress(_operator),
-        ethereum.Value.fromUnsignedBigInt(_id)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_id),
+      ],
     );
 
     return result[0].toBoolean();
@@ -341,15 +341,15 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   try_isApprovedOrOwner(
     _operator: Address,
-    _id: BigInt
+    _id: BigInt,
   ): ethereum.CallResult<boolean> {
     let result = super.tryCall(
       "isApprovedOrOwner",
       "isApprovedOrOwner(address,uint256):(bool)",
       [
         ethereum.Value.fromAddress(_operator),
-        ethereum.Value.fromUnsignedBigInt(_id)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_id),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -390,7 +390,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   name1(_namehash: Bytes): string {
     let result = super.call("name", "name(bytes32):(string)", [
-      ethereum.Value.fromFixedBytes(_namehash)
+      ethereum.Value.fromFixedBytes(_namehash),
     ]);
 
     return result[0].toString();
@@ -398,7 +398,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   try_name1(_namehash: Bytes): ethereum.CallResult<string> {
     let result = super.tryCall("name", "name(bytes32):(string)", [
-      ethereum.Value.fromFixedBytes(_namehash)
+      ethereum.Value.fromFixedBytes(_namehash),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -411,7 +411,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.call(
       "namehashToLabelMap",
       "namehashToLabelMap(bytes32):(string)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
 
     return result[0].toString();
@@ -421,7 +421,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.tryCall(
       "namehashToLabelMap",
       "namehashToLabelMap(bytes32):(string)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -447,7 +447,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   ownerOf(_tokenId: BigInt): Address {
     let result = super.call("ownerOf", "ownerOf(uint256):(address)", [
-      ethereum.Value.fromUnsignedBigInt(_tokenId)
+      ethereum.Value.fromUnsignedBigInt(_tokenId),
     ]);
 
     return result[0].toAddress();
@@ -455,7 +455,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   try_ownerOf(_tokenId: BigInt): ethereum.CallResult<Address> {
     let result = super.tryCall("ownerOf", "ownerOf(uint256):(address)", [
-      ethereum.Value.fromUnsignedBigInt(_tokenId)
+      ethereum.Value.fromUnsignedBigInt(_tokenId),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -466,7 +466,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   parent(_namehash: Bytes): string {
     let result = super.call("parent", "parent(bytes32):(string)", [
-      ethereum.Value.fromFixedBytes(_namehash)
+      ethereum.Value.fromFixedBytes(_namehash),
     ]);
 
     return result[0].toString();
@@ -474,7 +474,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   try_parent(_namehash: Bytes): ethereum.CallResult<string> {
     let result = super.tryCall("parent", "parent(bytes32):(string)", [
-      ethereum.Value.fromFixedBytes(_namehash)
+      ethereum.Value.fromFixedBytes(_namehash),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -487,7 +487,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.call(
       "registrationStrategy",
       "registrationStrategy(bytes32):(address)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
 
     return result[0].toAddress();
@@ -497,7 +497,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.tryCall(
       "registrationStrategy",
       "registrationStrategy(bytes32):(address)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -508,34 +508,34 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   royaltyInfo(
     param0: BigInt,
-    salePrice: BigInt
+    salePrice: BigInt,
   ): HandshakeTld__royaltyInfoResult {
     let result = super.call(
       "royaltyInfo",
       "royaltyInfo(uint256,uint256):(address,uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(param0),
-        ethereum.Value.fromUnsignedBigInt(salePrice)
-      ]
+        ethereum.Value.fromUnsignedBigInt(salePrice),
+      ],
     );
 
     return new HandshakeTld__royaltyInfoResult(
       result[0].toAddress(),
-      result[1].toBigInt()
+      result[1].toBigInt(),
     );
   }
 
   try_royaltyInfo(
     param0: BigInt,
-    salePrice: BigInt
+    salePrice: BigInt,
   ): ethereum.CallResult<HandshakeTld__royaltyInfoResult> {
     let result = super.tryCall(
       "royaltyInfo",
       "royaltyInfo(uint256,uint256):(address,uint256)",
       [
         ethereum.Value.fromUnsignedBigInt(param0),
-        ethereum.Value.fromUnsignedBigInt(salePrice)
-      ]
+        ethereum.Value.fromUnsignedBigInt(salePrice),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -544,8 +544,8 @@ export class HandshakeTld extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(
       new HandshakeTld__royaltyInfoResult(
         value[0].toAddress(),
-        value[1].toBigInt()
-      )
+        value[1].toBigInt(),
+      ),
     );
   }
 
@@ -553,7 +553,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.call(
       "royaltyPayoutAddress",
       "royaltyPayoutAddress():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -563,7 +563,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.tryCall(
       "royaltyPayoutAddress",
       "royaltyPayoutAddress():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -576,7 +576,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.call(
       "royaltyPayoutAmount",
       "royaltyPayoutAmount():(uint256)",
-      []
+      [],
     );
 
     return result[0].toBigInt();
@@ -586,7 +586,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.tryCall(
       "royaltyPayoutAmount",
       "royaltyPayoutAmount():(uint256)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -599,7 +599,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.call(
       "supportsInterface",
       "supportsInterface(bytes4):(bool)",
-      [ethereum.Value.fromFixedBytes(interfaceId)]
+      [ethereum.Value.fromFixedBytes(interfaceId)],
     );
 
     return result[0].toBoolean();
@@ -609,7 +609,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.tryCall(
       "supportsInterface",
       "supportsInterface(bytes4):(bool)",
-      [ethereum.Value.fromFixedBytes(interfaceId)]
+      [ethereum.Value.fromFixedBytes(interfaceId)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -637,7 +637,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.call(
       "tokenResolverMap",
       "tokenResolverMap(bytes32):(address)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
 
     return result[0].toAddress();
@@ -647,7 +647,7 @@ export class HandshakeTld extends ethereum.SmartContract {
     let result = super.tryCall(
       "tokenResolverMap",
       "tokenResolverMap(bytes32):(address)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -658,7 +658,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   tokenURI(_id: BigInt): string {
     let result = super.call("tokenURI", "tokenURI(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(_id)
+      ethereum.Value.fromUnsignedBigInt(_id),
     ]);
 
     return result[0].toString();
@@ -666,7 +666,7 @@ export class HandshakeTld extends ethereum.SmartContract {
 
   try_tokenURI(_id: BigInt): ethereum.CallResult<string> {
     let result = super.tryCall("tokenURI", "tokenURI(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(_id)
+      ethereum.Value.fromUnsignedBigInt(_id),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();

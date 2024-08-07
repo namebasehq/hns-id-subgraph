@@ -31,7 +31,7 @@ export function handleTransfer(event: TransferEvent): void {
 
   if (!tldEntity) {
     tldEntity = new Tld(tldId);
-    tldEntity.label = "";
+    tldEntity.label = "new";
     tldEntity.tokenId = event.params.tokenId;
     tldEntity.lastUpdateBlockNumber = event.block.number;
     tldEntity.lastUpdateTimestamp = event.block.timestamp;

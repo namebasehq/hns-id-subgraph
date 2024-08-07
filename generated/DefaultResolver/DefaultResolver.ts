@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class AddrChanged extends ethereum.Event {
@@ -291,7 +291,7 @@ export class DefaultResolver extends ethereum.SmartContract {
 
   addr(_node: Bytes): Address {
     let result = super.call("addr", "addr(bytes32):(address)", [
-      ethereum.Value.fromFixedBytes(_node)
+      ethereum.Value.fromFixedBytes(_node),
     ]);
 
     return result[0].toAddress();
@@ -299,7 +299,7 @@ export class DefaultResolver extends ethereum.SmartContract {
 
   try_addr(_node: Bytes): ethereum.CallResult<Address> {
     let result = super.tryCall("addr", "addr(bytes32):(address)", [
-      ethereum.Value.fromFixedBytes(_node)
+      ethereum.Value.fromFixedBytes(_node),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -311,7 +311,7 @@ export class DefaultResolver extends ethereum.SmartContract {
   addr1(_node: Bytes, _coinType: BigInt): Bytes {
     let result = super.call("addr", "addr(bytes32,uint256):(bytes)", [
       ethereum.Value.fromFixedBytes(_node),
-      ethereum.Value.fromUnsignedBigInt(_coinType)
+      ethereum.Value.fromUnsignedBigInt(_coinType),
     ]);
 
     return result[0].toBytes();
@@ -320,7 +320,7 @@ export class DefaultResolver extends ethereum.SmartContract {
   try_addr1(_node: Bytes, _coinType: BigInt): ethereum.CallResult<Bytes> {
     let result = super.tryCall("addr", "addr(bytes32,uint256):(bytes)", [
       ethereum.Value.fromFixedBytes(_node),
-      ethereum.Value.fromUnsignedBigInt(_coinType)
+      ethereum.Value.fromUnsignedBigInt(_coinType),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -331,7 +331,7 @@ export class DefaultResolver extends ethereum.SmartContract {
 
   contenthash(_node: Bytes): Bytes {
     let result = super.call("contenthash", "contenthash(bytes32):(bytes)", [
-      ethereum.Value.fromFixedBytes(_node)
+      ethereum.Value.fromFixedBytes(_node),
     ]);
 
     return result[0].toBytes();
@@ -339,7 +339,7 @@ export class DefaultResolver extends ethereum.SmartContract {
 
   try_contenthash(_node: Bytes): ethereum.CallResult<Bytes> {
     let result = super.tryCall("contenthash", "contenthash(bytes32):(bytes)", [
-      ethereum.Value.fromFixedBytes(_node)
+      ethereum.Value.fromFixedBytes(_node),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -352,7 +352,7 @@ export class DefaultResolver extends ethereum.SmartContract {
     let result = super.call(
       "defaultCoinTypes",
       "defaultCoinTypes(uint256):(bool)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      [ethereum.Value.fromUnsignedBigInt(param0)],
     );
 
     return result[0].toBoolean();
@@ -362,7 +362,7 @@ export class DefaultResolver extends ethereum.SmartContract {
     let result = super.tryCall(
       "defaultCoinTypes",
       "defaultCoinTypes(uint256):(bool)",
-      [ethereum.Value.fromUnsignedBigInt(param0)]
+      [ethereum.Value.fromUnsignedBigInt(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -377,8 +377,8 @@ export class DefaultResolver extends ethereum.SmartContract {
       "delegates(address,uint256):(address)",
       [
         ethereum.Value.fromAddress(param0),
-        ethereum.Value.fromUnsignedBigInt(param1)
-      ]
+        ethereum.Value.fromUnsignedBigInt(param1),
+      ],
     );
 
     return result[0].toAddress();
@@ -390,8 +390,8 @@ export class DefaultResolver extends ethereum.SmartContract {
       "delegates(address,uint256):(address)",
       [
         ethereum.Value.fromAddress(param0),
-        ethereum.Value.fromUnsignedBigInt(param1)
-      ]
+        ethereum.Value.fromUnsignedBigInt(param1),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -407,8 +407,8 @@ export class DefaultResolver extends ethereum.SmartContract {
       [
         ethereum.Value.fromFixedBytes(node),
         ethereum.Value.fromFixedBytes(name),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(resource))
-      ]
+        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(resource)),
+      ],
     );
 
     return result[0].toBytes();
@@ -417,7 +417,7 @@ export class DefaultResolver extends ethereum.SmartContract {
   try_dnsRecord(
     node: Bytes,
     name: Bytes,
-    resource: i32
+    resource: i32,
   ): ethereum.CallResult<Bytes> {
     let result = super.tryCall(
       "dnsRecord",
@@ -425,8 +425,8 @@ export class DefaultResolver extends ethereum.SmartContract {
       [
         ethereum.Value.fromFixedBytes(node),
         ethereum.Value.fromFixedBytes(name),
-        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(resource))
-      ]
+        ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(resource)),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -438,7 +438,7 @@ export class DefaultResolver extends ethereum.SmartContract {
   getName(_addr: Address, _coinType: BigInt): string {
     let result = super.call("getName", "getName(address,uint256):(string)", [
       ethereum.Value.fromAddress(_addr),
-      ethereum.Value.fromUnsignedBigInt(_coinType)
+      ethereum.Value.fromUnsignedBigInt(_coinType),
     ]);
 
     return result[0].toString();
@@ -447,7 +447,7 @@ export class DefaultResolver extends ethereum.SmartContract {
   try_getName(_addr: Address, _coinType: BigInt): ethereum.CallResult<string> {
     let result = super.tryCall("getName", "getName(address,uint256):(string)", [
       ethereum.Value.fromAddress(_addr),
-      ethereum.Value.fromUnsignedBigInt(_coinType)
+      ethereum.Value.fromUnsignedBigInt(_coinType),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -463,8 +463,8 @@ export class DefaultResolver extends ethereum.SmartContract {
       [
         ethereum.Value.fromAddress(_addr),
         ethereum.Value.fromString(_key),
-        ethereum.Value.fromUnsignedBigInt(_coinType)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_coinType),
+      ],
     );
 
     return result[0].toString();
@@ -473,7 +473,7 @@ export class DefaultResolver extends ethereum.SmartContract {
   try_getText(
     _addr: Address,
     _key: string,
-    _coinType: BigInt
+    _coinType: BigInt,
   ): ethereum.CallResult<string> {
     let result = super.tryCall(
       "getText",
@@ -481,8 +481,8 @@ export class DefaultResolver extends ethereum.SmartContract {
       [
         ethereum.Value.fromAddress(_addr),
         ethereum.Value.fromString(_key),
-        ethereum.Value.fromUnsignedBigInt(_coinType)
-      ]
+        ethereum.Value.fromUnsignedBigInt(_coinType),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -495,7 +495,7 @@ export class DefaultResolver extends ethereum.SmartContract {
     let result = super.call(
       "getTokenOwner",
       "getTokenOwner(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(_id)]
+      [ethereum.Value.fromUnsignedBigInt(_id)],
     );
 
     return result[0].toAddress();
@@ -505,7 +505,7 @@ export class DefaultResolver extends ethereum.SmartContract {
     let result = super.tryCall(
       "getTokenOwner",
       "getTokenOwner(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(_id)]
+      [ethereum.Value.fromUnsignedBigInt(_id)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -518,7 +518,10 @@ export class DefaultResolver extends ethereum.SmartContract {
     let result = super.call(
       "hasDNSRecords",
       "hasDNSRecords(bytes32,bytes32):(bool)",
-      [ethereum.Value.fromFixedBytes(node), ethereum.Value.fromFixedBytes(name)]
+      [
+        ethereum.Value.fromFixedBytes(node),
+        ethereum.Value.fromFixedBytes(name),
+      ],
     );
 
     return result[0].toBoolean();
@@ -528,7 +531,10 @@ export class DefaultResolver extends ethereum.SmartContract {
     let result = super.tryCall(
       "hasDNSRecords",
       "hasDNSRecords(bytes32,bytes32):(bool)",
-      [ethereum.Value.fromFixedBytes(node), ethereum.Value.fromFixedBytes(name)]
+      [
+        ethereum.Value.fromFixedBytes(node),
+        ethereum.Value.fromFixedBytes(name),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -539,7 +545,7 @@ export class DefaultResolver extends ethereum.SmartContract {
 
   multicall(data: Array<Bytes>): Array<Bytes> {
     let result = super.call("multicall", "multicall(bytes[]):(bytes[])", [
-      ethereum.Value.fromBytesArray(data)
+      ethereum.Value.fromBytesArray(data),
     ]);
 
     return result[0].toBytesArray();
@@ -547,7 +553,7 @@ export class DefaultResolver extends ethereum.SmartContract {
 
   try_multicall(data: Array<Bytes>): ethereum.CallResult<Array<Bytes>> {
     let result = super.tryCall("multicall", "multicall(bytes[]):(bytes[])", [
-      ethereum.Value.fromBytesArray(data)
+      ethereum.Value.fromBytesArray(data),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -562,8 +568,8 @@ export class DefaultResolver extends ethereum.SmartContract {
       "multicallWithNodeCheck(bytes32,bytes[]):(bytes[])",
       [
         ethereum.Value.fromFixedBytes(nodehash),
-        ethereum.Value.fromBytesArray(data)
-      ]
+        ethereum.Value.fromBytesArray(data),
+      ],
     );
 
     return result[0].toBytesArray();
@@ -571,15 +577,15 @@ export class DefaultResolver extends ethereum.SmartContract {
 
   try_multicallWithNodeCheck(
     nodehash: Bytes,
-    data: Array<Bytes>
+    data: Array<Bytes>,
   ): ethereum.CallResult<Array<Bytes>> {
     let result = super.tryCall(
       "multicallWithNodeCheck",
       "multicallWithNodeCheck(bytes32,bytes[]):(bytes[])",
       [
         ethereum.Value.fromFixedBytes(nodehash),
-        ethereum.Value.fromBytesArray(data)
-      ]
+        ethereum.Value.fromBytesArray(data),
+      ],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -590,7 +596,7 @@ export class DefaultResolver extends ethereum.SmartContract {
 
   name(node: Bytes): string {
     let result = super.call("name", "name(bytes32):(string)", [
-      ethereum.Value.fromFixedBytes(node)
+      ethereum.Value.fromFixedBytes(node),
     ]);
 
     return result[0].toString();
@@ -598,7 +604,7 @@ export class DefaultResolver extends ethereum.SmartContract {
 
   try_name(node: Bytes): ethereum.CallResult<string> {
     let result = super.tryCall("name", "name(bytes32):(string)", [
-      ethereum.Value.fromFixedBytes(node)
+      ethereum.Value.fromFixedBytes(node),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -609,7 +615,7 @@ export class DefaultResolver extends ethereum.SmartContract {
 
   nameMap(param0: Address): string {
     let result = super.call("nameMap", "nameMap(address):(string)", [
-      ethereum.Value.fromAddress(param0)
+      ethereum.Value.fromAddress(param0),
     ]);
 
     return result[0].toString();
@@ -617,7 +623,7 @@ export class DefaultResolver extends ethereum.SmartContract {
 
   try_nameMap(param0: Address): ethereum.CallResult<string> {
     let result = super.tryCall("nameMap", "nameMap(address):(string)", [
-      ethereum.Value.fromAddress(param0)
+      ethereum.Value.fromAddress(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -630,7 +636,7 @@ export class DefaultResolver extends ethereum.SmartContract {
     let result = super.call(
       "recordVersions",
       "recordVersions(bytes32):(uint256)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
 
     return result[0].toBigInt();
@@ -640,7 +646,7 @@ export class DefaultResolver extends ethereum.SmartContract {
     let result = super.tryCall(
       "recordVersions",
       "recordVersions(bytes32):(uint256)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -653,7 +659,7 @@ export class DefaultResolver extends ethereum.SmartContract {
     let result = super.call(
       "supportsInterface",
       "supportsInterface(bytes4):(bool)",
-      [ethereum.Value.fromFixedBytes(_interfaceId)]
+      [ethereum.Value.fromFixedBytes(_interfaceId)],
     );
 
     return result[0].toBoolean();
@@ -663,7 +669,7 @@ export class DefaultResolver extends ethereum.SmartContract {
     let result = super.tryCall(
       "supportsInterface",
       "supportsInterface(bytes4):(bool)",
-      [ethereum.Value.fromFixedBytes(_interfaceId)]
+      [ethereum.Value.fromFixedBytes(_interfaceId)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -675,7 +681,7 @@ export class DefaultResolver extends ethereum.SmartContract {
   text(node: Bytes, key: string): string {
     let result = super.call("text", "text(bytes32,string):(string)", [
       ethereum.Value.fromFixedBytes(node),
-      ethereum.Value.fromString(key)
+      ethereum.Value.fromString(key),
     ]);
 
     return result[0].toString();
@@ -684,7 +690,7 @@ export class DefaultResolver extends ethereum.SmartContract {
   try_text(node: Bytes, key: string): ethereum.CallResult<string> {
     let result = super.tryCall("text", "text(bytes32,string):(string)", [
       ethereum.Value.fromFixedBytes(node),
-      ethereum.Value.fromString(key)
+      ethereum.Value.fromString(key),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -695,7 +701,7 @@ export class DefaultResolver extends ethereum.SmartContract {
 
   zonehash(_node: Bytes): Bytes {
     let result = super.call("zonehash", "zonehash(bytes32):(bytes)", [
-      ethereum.Value.fromFixedBytes(_node)
+      ethereum.Value.fromFixedBytes(_node),
     ]);
 
     return result[0].toBytes();
@@ -703,7 +709,7 @@ export class DefaultResolver extends ethereum.SmartContract {
 
   try_zonehash(_node: Bytes): ethereum.CallResult<Bytes> {
     let result = super.tryCall("zonehash", "zonehash(bytes32):(bytes)", [
-      ethereum.Value.fromFixedBytes(_node)
+      ethereum.Value.fromFixedBytes(_node),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
