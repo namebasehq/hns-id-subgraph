@@ -14,6 +14,12 @@ sources:
       - name: hns-id
         version: '0.8'
     name: tld
+  sale_settings:
+    type: subgraph_entity
+    subgraphs:
+      - name: hns-id
+        version: '0.8'
+    name: sale_settings
 
 
 transforms:
@@ -28,15 +34,27 @@ transforms:
         to_timestamp(from_unixtime(CAST(s.last_update_timestamp AS INTEGER))) AS updatedAt  
       FROM optimism_sld s
 
- tld_transform:
+  tld_transform:
     primary_key: id
     sql: |
       SELECT
-        t.token_id AS id,   
-        t.label,
-        to_timestamp(from_unixtime(cast(t.registration_timestamp as integer))) AS createdAt,    
+        t.token_id AS id,  
+        t.id AS hash, 
+        to_timestamp(from_unixtime(cast(t.registration_block_timestamp as integer))) AS createdAt,    
         to_timestamp(from_unixtime(CAST(t.last_update_timestamp AS INTEGER))) AS updatedAt  
       FROM optimism_tld t
+
+  sale_settings_transform:
+    primary_key: hash
+    sql: |
+      SELECT
+        t.token_id AS id,
+        ss.tld AS hash,   
+        ss.prices AS lengthPrice,                 
+        to_timestamp(from_unixtime(cast(t.registration_block_timestamp as integer))) AS createdAt,    
+        to_timestamp(from_unixtime(CAST(t.last_update_timestamp AS INTEGER))) AS updatedAt               
+      FROM sale_settings ss
+      JOIN optimism_tld t ON ss.tld = t.id
 
   tld_nft_transform:
       primary_key: hash
@@ -46,13 +64,10 @@ transforms:
           t.id AS hash,                       
           t.label AS name,                    
           t.owner,                
-          to_timestamp(from_unixtime(cast(s.registration_timestamp as integer))) AS createdAt,    
-          to_timestamp(from_unixtime(CAST(s.last_update_timestamp AS INTEGER))) AS updatedAt,          
+          to_timestamp(from_unixtime(cast(t.registration_block_timestamp as integer))) AS createdAt,    
+          to_timestamp(from_unixtime(CAST(t.last_update_timestamp AS INTEGER))) AS updatedAt,          
           t.resolver       
-        FROM optimism_sepolia_sld s
-
-
-
+        FROM optimism_tld t
 
   sld_nft_transform:
     primary_key: hash
@@ -66,7 +81,7 @@ transforms:
         to_timestamp(from_unixtime(CAST(s.last_update_timestamp AS INTEGER))) AS updatedAt,      
         to_timestamp(from_unixtime(CAST(s.expiration_timestamp AS INTEGER))) AS expiry,         
         s.resolver       
-      FROM optimism_sepolia_sld s
+      FROM optimism_sld s
      
 sinks:
   postgres_sink_sld_nfts:
@@ -96,3 +111,10 @@ sinks:
     schema: goldsky
     secret_name: A_POSTGRESQL_SECRET
     from: tld_transform
+
+  postgres_sink_tld_sale_settings:
+    type: postgres
+    table: TLDs
+    schema: goldsky
+    secret_name: A_POSTGRESQL_SECRET
+    from: sale_settings_transform
