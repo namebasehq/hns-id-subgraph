@@ -78,6 +78,8 @@ export function handleMultiYearDiscountSet(
 
 export function handlePremiumNameSet(event: PremiumNameSetEvent): void {
   let tldId = event.params._tokenNamehash.toHexString();
+
+  let tld = Tld.load(tldId);
   let saleSetting = SaleSettings.load(tldId);
 
   if (!saleSetting) {
@@ -108,6 +110,10 @@ export function handlePremiumNameSet(event: PremiumNameSetEvent): void {
     premiumPrice.saleSettings = saleSetting.id;
     premiumPrice.label = event.params._label;
     premiumPrice.price = event.params._price;
+
+    if(tld)
+      premiumPrice.tld = tld.id;
+
     premiumPrice.save();
   }
 }
@@ -115,6 +121,8 @@ export function handlePremiumNameSet(event: PremiumNameSetEvent): void {
 export function handleReservedNameSet(event: ReservedNameSetEvent): void {
   let tldId = event.params._tokenNamehash.toHexString();
   let saleSetting = SaleSettings.load(tldId);
+
+
 
   if (!saleSetting) {
     saleSetting = new SaleSettings(tldId);
@@ -146,6 +154,7 @@ export function handleReservedNameSet(event: ReservedNameSetEvent): void {
     reservedName.saleSettings = saleSetting.id;
     reservedName.label = event.params._label;
     reservedName.claimant = event.params._claimant;
+    reservedName.tld = tldId;
     reservedName.save();
   }
 }

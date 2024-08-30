@@ -6,19 +6,19 @@ sources:
     type: subgraph_entity
     subgraphs:
       - name: hns-id
-        version: '0.8'
+        version: '0.9'
     name: sld
   optimism_tld:
     type: subgraph_entity
     subgraphs:
       - name: hns-id
-        version: '0.8'
+        version: '0.9'
     name: tld
   sale_settings:
     type: subgraph_entity
     subgraphs:
       - name: hns-id
-        version: '0.8'
+        version: '0.9'
     name: sale_settings
 
 

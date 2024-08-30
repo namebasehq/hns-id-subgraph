@@ -268,6 +268,8 @@ type PremiumPrice @entity {
   id: ID!
   "The sale settings associated with this premium price"
   saleSettings: SaleSettings!
+  "The TLD associated with this premium price"
+  tld: Tld!
   "The label for which the premium price is set"
   label: String!
   "The premium price in BigInt"
@@ -279,6 +281,8 @@ type ReservedName @entity {
   id: ID!
   "The sale settings associated with this reserved name"
   saleSettings: SaleSettings!
+  "The TLD associated with this reserved name"
+  tld: Tld!
   "The label that is reserved"
   label: String!
   "The claimant of the reserved name"

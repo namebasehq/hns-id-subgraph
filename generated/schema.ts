@@ -2038,6 +2038,19 @@ export class PremiumPrice extends Entity {
     this.set("saleSettings", Value.fromString(value));
   }
 
+  get tld(): string {
+    let value = this.get("tld");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set tld(value: string) {
+    this.set("tld", Value.fromString(value));
+  }
+
   get label(): string {
     let value = this.get("label");
     if (!value || value.kind == ValueKind.NULL) {
@@ -2121,6 +2134,19 @@ export class ReservedName extends Entity {
 
   set saleSettings(value: string) {
     this.set("saleSettings", Value.fromString(value));
+  }
+
+  get tld(): string {
+    let value = this.get("tld");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set tld(value: string) {
+    this.set("tld", Value.fromString(value));
   }
 
   get label(): string {
