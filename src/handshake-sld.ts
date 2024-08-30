@@ -7,6 +7,7 @@ import {
 import {
   Account,
   Delegate,
+  Resolver,
   Royalty,
   RoyaltyHistory,
   Sld,
@@ -14,12 +15,28 @@ import {
   Tld
 } from "../generated/schema"
 
-import { BigInt, ByteArray, Bytes, crypto } from "@graphprotocol/graph-ts";
+import { BigInt } from "@graphprotocol/graph-ts";
 
 
-// TODO: will need to implement this
+
 export function handleResolverSet(event: ResolverSetEvent): void {
+  
+  let sldEntity = Sld.load(event.params._nftNamehash.toHexString());
 
+  if (sldEntity) {
+
+    let resolver = sldEntity.resolver;
+
+    if(resolver){
+
+      let resolverObj = Resolver.load(resolver);
+      
+      if(resolverObj){
+        resolverObj.address = event.params._resolver.toHexString();
+        resolverObj.save();
+      }
+    }
+  }
 }
 
 export function handleRoyaltyPayoutAddressSet(event: RoyaltyPayoutAddressSetEvent): void {
@@ -75,8 +92,8 @@ export function handleRoyaltyPayoutAmountSet(event: RoyaltyPayoutAmountSetEvent)
 export function handleTransfer(event: TransferEvent): void {
   // Convert the tokenId to its hex string representation
   let sldId = event.params.tokenId.toHexString();
+  let tokenId = event.params.tokenId;
 
-  let tokenId = event.params.tokenId.toHexString();
 
   // Load the existing Sld entity from the store
   let sld = Sld.load(sldId);
@@ -99,7 +116,7 @@ export function handleTransfer(event: TransferEvent): void {
       oldOwnerAccount.save();
     }
 
-    let delegateId = tokenId.concat("-").concat(newOwnerId);
+    let delegateId = sldId.concat("-").concat(newOwnerId);
 
     // Try loading the Delegate entity, or create a new one if it doesn't exist
     let delegateEntity = Delegate.load(delegateId);

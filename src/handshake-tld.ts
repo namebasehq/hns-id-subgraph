@@ -7,7 +7,8 @@ import {
   Tld,
   Account,
   TldTransfer,
-  Delegate
+  Delegate,
+  Resolver
 } from "../generated/schema"
 
 import { log, BigInt } from '@graphprotocol/graph-ts'
@@ -20,10 +21,27 @@ export function handleRegistrationStrategySet(
 
 }
 
-// TODO: will need to implement this
 export function handleResolverSet(event: ResolverSetEvent): void {
 
+  let tldEntity = Tld.load(event.params._nftNamehash.toHexString());
+
+  if (tldEntity) {
+
+    let resolver = tldEntity.resolver;
+
+    if(resolver){
+
+      let resolverObj = Resolver.load(resolver);
+      
+      if(resolverObj){
+        resolverObj.address = event.params._resolver.toHexString();
+        resolverObj.save();
+      }
+    }
+  }
 }
+
+
 
 export function handleTransfer(event: TransferEvent): void {
   let tldId = event.params.tokenId.toHexString();

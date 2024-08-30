@@ -83,6 +83,8 @@ type ResolverHistory @entity {
 type Sld @entity {
   "Unique identifier for the SLD"
   id: ID!
+  "Token ID associated with the SLD"
+  tokenId: BigInt!
   "The label of the SLD"
   label: String!
   "The full name of the SLD"
@@ -191,6 +193,8 @@ type Account @entity {
 type Resolver @entity {
   "Unique identifier for the Resolver"
   id: ID!
+  "Address of the Resolver"
+  address: Address
   "Array of Addresses associated with this Resolver"
   addresses: [Address!] @derivedFrom(field: "resolver")
   "Array of Text Records associated with this Resolver"

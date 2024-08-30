@@ -9,6 +9,7 @@ import {
   RegisterSld as RegisterSldEvent,
   RenewSld as RenewSldEvent,
 } from "../generated/SldRegistrationManager/SldRegistrationManager";
+
 import {
   Account,
   Renewal,
@@ -49,6 +50,7 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     if (!domain) {
       domain = new Sld(nameHash.toHex());
       domain.resolverVersion = BigInt.fromI32(0);
+      domain.tokenId = BigInt.fromByteArray(nameHash);
     }
 
     let resolverId = nameHash

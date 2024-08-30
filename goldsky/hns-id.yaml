@@ -1,0 +1,64 @@
+apiVersion: 3
+name: optimism-sepolia-hns-id
+status: ACTIVE
+sources:
+  optimism_sepolia_sld:
+    type: subgraph_entity
+    subgraphs:
+      - name: hns-id
+        version: '0.5'
+    name: sld
+  optimism_sepolia_tld:
+    type: subgraph_entity
+    subgraphs:
+      - name: hns-id
+        version: '0.5'
+    name: tld
+
+
+transforms:
+
+  sld_transform:
+    primary_key: id
+    sql: |
+      SELECT
+        CAST(s.id AS INTEGER) AS id,   
+        s.label,
+        s.parent_tld as tld_id,
+        to_timestamp(from_unixtime(cast(s.registration_timestamp as integer))) AS created_at,    
+        to_timestamp(from_unixtime(CAST(s.last_update_timestamp AS INTEGER))) AS updated_at  
+      FROM optimism_sepolia_sld s
+
+
+  sld_nft_transform:
+    primary_key: hash
+    sql: |
+      SELECT 
+        CAST(s.id AS INTEGER) AS id,  
+        s.id AS hash,                       
+        s.label AS name,                    
+        s.owner,                
+        to_timestamp(from_unixtime(cast(s.registration_timestamp as integer))) AS created_at,    
+        to_timestamp(from_unixtime(CAST(s.last_update_timestamp AS INTEGER))) AS updated_at,      
+        to_timestamp(from_unixtime(CAST(s.expiration_timestamp AS INTEGER))) AS expiry,         
+        s.resolver       
+      FROM optimism_sepolia_sld s
+     
+
+
+
+sinks:
+  postgres_sink_nfts:
+    type: postgres
+    table: NFTs
+    schema: goldsky
+    secret_name: A_POSTGRESQL_SECRET
+    from: sld_nft_transform
+
+  postgres_sink_slds:
+    type: postgres
+    table: SLDs
+    schema: goldsky
+    secret_name: A_POSTGRESQL_SECRET
+    from: sld_transform
+

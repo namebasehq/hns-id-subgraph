@@ -7,7 +7,7 @@ import {
   Entity,
   Bytes,
   Address,
-  BigInt
+  BigInt,
 } from "@graphprotocol/graph-ts";
 
 export class AllowedTldMintUpdate extends ethereum.Event {
@@ -169,7 +169,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.call(
       "allowedTldManager",
       "allowedTldManager(address):(bool)",
-      [ethereum.Value.fromAddress(param0)]
+      [ethereum.Value.fromAddress(param0)],
     );
 
     return result[0].toBoolean();
@@ -179,7 +179,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "allowedTldManager",
       "allowedTldManager(address):(bool)",
-      [ethereum.Value.fromAddress(param0)]
+      [ethereum.Value.fromAddress(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -191,7 +191,7 @@ export class TldClaimManager extends ethereum.SmartContract {
   canClaim(_addr: Address, _namehash: Bytes): boolean {
     let result = super.call("canClaim", "canClaim(address,bytes32):(bool)", [
       ethereum.Value.fromAddress(_addr),
-      ethereum.Value.fromFixedBytes(_namehash)
+      ethereum.Value.fromFixedBytes(_namehash),
     ]);
 
     return result[0].toBoolean();
@@ -200,7 +200,7 @@ export class TldClaimManager extends ethereum.SmartContract {
   try_canClaim(_addr: Address, _namehash: Bytes): ethereum.CallResult<boolean> {
     let result = super.tryCall("canClaim", "canClaim(address,bytes32):(bool)", [
       ethereum.Value.fromAddress(_addr),
-      ethereum.Value.fromFixedBytes(_namehash)
+      ethereum.Value.fromFixedBytes(_namehash),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -213,7 +213,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.call(
       "defaultRegistrationStrategy",
       "defaultRegistrationStrategy():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -223,7 +223,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "defaultRegistrationStrategy",
       "defaultRegistrationStrategy():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -236,7 +236,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.call(
       "getMintPriceInWei",
       "getMintPriceInWei():(uint256)",
-      []
+      [],
     );
 
     return result[0].toBigInt();
@@ -246,7 +246,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "getMintPriceInWei",
       "getMintPriceInWei():(uint256)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -259,7 +259,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.call(
       "handshakeTldContract",
       "handshakeTldContract():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -269,7 +269,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "handshakeTldContract",
       "handshakeTldContract():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -282,7 +282,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.call(
       "handshakeWalletPayoutAddress",
       "handshakeWalletPayoutAddress():(address)",
-      []
+      [],
     );
 
     return result[0].toAddress();
@@ -292,7 +292,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "handshakeWalletPayoutAddress",
       "handshakeWalletPayoutAddress():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -311,7 +311,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "labelValidator",
       "labelValidator():(address)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -324,7 +324,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.call(
       "mintPriceInDollars",
       "mintPriceInDollars():(uint256)",
-      []
+      [],
     );
 
     return result[0].toBigInt();
@@ -334,7 +334,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "mintPriceInDollars",
       "mintPriceInDollars():(uint256)",
-      []
+      [],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -362,7 +362,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.call(
       "tldClaimantMap",
       "tldClaimantMap(bytes32):(address)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
 
     return result[0].toAddress();
@@ -372,7 +372,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "tldClaimantMap",
       "tldClaimantMap(bytes32):(address)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -383,7 +383,7 @@ export class TldClaimManager extends ethereum.SmartContract {
 
   tldExpiry(param0: Bytes): BigInt {
     let result = super.call("tldExpiry", "tldExpiry(bytes32):(uint256)", [
-      ethereum.Value.fromFixedBytes(param0)
+      ethereum.Value.fromFixedBytes(param0),
     ]);
 
     return result[0].toBigInt();
@@ -391,7 +391,7 @@ export class TldClaimManager extends ethereum.SmartContract {
 
   try_tldExpiry(param0: Bytes): ethereum.CallResult<BigInt> {
     let result = super.tryCall("tldExpiry", "tldExpiry(bytes32):(uint256)", [
-      ethereum.Value.fromFixedBytes(param0)
+      ethereum.Value.fromFixedBytes(param0),
     ]);
     if (result.reverted) {
       return new ethereum.CallResult();
@@ -404,7 +404,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.call(
       "tldProviderMap",
       "tldProviderMap(bytes32):(address)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
 
     return result[0].toAddress();
@@ -414,7 +414,7 @@ export class TldClaimManager extends ethereum.SmartContract {
     let result = super.tryCall(
       "tldProviderMap",
       "tldProviderMap(bytes32):(address)",
-      [ethereum.Value.fromFixedBytes(param0)]
+      [ethereum.Value.fromFixedBytes(param0)],
     );
     if (result.reverted) {
       return new ethereum.CallResult();

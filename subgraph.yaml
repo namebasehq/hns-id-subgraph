@@ -60,6 +60,41 @@ dataSources:
           handler: handleVersionChanged
       file: ./src/default-resolver.ts
   - kind: ethereum
+    name: TldClaimManager
+    network: optimism-sepolia
+    source:
+      address: "0x82eba02627F0b67B0eabdE7e7c2390183AE4bF4D"
+      abi: TldClaimManager
+      startBlock: 3778191 
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Tld
+        - Royalty
+        - RoyaltyHistory
+        - ResolverHistory
+        - Sld
+        - SaleSettings
+        - Account
+        - Resolver
+        - Delegate
+        - Address
+        - TextRecord
+        - DnsRecord
+        - PremiumPrice
+        - ReservedName
+        - TextRecordHistory
+        - DnsRecordHistory
+      abis:
+        - name: TldClaimManager
+          file: ./abis/TldClaimManager.json
+      eventHandlers:
+        - event: TldClaimed(indexed address,indexed uint256,string)
+          handler: handleTldClaimed
+      file: ./src/tld-claim-manager.ts
+  - kind: ethereum
     name: HandshakeSld
     network: optimism-sepolia
     source:
