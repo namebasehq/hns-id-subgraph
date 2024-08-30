@@ -2,58 +2,86 @@ apiVersion: 3
 name: optimism-sepolia-hns-id
 status: ACTIVE
 sources:
-  optimism_sepolia_sld:
+  optimism_sld:
     type: subgraph_entity
     subgraphs:
       - name: hns-id
-        version: '0.5'
+        version: '0.8'
     name: sld
-  optimism_sepolia_tld:
+  optimism_tld:
     type: subgraph_entity
     subgraphs:
       - name: hns-id
-        version: '0.5'
+        version: '0.8'
     name: tld
 
 
 transforms:
-
   sld_transform:
     primary_key: id
     sql: |
       SELECT
-        CAST(s.id AS INTEGER) AS id,   
+        s.token_id AS id,   
         s.label,
-        s.parent_tld as tld_id,
-        to_timestamp(from_unixtime(cast(s.registration_timestamp as integer))) AS created_at,    
-        to_timestamp(from_unixtime(CAST(s.last_update_timestamp AS INTEGER))) AS updated_at  
-      FROM optimism_sepolia_sld s
+        s.parent_tld as tldHash,
+        to_timestamp(from_unixtime(cast(s.registration_timestamp as integer))) AS createdAt,    
+        to_timestamp(from_unixtime(CAST(s.last_update_timestamp AS INTEGER))) AS updatedAt  
+      FROM optimism_sld s
+
+ tld_transform:
+    primary_key: id
+    sql: |
+      SELECT
+        t.token_id AS id,   
+        t.label,
+        to_timestamp(from_unixtime(cast(t.registration_timestamp as integer))) AS createdAt,    
+        to_timestamp(from_unixtime(CAST(t.last_update_timestamp AS INTEGER))) AS updatedAt  
+      FROM optimism_tld t
+
+  tld_nft_transform:
+      primary_key: hash
+      sql: |
+        SELECT 
+          t.token_id AS id,  
+          t.id AS hash,                       
+          t.label AS name,                    
+          t.owner,                
+          to_timestamp(from_unixtime(cast(s.registration_timestamp as integer))) AS createdAt,    
+          to_timestamp(from_unixtime(CAST(s.last_update_timestamp AS INTEGER))) AS updatedAt,          
+          t.resolver       
+        FROM optimism_sepolia_sld s
+
+
 
 
   sld_nft_transform:
     primary_key: hash
     sql: |
       SELECT 
-        CAST(s.id AS INTEGER) AS id,  
+        s.token_id AS id,  
         s.id AS hash,                       
         s.label AS name,                    
         s.owner,                
-        to_timestamp(from_unixtime(cast(s.registration_timestamp as integer))) AS created_at,    
-        to_timestamp(from_unixtime(CAST(s.last_update_timestamp AS INTEGER))) AS updated_at,      
+        to_timestamp(from_unixtime(cast(s.registration_timestamp as integer))) AS createdAt,    
+        to_timestamp(from_unixtime(CAST(s.last_update_timestamp AS INTEGER))) AS updatedAt,      
         to_timestamp(from_unixtime(CAST(s.expiration_timestamp AS INTEGER))) AS expiry,         
         s.resolver       
       FROM optimism_sepolia_sld s
      
-
-
-
 sinks:
-  postgres_sink_nfts:
+  postgres_sink_sld_nfts:
     type: postgres
     table: NFTs
     schema: goldsky
     secret_name: A_POSTGRESQL_SECRET
     from: sld_nft_transform
+
+  postgres_sink_tld_nfts:
+    type: postgres
+    table: NFTs
+    schema: goldsky
+    secret_name: A_POSTGRESQL_SECRET
+    from: tld_nft_transform
 
   postgres_sink_slds:
     type: postgres
@@ -62,3 +90,9 @@ sinks:
     secret_name: A_POSTGRESQL_SECRET
     from: sld_transform
 
+  postgres_sink_tlds:
+    type: postgres
+    table: TLDs
+    schema: goldsky
+    secret_name: A_POSTGRESQL_SECRET
+    from: tld_transform

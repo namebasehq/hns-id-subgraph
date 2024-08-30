@@ -193,6 +193,8 @@ type Account @entity {
 type Resolver @entity {
   "Unique identifier for the Resolver"
   id: ID!
+  "NFT ID connected to the resolver"
+  tokenId: BigInt
   "Address of the Resolver"
   address: Address
   "Array of Addresses associated with this Resolver"

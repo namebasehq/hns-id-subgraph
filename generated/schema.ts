@@ -1534,6 +1534,23 @@ export class Resolver extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get tokenId(): BigInt | null {
+    let value = this.get("tokenId");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set tokenId(value: BigInt | null) {
+    if (!value) {
+      this.unset("tokenId");
+    } else {
+      this.set("tokenId", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
   get address(): string | null {
     let value = this.get("address");
     if (!value || value.kind == ValueKind.NULL) {
