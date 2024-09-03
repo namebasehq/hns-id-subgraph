@@ -61,7 +61,7 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     let resolverHistoryId = resolverId
       .concat("-")
       .concat(event.block.timestamp.toString());
-    createOrUpdateResolver(resolverId, account.id);
+    createOrUpdateResolver(resolverId, account.id, domain.tokenId);
     
     // Create ResolverHistory Entity
     let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);

@@ -20,6 +20,18 @@ sources:
       - name: hns-id
         version: '0.9'
     name: sale_settings
+  premium_names:
+    type: subgraph_entity
+    subgraphs:
+      - name: hns-id
+        version: '0.9'
+    name: premium_price
+  reserved_names:
+    type: subgraph_entity
+    subgraphs:
+      - name: hns-id
+        version: '0.9'
+    name: reserved_name  
 
 
 transforms:
@@ -55,6 +67,31 @@ transforms:
         to_timestamp(from_unixtime(CAST(t.last_update_timestamp AS INTEGER))) AS updatedAt               
       FROM sale_settings ss
       JOIN optimism_tld t ON ss.tld = t.id
+
+  premium_name_transform:
+    primary_key: tldId,label
+    sql: |
+      SELECT
+        t.token_id AS tldId,
+        pn.label, 
+        pn.price,                 
+        to_timestamp(from_unixtime(cast(t.registration_block_timestamp as integer))) AS createdAt,    
+        to_timestamp(from_unixtime(CAST(t.last_update_timestamp AS INTEGER))) AS updatedAt               
+      FROM premium_names pn
+      JOIN optimism_tld t ON pn.tld = t.id
+
+  reserved_name_transform:
+    primary_key: tldId,label
+    sql: |
+      SELECT
+        t.token_id AS tldId,   
+        rn.label,
+        rn.claimant,                 
+        to_timestamp(from_unixtime(cast(t.registration_block_timestamp as integer))) AS createdAt,    
+        to_timestamp(from_unixtime(CAST(t.last_update_timestamp AS INTEGER))) AS updatedAt               
+      FROM reserved_names rn
+      JOIN optimism_tld t ON rn.tld = t.id
+
 
   tld_nft_transform:
       primary_key: hash
@@ -118,3 +155,17 @@ sinks:
     schema: goldsky
     secret_name: A_POSTGRESQL_SECRET
     from: sale_settings_transform
+  
+  postgres_sink_premium_names:
+    type: postgres
+    table: Premiums
+    schema: goldsky
+    secret_name: A_POSTGRESQL_SECRET
+    from: premium_name_transform
+  
+  postgres_sink_reserved_names:
+    type: postgres
+    table: Reserved
+    schema: goldsky
+    secret_name: A_POSTGRESQL_SECRET
+    from: reserved_name_transform

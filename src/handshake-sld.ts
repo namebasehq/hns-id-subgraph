@@ -31,6 +31,10 @@ export function handleResolverSet(event: ResolverSetEvent): void {
 
       let resolverObj = Resolver.load(resolver);
 
+      if(!resolverObj){
+        resolverObj = new Resolver(resolver);
+      }
+
       if(resolverObj){
         resolverObj.tokenId = BigInt.fromByteArray(event.params._nftNamehash);
         resolverObj.address = event.params._resolver.toHexString();

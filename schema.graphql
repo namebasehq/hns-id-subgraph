@@ -235,6 +235,8 @@ type Address @entity {
   cointype: BigInt!
   "Parent Resolver of this Address"
   resolver: Resolver!
+  "The token ID associated with the Address Record"
+  tokenId: BigInt
 }
 
 type TextRecord @entity {
@@ -246,6 +248,8 @@ type TextRecord @entity {
   value: String!
   "Parent Resolver of this Text Record"
   resolver: Resolver!
+  "The token ID associated with the Text Record"
+  tokenId: BigInt
 }
 
 type DnsRecord @entity {

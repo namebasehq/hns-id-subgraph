@@ -35,7 +35,7 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
     .concat("-")
     .concat(tldEntity.resolverVersion.toString());
     
-  createOrUpdateResolver(resolverId, claimantAccount.id);
+  createOrUpdateResolver(resolverId, claimantAccount.id, event.params._tokenId);
   tldEntity.resolver = resolverId;
 
   let resolver = Resolver.load(resolverId);

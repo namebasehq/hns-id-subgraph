@@ -1798,6 +1798,23 @@ export class Address extends Entity {
   set resolver(value: string) {
     this.set("resolver", Value.fromString(value));
   }
+
+  get tokenId(): BigInt | null {
+    let value = this.get("tokenId");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set tokenId(value: BigInt | null) {
+    if (!value) {
+      this.unset("tokenId");
+    } else {
+      this.set("tokenId", Value.fromBigInt(<BigInt>value));
+    }
+  }
 }
 
 export class TextRecord extends Entity {
@@ -1876,6 +1893,23 @@ export class TextRecord extends Entity {
 
   set resolver(value: string) {
     this.set("resolver", Value.fromString(value));
+  }
+
+  get tokenId(): BigInt | null {
+    let value = this.get("tokenId");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set tokenId(value: BigInt | null) {
+    if (!value) {
+      this.unset("tokenId");
+    } else {
+      this.set("tokenId", Value.fromBigInt(<BigInt>value));
+    }
   }
 }
 

@@ -55,6 +55,8 @@ export function handleAddressChanged(event: AddressChangedEvent): void {
   addressEntity.address = event.params.newAddress.toHex();
   addressEntity.cointype = event.params.coinType;
   addressEntity.resolver = resolverEntity.id;
+  addressEntity.tokenId = BigInt.fromByteArray(event.params.node);
+  
 
   // Save the updated Address entity
   addressEntity.save();
@@ -257,11 +259,13 @@ export function handleTextChanged(event: TextChangedEvent): void {
   let resolverEntity = Resolver.load(resolverId);
   if (resolverEntity == null) {
     resolverEntity = new Resolver(resolverId);
+    resolverEntity.tokenId = BigInt.fromByteArray(event.params.node);
     resolverEntity.save();
   }
 
   // Set the parent Resolver of this TextRecord
   textRecordEntity.resolver = resolverEntity.id;
+  textRecordEntity.tokenId = BigInt.fromByteArray(event.params.node);
 
   // Save the updated TextRecord entity
   textRecordEntity.save();
@@ -343,7 +347,7 @@ export function handleVersionChanged(event: VersionChangedEvent): void {
 
   // Load or create the parent Resolver entity
   let resolverId = getResolverId(event.params.node.toHex());
-  createOrUpdateResolver(resolverId, owner);
+  createOrUpdateResolver(resolverId, owner, oldResolver?.tokenId ?? BigInt.fromByteArray(event.params.node));
   let resolverEntity = Resolver.load(resolverId);
 
   if (resolverEntity) {

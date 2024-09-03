@@ -37,9 +37,10 @@ export function concat(a: ByteArray, b: ByteArray): ByteArray {
   return changetype<ByteArray>(out);
 }
 
-export function createOrUpdateResolver(resolverId: string, addr: string): void {
+export function createOrUpdateResolver(resolverId: string, addr: string, tokenId: BigInt): void {
   let resolverEntity = new Resolver(resolverId);
   resolverEntity.version = BigInt.fromI32(0);  // Initialize with default version number
+  resolverEntity.tokenId = tokenId;
   resolverEntity.save();
 
   // Initialize addresses for all EVM coin types
@@ -51,6 +52,7 @@ export function createOrUpdateResolver(resolverId: string, addr: string): void {
     addressEntity.cointype = BigInt.fromI32(coinType);
     addressEntity.address = addr;
     addressEntity.resolver = resolverEntity.id;
+    addressEntity.tokenId = tokenId;
     addressEntity.save();
   }
 
