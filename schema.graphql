@@ -257,6 +257,8 @@ type DnsRecord @entity {
   id: ID!
   "Node identifier in bytes32 format"
   node: Bytes!
+  "Token ID associated with the DNS Record"
+  tokenId: BigInt
   "Name in bytes format"
   name: Bytes!
   "Resource type as a uint16"

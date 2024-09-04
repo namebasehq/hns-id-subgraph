@@ -1965,6 +1965,23 @@ export class DnsRecord extends Entity {
     this.set("node", Value.fromBytes(value));
   }
 
+  get tokenId(): BigInt | null {
+    let value = this.get("tokenId");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set tokenId(value: BigInt | null) {
+    if (!value) {
+      this.unset("tokenId");
+    } else {
+      this.set("tokenId", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
   get name(): Bytes {
     let value = this.get("name");
     if (!value || value.kind == ValueKind.NULL) {

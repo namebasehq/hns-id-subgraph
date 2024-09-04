@@ -118,11 +118,13 @@ export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
   dnsRecordEntity.name = event.params.name;
   dnsRecordEntity.resource = BigInt.fromI32(event.params.resource);
   dnsRecordEntity.record = event.params.record;
+  dnsRecordEntity.tokenId = BigInt.fromByteArray(event.params.node);
 
   // Load or create the parent Resolver entity
   let resolverEntity = Resolver.load(resolverId);
   if (!resolverEntity) {
     resolverEntity = new Resolver(resolverId);
+    resolverEntity.tokenId = BigInt.fromByteArray(event.params.node);
     resolverEntity.save();
   }
 
@@ -347,7 +349,7 @@ export function handleVersionChanged(event: VersionChangedEvent): void {
 
   // Load or create the parent Resolver entity
   let resolverId = getResolverId(event.params.node.toHex());
-  createOrUpdateResolver(resolverId, owner, oldResolver?.tokenId ?? BigInt.fromByteArray(event.params.node));
+  createOrUpdateResolver(resolverId, owner, BigInt.fromByteArray(event.params.node));
   let resolverEntity = Resolver.load(resolverId);
 
   if (resolverEntity) {
