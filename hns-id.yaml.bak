@@ -138,19 +138,6 @@ transforms:
         s.resolver       
       FROM optimism_sld s
   
-  text_record_transform:
-    primary_key: id
-    sql: |
-      SELECT
-        1 AS id,  
-        t.key, 
-        t.value, 
-        t.ttl, 
-        t.owner, 
-        to_timestamp(from_unixtime(cast(t.registration_block_timestamp as integer))) AS createdAt,    
-        to_timestamp(from_unixtime(CAST(t.last_update_timestamp AS INTEGER))) AS updatedAt  
-      FROM text_records t
-  
 
 
      

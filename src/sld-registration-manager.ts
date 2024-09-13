@@ -50,7 +50,7 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     if (!domain) {
       domain = new Sld(nameHash.toHex());
       domain.resolverVersion = BigInt.fromI32(0);
-      domain.tokenId = BigInt.fromByteArray(nameHash);
+      domain.tokenId = BigInt.fromUnsignedBytes(nameHash);
     }
 
     let resolverId = nameHash

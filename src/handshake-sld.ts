@@ -36,7 +36,7 @@ export function handleResolverSet(event: ResolverSetEvent): void {
       }
 
       if(resolverObj){
-        resolverObj.tokenId = BigInt.fromByteArray(event.params._nftNamehash);
+        resolverObj.tokenId = BigInt.fromUnsignedBytes(event.params._nftNamehash);
         resolverObj.address = event.params._resolver.toHexString();
         resolverObj.save();
       }

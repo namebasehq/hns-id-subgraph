@@ -55,7 +55,7 @@ export function handleAddressChanged(event: AddressChangedEvent): void {
   addressEntity.address = event.params.newAddress.toHex();
   addressEntity.cointype = event.params.coinType;
   addressEntity.resolver = resolverEntity.id;
-  addressEntity.tokenId = BigInt.fromByteArray(event.params.node);
+  addressEntity.tokenId = BigInt.fromUnsignedBytes(event.params.node);
   
 
   // Save the updated Address entity
@@ -118,13 +118,13 @@ export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
   dnsRecordEntity.name = event.params.name;
   dnsRecordEntity.resource = BigInt.fromI32(event.params.resource);
   dnsRecordEntity.record = event.params.record;
-  dnsRecordEntity.tokenId = BigInt.fromByteArray(event.params.node);
+  dnsRecordEntity.tokenId = BigInt.fromUnsignedBytes(event.params.node);
 
   // Load or create the parent Resolver entity
   let resolverEntity = Resolver.load(resolverId);
   if (!resolverEntity) {
     resolverEntity = new Resolver(resolverId);
-    resolverEntity.tokenId = BigInt.fromByteArray(event.params.node);
+    resolverEntity.tokenId = BigInt.fromUnsignedBytes(event.params.node);
     resolverEntity.save();
   }
 
@@ -261,13 +261,13 @@ export function handleTextChanged(event: TextChangedEvent): void {
   let resolverEntity = Resolver.load(resolverId);
   if (resolverEntity == null) {
     resolverEntity = new Resolver(resolverId);
-    resolverEntity.tokenId = BigInt.fromByteArray(event.params.node);
+    resolverEntity.tokenId = BigInt.fromUnsignedBytes(event.params.node);
     resolverEntity.save();
   }
 
   // Set the parent Resolver of this TextRecord
   textRecordEntity.resolver = resolverEntity.id;
-  textRecordEntity.tokenId = BigInt.fromByteArray(event.params.node);
+  textRecordEntity.tokenId = BigInt.fromUnsignedBytes(event.params.node);
 
   // Save the updated TextRecord entity
   textRecordEntity.save();
@@ -349,7 +349,7 @@ export function handleVersionChanged(event: VersionChangedEvent): void {
 
   // Load or create the parent Resolver entity
   let resolverId = getResolverId(event.params.node.toHex());
-  createOrUpdateResolver(resolverId, owner, BigInt.fromByteArray(event.params.node));
+  createOrUpdateResolver(resolverId, owner, BigInt.fromUnsignedBytes(event.params.node));
   let resolverEntity = Resolver.load(resolverId);
 
   if (resolverEntity) {
