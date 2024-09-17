@@ -9,7 +9,7 @@ import {
 import {
   PremiumPrice,
   ReservedName,
-  SaleSettings,
+  SaleSetting,
   Tld
 } from "../generated/schema"
 
@@ -19,9 +19,9 @@ export function handleEnabledSet(event: EnabledSetEvent): void {
   let tld = Tld.load(tldId);
 
   if (tld) {
-    let saleSetting = SaleSettings.load(tldId);
+    let saleSetting = SaleSetting.load(tldId);
     if (!saleSetting) {
-      saleSetting = new SaleSettings(tldId); // Initialize if doesn't exist
+      saleSetting = new SaleSetting(tldId); // Initialize if doesn't exist
       saleSetting.tld = tldId; // Assign the tld field to the SaleSettings entity
     }
 
@@ -39,10 +39,11 @@ export function handleLengthCostSet(event: LengthCostSetEvent): void {
   let tld = Tld.load(tldId);
 
   if (tld) {
-    let saleSetting = SaleSettings.load(tldId);
+    let saleSetting = SaleSetting.load(tldId);
     if (!saleSetting) {
-      saleSetting = new SaleSettings(tldId); // Initialize if doesn't exist
+      saleSetting = new SaleSetting(tldId); // Initialize if doesn't exist
       saleSetting.tld = tldId; // Assign the tld field to the SaleSettings entity
+      saleSetting.enabled = false;
     }
     saleSetting.blockNumber = event.block.number;
     saleSetting.blockTimestamp = event.block.timestamp;
@@ -61,10 +62,11 @@ export function handleMultiYearDiscountSet(
   let tld = Tld.load(tldId);
 
   if (tld) {
-    let saleSetting = SaleSettings.load(tldId);
+    let saleSetting = SaleSetting.load(tldId);
     if (!saleSetting) {
-      saleSetting = new SaleSettings(tldId); // Initialize if doesn't exist
+      saleSetting = new SaleSetting(tldId); // Initialize if doesn't exist
       saleSetting.tld = tldId; // Assign the tld field to the SaleSettings entity
+      saleSetting.enabled = false;
     }
 
     saleSetting.blockNumber = event.block.number;
@@ -80,12 +82,12 @@ export function handlePremiumNameSet(event: PremiumNameSetEvent): void {
   let tldId = event.params._tokenNamehash.toHexString();
 
   let tld = Tld.load(tldId);
-  let saleSetting = SaleSettings.load(tldId);
+  let saleSetting = SaleSetting.load(tldId);
 
   if (!saleSetting) {
-    saleSetting = new SaleSettings(tldId);
+    saleSetting = new SaleSetting(tldId);
     saleSetting.tld = tldId;  // Set the relation to the TLD entity
-    // Initialize other fields if necessary
+    saleSetting.enabled = false;
 
   }
 
@@ -120,14 +122,14 @@ export function handlePremiumNameSet(event: PremiumNameSetEvent): void {
 
 export function handleReservedNameSet(event: ReservedNameSetEvent): void {
   let tldId = event.params._tokenNamehash.toHexString();
-  let saleSetting = SaleSettings.load(tldId);
+  let saleSetting = SaleSetting.load(tldId);
 
 
 
   if (!saleSetting) {
-    saleSetting = new SaleSettings(tldId);
+    saleSetting = new SaleSetting(tldId);
     saleSetting.tld = tldId;  // Set the relation to the TLD entity
-    // Initialize other fields if necessary
+    saleSetting.enabled = false;
   }
   
 

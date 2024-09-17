@@ -251,11 +251,13 @@ export function handleTextChanged(event: TextChangedEvent): void {
   if (textRecordEntity == null) {
     textRecordEntity = new TextRecord(textRecordId);
     isNewTextRecord = true; // Set the flag
+    textRecordEntity.createdAt = event.block.timestamp;
   }
 
+  textRecordEntity.updatedAt = event.block.timestamp;
   // Update fields on the TextRecord entity
-  textRecordEntity.key = event.params.key.toString();
-  textRecordEntity.value = event.params.value.toString();
+  textRecordEntity.textKey = event.params.key.toString();
+  textRecordEntity.textValue = event.params.value.toString();
 
   // Load or create the parent Resolver entity
   let resolverEntity = Resolver.load(resolverId);
@@ -278,14 +280,14 @@ export function handleTextChanged(event: TextChangedEvent): void {
     .concat(event.block.timestamp.toString());
   let textRecordHistoryEntity = new TextRecordHistory(textRecordHistoryId);
   textRecordHistoryEntity.resolver = resolverEntity.id;
-  textRecordHistoryEntity.key = textRecordEntity.key;
-  textRecordHistoryEntity.value = textRecordEntity.value;
+  textRecordHistoryEntity.key = textRecordEntity.textKey;
+  textRecordHistoryEntity.value = textRecordEntity.textValue;
   textRecordHistoryEntity.changedAt = event.block.timestamp;
 
   // Determine changeType based on the isNewTextRecord flag and value
   if (isNewTextRecord) {
     textRecordHistoryEntity.changeType = "Created";
-  } else if (textRecordEntity.value == "") {
+  } else if (textRecordEntity.textValue == "") {
     textRecordHistoryEntity.changeType = "Deleted";
   } else {
     textRecordHistoryEntity.changeType = "Updated";

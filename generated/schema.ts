@@ -200,8 +200,8 @@ export class Tld extends Entity {
     }
   }
 
-  get saleSettings(): SaleSettingsLoader {
-    return new SaleSettingsLoader(
+  get saleSettings(): SaleSettingLoader {
+    return new SaleSettingLoader(
       "Tld",
       this.get("id")!.toString(),
       "saleSettings",
@@ -343,6 +343,19 @@ export class Royalty extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get tld(): string {
+    let value = this.get("tld");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set tld(value: string) {
+    this.set("tld", Value.fromString(value));
   }
 
   get percentage(): BigInt | null {
@@ -1278,7 +1291,7 @@ export class TldTransfer extends Entity {
   }
 }
 
-export class SaleSettings extends Entity {
+export class SaleSetting extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -1286,24 +1299,24 @@ export class SaleSettings extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save SaleSettings entity without an ID");
+    assert(id != null, "Cannot save SaleSetting entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type SaleSettings must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+        `Entities of type SaleSetting must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
       );
-      store.set("SaleSettings", id.toString(), this);
+      store.set("SaleSetting", id.toString(), this);
     }
   }
 
-  static loadInBlock(id: string): SaleSettings | null {
-    return changetype<SaleSettings | null>(
-      store.get_in_block("SaleSettings", id),
+  static loadInBlock(id: string): SaleSetting | null {
+    return changetype<SaleSetting | null>(
+      store.get_in_block("SaleSetting", id),
     );
   }
 
-  static load(id: string): SaleSettings | null {
-    return changetype<SaleSettings | null>(store.get("SaleSettings", id));
+  static load(id: string): SaleSetting | null {
+    return changetype<SaleSetting | null>(store.get("SaleSetting", id));
   }
 
   get id(): string {
@@ -1381,7 +1394,7 @@ export class SaleSettings extends Entity {
 
   get premiumPrices(): PremiumPriceLoader {
     return new PremiumPriceLoader(
-      "SaleSettings",
+      "SaleSetting",
       this.get("id")!.toString(),
       "premiumPrices",
     );
@@ -1389,7 +1402,7 @@ export class SaleSettings extends Entity {
 
   get reservedNames(): ReservedNameLoader {
     return new ReservedNameLoader(
-      "SaleSettings",
+      "SaleSetting",
       this.get("id")!.toString(),
       "reservedNames",
     );
@@ -1856,8 +1869,8 @@ export class TextRecord extends Entity {
     this.set("id", Value.fromString(value));
   }
 
-  get key(): string {
-    let value = this.get("key");
+  get textKey(): string {
+    let value = this.get("textKey");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -1865,12 +1878,12 @@ export class TextRecord extends Entity {
     }
   }
 
-  set key(value: string) {
-    this.set("key", Value.fromString(value));
+  set textKey(value: string) {
+    this.set("textKey", Value.fromString(value));
   }
 
-  get value(): string {
-    let value = this.get("value");
+  get textValue(): string {
+    let value = this.get("textValue");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
@@ -1878,8 +1891,8 @@ export class TextRecord extends Entity {
     }
   }
 
-  set value(value: string) {
-    this.set("value", Value.fromString(value));
+  set textValue(value: string) {
+    this.set("textValue", Value.fromString(value));
   }
 
   get resolver(): string {
@@ -1910,6 +1923,32 @@ export class TextRecord extends Entity {
     } else {
       this.set("tokenId", Value.fromBigInt(<BigInt>value));
     }
+  }
+
+  get createdAt(): BigInt {
+    let value = this.get("createdAt");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
+  }
+
+  get updatedAt(): BigInt {
+    let value = this.get("updatedAt");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set updatedAt(value: BigInt) {
+    this.set("updatedAt", Value.fromBigInt(value));
   }
 }
 
@@ -2475,7 +2514,7 @@ export class DnsRecordHistory extends Entity {
   }
 }
 
-export class SaleSettingsLoader extends Entity {
+export class SaleSettingLoader extends Entity {
   _entity: string;
   _field: string;
   _id: string;
@@ -2487,9 +2526,9 @@ export class SaleSettingsLoader extends Entity {
     this._field = field;
   }
 
-  load(): SaleSettings[] {
+  load(): SaleSetting[] {
     let value = store.loadRelated(this._entity, this._id, this._field);
-    return changetype<SaleSettings[]>(value);
+    return changetype<SaleSetting[]>(value);
   }
 }
 

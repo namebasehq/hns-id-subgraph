@@ -48,7 +48,7 @@ export function handleRoyaltyPayoutAddressSet(event: RoyaltyPayoutAddressSetEven
   let tldId = event.params._nftNamehash.toHexString();
   let tldEntity = Tld.load(tldId);
   if (tldEntity && tldEntity.royalty) {
-    let royaltyEntity = Royalty.load(tldEntity.royalty as string);
+    let royaltyEntity = Royalty.load(tldEntity.id);
     if (royaltyEntity) {
       // Create a new RoyaltyHistory entity
       let historyId = event.transaction.hash.concatI32(event.logIndex.toI32()).toHex();
@@ -66,6 +66,22 @@ export function handleRoyaltyPayoutAddressSet(event: RoyaltyPayoutAddressSetEven
 
       royaltyEntity.save();
     }
+  }
+  else {
+
+    if(tldEntity && tldEntity.royalty == null){
+      let royaltyEntity = new Royalty(tldEntity.id);
+      royaltyEntity.payoutAddress = event.params._payoutAddress.toHex();
+      royaltyEntity.percentage = BigInt.fromI32(0);
+      royaltyEntity.tld = tldEntity.id;
+      royaltyEntity.save();
+
+
+      tldEntity.royalty = royaltyEntity.id;
+      tldEntity.save();
+
+    }
+
   }
 }
 
@@ -89,6 +105,24 @@ export function handleRoyaltyPayoutAmountSet(event: RoyaltyPayoutAmountSetEvent)
       // Update the current Royalty entity
       royaltyEntity.percentage = event.params._amount;
       royaltyEntity.save();
+    }
+  }
+  else{
+
+
+    if(tldEntity && tldEntity.royalty == null){
+
+        
+        let royaltyEntity = new Royalty(tldEntity.id);
+
+        royaltyEntity.percentage = event.params._amount;
+        royaltyEntity.payoutAddress = tldEntity.owner;
+        royaltyEntity.tld = tldEntity.id;
+        royaltyEntity.save();
+        
+        tldEntity.royalty = royaltyEntity.id;
+        tldEntity.save();
+
     }
   }
 }
