@@ -24,8 +24,9 @@ import {
   Tld,
 } from "../generated/schema";
 
-import { BigInt, Bytes, store as GraphStore } from "@graphprotocol/graph-ts";
+import { BigInt, Bytes, store as GraphStore, log } from "@graphprotocol/graph-ts";
 import { createOrUpdateResolver, getResolverId } from "./utils";
+import { extractTTL, decodeName, parseRecordData, decodeDNSName, decodeDNSData } from './dns-utils';
 
 export function handleAddrChanged(event: AddrChangedEvent): void {}
 
@@ -101,7 +102,7 @@ export function handleContenthashChanged(event: ContenthashChangedEvent): void {
 }
 
 export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
-  let resolverId = getResolverId(event.params.node.toHex());
+  let resolverId = getResolverId(event.params.node.toHexString());
   // Generate a unique ID for the DnsRecord entity
   let dnsRecordId = resolverId
     .concat("-")
@@ -111,20 +112,30 @@ export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
   let dnsRecordEntity = DnsRecord.load(dnsRecordId);
   if (dnsRecordEntity == null) {
     dnsRecordEntity = new DnsRecord(dnsRecordId);
+    dnsRecordEntity.createdAt = event.block.timestamp;
   }
 
-  // Update fields on the DnsRecord entity
-  dnsRecordEntity.node = event.params.node;
-  dnsRecordEntity.name = event.params.name;
-  dnsRecordEntity.resource = BigInt.fromI32(event.params.resource);
-  dnsRecordEntity.record = event.params.record;
-  dnsRecordEntity.tokenId = BigInt.fromUnsignedBytes(event.params.node);
+    log.info("DNS Record Changed: {}", [event.params.record.toHexString()]);
+
+    // Update fields on the DnsRecord entity
+    dnsRecordEntity.node = event.params.node;
+    dnsRecordEntity.name = decodeDNSName(event.params.name); // Decoding the name bytes to a human-readable string
+    dnsRecordEntity.nameString = decodeName(event.params.name); // Decoding the name bytes to a human-readable string
+    dnsRecordEntity.resource = BigInt.fromI32(event.params.resource);
+    dnsRecordEntity.type = getResourceType(dnsRecordEntity.resource); // Mapping resource to type (e.g., A, CNAME)
+    dnsRecordEntity.record = event.params.record;
+    dnsRecordEntity.data = decodeDNSData(parseRecordData(event.params.record)); // Parse record data into a usable format
+    dnsRecordEntity.ttl = extractTTL(event.params.record); // Extract TTL from the record
+    dnsRecordEntity.tokenId = BigInt.fromUnsignedBytes(event.params.node);
+    dnsRecordEntity.updatedAt = event.block.timestamp;
 
   // Load or create the parent Resolver entity
   let resolverEntity = Resolver.load(resolverId);
   if (!resolverEntity) {
     resolverEntity = new Resolver(resolverId);
     resolverEntity.tokenId = BigInt.fromUnsignedBytes(event.params.node);
+    resolverEntity.version = BigInt.fromI32(0); // Initialize with default version number
+
     resolverEntity.save();
   }
 
@@ -351,7 +362,7 @@ export function handleVersionChanged(event: VersionChangedEvent): void {
 
   // Load or create the parent Resolver entity
   let resolverId = getResolverId(event.params.node.toHex());
-  createOrUpdateResolver(resolverId, owner, BigInt.fromUnsignedBytes(event.params.node));
+  createOrUpdateResolver(resolverId, owner, BigInt.fromUnsignedBytes(event.params.node), event.block.timestamp);
   let resolverEntity = Resolver.load(resolverId);
 
   if (resolverEntity) {
@@ -370,3 +381,16 @@ export function handleVersionChanged(event: VersionChangedEvent): void {
     sld.save();
   }
 }
+
+function getResourceType(resource: BigInt|null): string {
+
+  if (!resource) return "UNKNOWN";
+  let resourceNumber = resource.toI32();
+  if (resourceNumber == 1) return "A";
+  if (resourceNumber == 5) return "CNAME";
+  if (resourceNumber == 15) return "MX";
+  if (resourceNumber == 16) return "TXT";
+  // Add more mappings as necessary
+  return "UNKNOWN";
+}
+

@@ -239,6 +239,8 @@ type Address @entity {
   resolver: Resolver!
   "The token ID associated with the Address Record"
   tokenId: BigInt
+  createdAt: BigInt!
+  updatedAt: BigInt!
 }
 
 type TextRecord @entity {
@@ -264,14 +266,27 @@ type DnsRecord @entity {
   "Token ID associated with the DNS Record"
   tokenId: BigInt
   "Name in bytes format"
-  name: Bytes!
+  name: String! # Original field retained as bytes
+  "Name of the DNS Record (from varchar in the new table)"
+  nameString: String # New field from DNSRecords table
   "Resource type as a uint16"
-  resource: BigInt!
+  resource: BigInt
+  "Resource type from the new table"
+  type: String # New field from DNSRecords table
   "Record in bytes format"
   record: Bytes!
   "Parent Resolver of this DNS Record"
   resolver: Resolver!
+  "Time to live for the DNS Record (from int)"
+  ttl: BigInt
+  "JSON data associated with the DNS Record"
+  data: String # Using String for JSONB
+  "Timestamp when the DNS Record was created"
+  createdAt: BigInt!
+  "Timestamp when the DNS Record was last updated"
+  updatedAt: BigInt!
 }
+
 
 type PremiumPrice @entity {
   "Unique identifier for PremiumPrice, could be a combination of SaleSettings ID and label for uniqueness"
@@ -312,11 +327,15 @@ type DnsRecordHistory @entity {
   id: ID!
   resolver: Resolver! 
   node: Bytes!
-  name: Bytes!
-  resource: BigInt!
-  record: Bytes!
+  name: String
+  nameString: String  # New field for human-readable name
+  resource: BigInt
+  type: String  # New field for resource type (e.g., A, CNAME)
+  record: Bytes
+  data: String  # New field to store the JSON or data associated with the record
   changedAt: BigInt!
   changeType: String!  # Could be 'Created', 'Updated', 'Deleted'
 }
+
 
 

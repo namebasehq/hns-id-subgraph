@@ -49,7 +49,14 @@
       subgraphs:
         - name: hns-id
           version: '0.0.14'
-      name: resolver  
+      name: resolver
+    royalty_records:
+      type: subgraph_entity
+      subgraphs:
+        - name: hns-id
+          version: '0.0.14'
+      name: royalty  
+    
 
 
   transforms:
@@ -150,10 +157,26 @@
           to_timestamp(from_unixtime(cast(tr.created_at as integer))) AS createdAt,
           to_timestamp(from_unixtime(cast(tr.updated_at as integer))) AS updatedAt
         FROM text_records tr
+
+    address_record_transform:
+      primary_key: nftId,coinType
+      sql: |
+        SELECT
+          ar.cointype as coinType, 
+          ar.address as address,
+          ar.token_id as nftId
+        FROM address_records ar
     
+    royalty_transform:
+      primary_key: id
+      sql: |
+        SELECT
+          t.token_id as id,
+          r.percentage as royaltyFee
+        FROM royalty_records r
+        JOIN optimism_tld t ON t.id = r.tld
 
 
-      
   sinks:
     postgres_sink_sld_nfts:
       type: postgres
@@ -210,5 +233,18 @@
       schema: goldsky
       secret_name: A_POSTGRESQL_SECRET
       from: text_record_transform
+
+    postgres_sink_royalties:
+      type: postgres
+      table: TLDs
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: royalty_transform  
     
+    postgres_sink_address_records:
+      type: postgres
+      table: Wallets
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: address_record_transform
 

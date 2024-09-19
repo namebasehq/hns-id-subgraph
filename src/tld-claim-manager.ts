@@ -18,6 +18,7 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
     tldEntity.registrationBlockNumber = event.block.number;
     tldEntity.registrationBlockTimestamp = event.block.timestamp;
     tldEntity.registrationTransactionHash = event.transaction.hash;
+
   }
 
   // Ensure the claimant account entity exists
@@ -35,7 +36,7 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
     .concat("-")
     .concat(tldEntity.resolverVersion.toString());
     
-  createOrUpdateResolver(resolverId, claimantAccount.id, event.params._tokenId);
+  createOrUpdateResolver(resolverId, claimantAccount.id, event.params._tokenId, event.block.timestamp);
   tldEntity.resolver = resolverId;
 
   let resolver = Resolver.load(resolverId);

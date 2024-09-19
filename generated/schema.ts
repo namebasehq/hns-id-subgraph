@@ -1828,6 +1828,32 @@ export class Address extends Entity {
       this.set("tokenId", Value.fromBigInt(<BigInt>value));
     }
   }
+
+  get createdAt(): BigInt {
+    let value = this.get("createdAt");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
+  }
+
+  get updatedAt(): BigInt {
+    let value = this.get("updatedAt");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set updatedAt(value: BigInt) {
+    this.set("updatedAt", Value.fromBigInt(value));
+  }
 }
 
 export class TextRecord extends Entity {
@@ -2021,30 +2047,68 @@ export class DnsRecord extends Entity {
     }
   }
 
-  get name(): Bytes {
+  get name(): string {
     let value = this.get("name");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set name(value: Bytes) {
-    this.set("name", Value.fromBytes(value));
+  set name(value: string) {
+    this.set("name", Value.fromString(value));
   }
 
-  get resource(): BigInt {
+  get nameString(): string | null {
+    let value = this.get("nameString");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set nameString(value: string | null) {
+    if (!value) {
+      this.unset("nameString");
+    } else {
+      this.set("nameString", Value.fromString(<string>value));
+    }
+  }
+
+  get resource(): BigInt | null {
     let value = this.get("resource");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toBigInt();
     }
   }
 
-  set resource(value: BigInt) {
-    this.set("resource", Value.fromBigInt(value));
+  set resource(value: BigInt | null) {
+    if (!value) {
+      this.unset("resource");
+    } else {
+      this.set("resource", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get type(): string | null {
+    let value = this.get("type");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set type(value: string | null) {
+    if (!value) {
+      this.unset("type");
+    } else {
+      this.set("type", Value.fromString(<string>value));
+    }
   }
 
   get record(): Bytes {
@@ -2071,6 +2135,66 @@ export class DnsRecord extends Entity {
 
   set resolver(value: string) {
     this.set("resolver", Value.fromString(value));
+  }
+
+  get ttl(): BigInt | null {
+    let value = this.get("ttl");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set ttl(value: BigInt | null) {
+    if (!value) {
+      this.unset("ttl");
+    } else {
+      this.set("ttl", Value.fromBigInt(<BigInt>value));
+    }
+  }
+
+  get data(): string | null {
+    let value = this.get("data");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set data(value: string | null) {
+    if (!value) {
+      this.unset("data");
+    } else {
+      this.set("data", Value.fromString(<string>value));
+    }
+  }
+
+  get createdAt(): BigInt {
+    let value = this.get("createdAt");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
+  }
+
+  get updatedAt(): BigInt {
+    let value = this.get("updatedAt");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set updatedAt(value: BigInt) {
+    this.set("updatedAt", Value.fromBigInt(value));
   }
 }
 
@@ -2448,43 +2572,106 @@ export class DnsRecordHistory extends Entity {
     this.set("node", Value.fromBytes(value));
   }
 
-  get name(): Bytes {
+  get name(): string | null {
     let value = this.get("name");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
-      return value.toBytes();
+      return value.toString();
     }
   }
 
-  set name(value: Bytes) {
-    this.set("name", Value.fromBytes(value));
+  set name(value: string | null) {
+    if (!value) {
+      this.unset("name");
+    } else {
+      this.set("name", Value.fromString(<string>value));
+    }
   }
 
-  get resource(): BigInt {
+  get nameString(): string | null {
+    let value = this.get("nameString");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set nameString(value: string | null) {
+    if (!value) {
+      this.unset("nameString");
+    } else {
+      this.set("nameString", Value.fromString(<string>value));
+    }
+  }
+
+  get resource(): BigInt | null {
     let value = this.get("resource");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toBigInt();
     }
   }
 
-  set resource(value: BigInt) {
-    this.set("resource", Value.fromBigInt(value));
+  set resource(value: BigInt | null) {
+    if (!value) {
+      this.unset("resource");
+    } else {
+      this.set("resource", Value.fromBigInt(<BigInt>value));
+    }
   }
 
-  get record(): Bytes {
+  get type(): string | null {
+    let value = this.get("type");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set type(value: string | null) {
+    if (!value) {
+      this.unset("type");
+    } else {
+      this.set("type", Value.fromString(<string>value));
+    }
+  }
+
+  get record(): Bytes | null {
     let value = this.get("record");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toBytes();
     }
   }
 
-  set record(value: Bytes) {
-    this.set("record", Value.fromBytes(value));
+  set record(value: Bytes | null) {
+    if (!value) {
+      this.unset("record");
+    } else {
+      this.set("record", Value.fromBytes(<Bytes>value));
+    }
+  }
+
+  get data(): string | null {
+    let value = this.get("data");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set data(value: string | null) {
+    if (!value) {
+      this.unset("data");
+    } else {
+      this.set("data", Value.fromString(<string>value));
+    }
   }
 
   get changedAt(): BigInt {

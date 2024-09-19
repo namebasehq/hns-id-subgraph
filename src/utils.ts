@@ -37,7 +37,7 @@ export function concat(a: ByteArray, b: ByteArray): ByteArray {
   return changetype<ByteArray>(out);
 }
 
-export function createOrUpdateResolver(resolverId: string, addr: string, tokenId: BigInt): void {
+export function createOrUpdateResolver(resolverId: string, addr: string, tokenId: BigInt, now: BigInt): void {
   let resolverEntity = new Resolver(resolverId);
   resolverEntity.version = BigInt.fromI32(0);  // Initialize with default version number
   resolverEntity.tokenId = tokenId;
@@ -53,6 +53,8 @@ export function createOrUpdateResolver(resolverId: string, addr: string, tokenId
     addressEntity.address = addr;
     addressEntity.resolver = resolverEntity.id;
     addressEntity.tokenId = tokenId;
+    addressEntity.createdAt = now;
+    addressEntity.updatedAt = now;
     addressEntity.save();
   }
 
@@ -109,6 +111,9 @@ export function getResolverId(node: string): string {
 
   if (tld) return node.concat("-").concat(tld.resolverVersion.toString());
   if (sld) return node.concat("-").concat(sld.resolverVersion.toString());
+
+
+  log.warning("getResolverId: No TLD or SLD found for node: {}", [node]);
 
   return "";
 
