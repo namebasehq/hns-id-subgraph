@@ -6,56 +6,62 @@
       type: subgraph_entity
       subgraphs:
         - name: hns-id
-          version: '0.0.14'
+          version: '0.0.39'
       name: sld
     optimism_tld:
       type: subgraph_entity
       subgraphs:
         - name: hns-id
-          version: '0.0.14'
+          version: '0.0.39'
       name: tld
     sale_settings:
       type: subgraph_entity
       subgraphs:
         - name: hns-id
-          version: '0.0.14'
+          version: '0.0.39'
       name: sale_setting
     premium_names:
       type: subgraph_entity
       subgraphs:
         - name: hns-id
-          version: '0.0.14'
+          version: '0.0.39'
       name: premium_price
     reserved_names:
       type: subgraph_entity
       subgraphs:
         - name: hns-id
-          version: '0.0.14'
+          version: '0.0.39'
       name: reserved_name  
     text_records:
       type: subgraph_entity
       subgraphs:
         - name: hns-id
-          version: '0.0.14'
+          version: '0.0.39'
       name: text_record
     address_records:
       type: subgraph_entity
       subgraphs:
         - name: hns-id
-          version: '0.0.14'
+          version: '0.0.39'
       name: address
     resolver_records:
       type: subgraph_entity
       subgraphs:
         - name: hns-id
-          version: '0.0.14'
+          version: '0.0.39'
       name: resolver
     royalty_records:
       type: subgraph_entity
       subgraphs:
         - name: hns-id
-          version: '0.0.14'
+          version: '0.0.39'
       name: royalty  
+    dns_records:
+      type: subgraph_entity
+      subgraphs:
+        - name: hns-id
+          version: '0.0.39'
+      name: dns_record
     
 
 
@@ -161,20 +167,42 @@
     address_record_transform:
       primary_key: nftId,coinType
       sql: |
-        SELECT
-          ar.cointype as coinType, 
-          ar.address as address,
-          ar.token_id as nftId
-        FROM address_records ar
+            SELECT
+                ar.cointype as coinType, 
+                ar.address as address,
+                ar.token_id as nftId,
+                to_timestamp(from_unixtime(COALESCE(cast(sld.last_update_timestamp as bigint), cast(tld.last_update_timestamp as bigint), extract(epoch from now())))) as createdAt,
+                to_timestamp(from_unixtime(cast(extract(epoch from now()) as integer))) as updatedAt
+            FROM address_records ar
+            LEFT JOIN optimism_sld sld ON sld.id = cast(ar.token_id as varchar)
+            LEFT JOIN optimism_tld tld ON tld.id = cast(ar.token_id as varchar)
+
+
     
     royalty_transform:
       primary_key: id
       sql: |
         SELECT
           t.token_id as id,
-          r.percentage as royaltyFee
+          r.percentage as royaltyFee,
+          t.id as hash,
+          to_timestamp(from_unixtime(cast(t.last_update_timestamp as integer))) as createdAt,
+          to_timestamp(from_unixtime(cast(extract(epoch from now()) as integer))) as updatedAt
         FROM royalty_records r
         JOIN optimism_tld t ON t.id = r.tld
+
+    dns_records_transform:
+      primary_key: nftId,type
+      sql: |
+        SELECT
+          d.name,
+          d.type,
+          d.ttl,
+          d.data,
+          to_timestamp(from_unixtime(cast(d.created_at as bigint))) AS createdAt,
+          to_timestamp(from_unixtime(cast(extract(epoch from now()) as integer))) as updatedAt,
+          d.token_id AS nftId
+        FROM dns_records d
 
 
   sinks:
@@ -247,4 +275,11 @@
       schema: goldsky
       secret_name: A_POSTGRESQL_SECRET
       from: address_record_transform
+
+    postgres_sink_dns_records:
+      type: postgres
+      table: DNSRecords
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: dns_records_transform
 

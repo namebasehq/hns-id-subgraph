@@ -714,17 +714,21 @@ export class Sld extends Entity {
     this.set("registrant", Value.fromString(value));
   }
 
-  get parentTld(): string {
+  get parentTld(): string | null {
     let value = this.get("parentTld");
     if (!value || value.kind == ValueKind.NULL) {
-      throw new Error("Cannot return null for a required field.");
+      return null;
     } else {
       return value.toString();
     }
   }
 
-  set parentTld(value: string) {
-    this.set("parentTld", Value.fromString(value));
+  set parentTld(value: string | null) {
+    if (!value) {
+      this.unset("parentTld");
+    } else {
+      this.set("parentTld", Value.fromString(<string>value));
+    }
   }
 
   get registrationBlockNumber(): BigInt {

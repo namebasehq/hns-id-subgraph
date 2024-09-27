@@ -26,7 +26,7 @@ import {
 
 import { BigInt, Bytes, store as GraphStore, log } from "@graphprotocol/graph-ts";
 import { createOrUpdateResolver, getResolverId } from "./utils";
-import { extractTTL, decodeName, parseRecordData, decodeDNSName, decodeDNSData } from './dns-utils';
+import { extractTTL, decodeName, parseRecordData, decodeDNSName, decodeDNSData, getResourceType } from './dns-utils';
 
 export function handleAddrChanged(event: AddrChangedEvent): void {}
 
@@ -50,6 +50,7 @@ export function handleAddressChanged(event: AddressChangedEvent): void {
   let addressEntity = Address.load(addressId);
   if (addressEntity == null) {
     addressEntity = new Address(addressId);
+    addressEntity.createdAt = event.block.timestamp;
   }
 
   // Update fields on the Address entity
@@ -57,7 +58,7 @@ export function handleAddressChanged(event: AddressChangedEvent): void {
   addressEntity.cointype = event.params.coinType;
   addressEntity.resolver = resolverEntity.id;
   addressEntity.tokenId = BigInt.fromUnsignedBytes(event.params.node);
-  
+  addressEntity.updatedAt = event.block.timestamp;
 
   // Save the updated Address entity
   addressEntity.save();
@@ -115,12 +116,12 @@ export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
     dnsRecordEntity.createdAt = event.block.timestamp;
   }
 
-    log.info("DNS Record Changed: {}", [event.params.record.toHexString()]);
+   
 
     // Update fields on the DnsRecord entity
     dnsRecordEntity.node = event.params.node;
-    dnsRecordEntity.name = decodeDNSName(event.params.name); // Decoding the name bytes to a human-readable string
-    dnsRecordEntity.nameString = decodeName(event.params.name); // Decoding the name bytes to a human-readable string
+    dnsRecordEntity.name = decodeName(event.params.name); // Decoding the name bytes to a human-readable string
+    dnsRecordEntity.nameString = decodeDNSName(event.params.name); // Decoding the name bytes to a human-readable string
     dnsRecordEntity.resource = BigInt.fromI32(event.params.resource);
     dnsRecordEntity.type = getResourceType(dnsRecordEntity.resource); // Mapping resource to type (e.g., A, CNAME)
     dnsRecordEntity.record = event.params.record;
@@ -362,7 +363,7 @@ export function handleVersionChanged(event: VersionChangedEvent): void {
 
   // Load or create the parent Resolver entity
   let resolverId = getResolverId(event.params.node.toHex());
-  createOrUpdateResolver(resolverId, owner, BigInt.fromUnsignedBytes(event.params.node), event.block.timestamp);
+  createOrUpdateResolver(resolverId, owner, BigInt.fromUnsignedBytes(event.params.node), event.block.timestamp, event.address.toHexString());
   let resolverEntity = Resolver.load(resolverId);
 
   if (resolverEntity) {
@@ -382,15 +383,5 @@ export function handleVersionChanged(event: VersionChangedEvent): void {
   }
 }
 
-function getResourceType(resource: BigInt|null): string {
 
-  if (!resource) return "UNKNOWN";
-  let resourceNumber = resource.toI32();
-  if (resourceNumber == 1) return "A";
-  if (resourceNumber == 5) return "CNAME";
-  if (resourceNumber == 15) return "MX";
-  if (resourceNumber == 16) return "TXT";
-  // Add more mappings as necessary
-  return "UNKNOWN";
-}
 

@@ -96,7 +96,7 @@ type Sld @entity {
   "The account that registered the SLD"
   registrant: Account!
   "The parent TLD of this SLD"
-  parentTld: Tld!
+  parentTld: Tld
   "The block number of the registration event"
   registrationBlockNumber: BigInt!
   "Block timestamp when the sld was registered"
@@ -198,7 +198,7 @@ type Resolver @entity {
   "NFT ID connected to the resolver"
   tokenId: BigInt
   "Address of the Resolver"
-  address: Address
+  address: String
   "Array of Addresses associated with this Resolver"
   addresses: [Address!] @derivedFrom(field: "resolver")
   "Array of Text Records associated with this Resolver"

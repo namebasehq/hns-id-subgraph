@@ -15,33 +15,56 @@ import {
   Tld
 } from "../generated/schema"
 
-import { BigInt } from "@graphprotocol/graph-ts";
-
-
+import { BigInt, log, Address } from "@graphprotocol/graph-ts";
 
 export function handleResolverSet(event: ResolverSetEvent): void {
-  
-  let sldEntity = Sld.load(event.params._nftNamehash.toHexString());
+  let namehash = event.params._nftNamehash.toHexString();
+  let sldEntity = Sld.load(namehash);
 
-  if (sldEntity) {
-
-    let resolver = sldEntity.resolver;
-
-    if(resolver){
-
-      let resolverObj = Resolver.load(resolver);
-
-      if(!resolverObj){
-        resolverObj = new Resolver(resolver);
-      }
-
-      if(resolverObj){
-        resolverObj.tokenId = BigInt.fromUnsignedBytes(event.params._nftNamehash);
-        resolverObj.address = event.params._resolver.toHexString();
-        resolverObj.save();
-      }
-    }
+  if (!sldEntity) {
+    sldEntity = new Sld(namehash);
+    sldEntity.tokenId = BigInt.fromUnsignedBytes(event.params._nftNamehash);
+    
+    // Default values for mandatory fields
+    sldEntity.label = ""; 
+    sldEntity.fullName = "";
+    
+    // Create a default Account for owner and registrant
+    let defaultAccount = new Account(Address.zero().toHexString());
+    defaultAccount.save();
+    sldEntity.owner = defaultAccount.id;
+    sldEntity.registrant = defaultAccount.id;
+    
+    sldEntity.registrationBlockNumber = event.block.number;
+    sldEntity.lastUpdateBlockNumber = event.block.number;
+    sldEntity.expirationTimestamp = event.block.timestamp.plus(BigInt.fromI32(31536000));
+    sldEntity.renewalCount = BigInt.fromI32(0);
+    sldEntity.transferCount = BigInt.fromI32(0);
+    sldEntity.resolverVersion = BigInt.fromI32(0);
+    
+    // Optional fields
+    sldEntity.registrationTimestamp = event.block.timestamp;
+    sldEntity.registrationTransactionHash = event.transaction.hash;
+    sldEntity.lastUpdateTimestamp = event.block.timestamp;
+    sldEntity.lastUpdateTransactionHash = event.transaction.hash;
   }
+
+  
+  // Create new resolver ID
+  let resolverId = namehash + "-" + sldEntity.resolverVersion.toString();
+  
+  let resolverObj = new Resolver(resolverId);
+  resolverObj.tokenId = BigInt.fromUnsignedBytes(event.params._nftNamehash);
+  resolverObj.address = event.params._resolver.toHexString();
+  resolverObj.version = sldEntity.resolverVersion;
+  resolverObj.save();
+
+  // Update SLD entity with new resolver
+  sldEntity.resolver = resolverId;
+  sldEntity.lastUpdateBlockNumber = event.block.number;
+  sldEntity.lastUpdateTimestamp = event.block.timestamp;
+  sldEntity.lastUpdateTransactionHash = event.transaction.hash;
+  sldEntity.save();
 }
 
 export function handleRoyaltyPayoutAddressSet(event: RoyaltyPayoutAddressSetEvent): void {

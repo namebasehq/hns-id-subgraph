@@ -11,8 +11,9 @@ import {
   Resolver
 } from "../generated/schema"
 
-import { log, BigInt } from '@graphprotocol/graph-ts'
+import { log, BigInt, Address, Bytes } from '@graphprotocol/graph-ts'
 
+import { padHex } from './utils'
 
 // TODO: will need to implement this
 export function handleRegistrationStrategySet(
@@ -21,31 +22,71 @@ export function handleRegistrationStrategySet(
 
 }
 
-export function handleResolverSet(event: ResolverSetEvent): void {
+function bytesToUint(bytes: Bytes): BigInt {
+  // Initialize BigInt from zero
+  let result = BigInt.fromI32(0);
 
-  let tldEntity = Tld.load(event.params._nftNamehash.toHexString());
-
-  if (tldEntity) {
-
-    let resolver = tldEntity.resolver;
-
-    if(resolver){
-
-      let resolverObj = Resolver.load(resolver);
-      
-      if(resolverObj){
-        resolverObj.tokenId = BigInt.fromUnsignedBytes(event.params._nftNamehash);
-        resolverObj.address = event.params._resolver.toHexString();
-        resolverObj.save();
-      }
-    }
+  // Iterate through the bytes
+  for (let i = 0; i < bytes.length; i++) {
+    // Shift result by 8 bits (1 byte) and add the byte value
+    result = result.leftShift(8).plus(BigInt.fromI32(bytes[i] as i32));
   }
+
+  return result;
+}
+
+export function handleResolverSet(event: ResolverSetEvent): void {
+  let tldId = event.params._nftNamehash.toHexString();
+  let tldEntity = Tld.load(tldId);
+
+  if (!tldEntity) {
+    tldEntity = new Tld(tldId);
+    tldEntity.tokenId = bytesToUint(event.params._nftNamehash);
+    
+    // Default values for mandatory fields
+    tldEntity.label = ""; 
+    
+    // Create a default Account for owner
+    let defaultAccount = new Account(Address.zero().toHexString());
+    defaultAccount.save();
+    tldEntity.owner = defaultAccount.id;
+    
+    tldEntity.registrationBlockNumber = event.block.number;
+    tldEntity.lastUpdateBlockNumber = event.block.number;
+    tldEntity.transferCount = BigInt.fromI32(0);
+    tldEntity.resolverVersion = BigInt.fromI32(0);
+    
+    // Optional fields
+    tldEntity.registrationBlockTimestamp = event.block.timestamp;
+    tldEntity.registrationTransactionHash = event.transaction.hash;
+    tldEntity.lastUpdateTimestamp = event.block.timestamp;
+    tldEntity.lastUpdateTransactionHash = event.transaction.hash;
+    tldEntity.claimant = defaultAccount.id; // Set claimant to the same default account
+  }
+  
+  
+  // Create new resolver ID
+  let resolverId = tldId + "-" + tldEntity.resolverVersion.toString();
+  
+  let resolverObj = new Resolver(resolverId);
+  resolverObj.tokenId = bytesToUint(event.params._nftNamehash);
+  resolverObj.address = event.params._resolver.toHexString();
+  resolverObj.version = tldEntity.resolverVersion;
+  resolverObj.save();
+
+  // Update TLD entity with new resolver
+  tldEntity.resolver = resolverId;
+  tldEntity.tokenId = bytesToUint(event.params._nftNamehash);
+  tldEntity.lastUpdateBlockNumber = event.block.number;
+  tldEntity.lastUpdateTimestamp = event.block.timestamp;
+  tldEntity.lastUpdateTransactionHash = event.transaction.hash;
+  tldEntity.save();
+
 }
 
 
-
 export function handleTransfer(event: TransferEvent): void {
-  let tldId = event.params.tokenId.toHexString();
+  let tldId = padHex(event.params.tokenId.toHexString(), 32);
   let tldEntity = Tld.load(tldId);
 
   if (!tldEntity) {

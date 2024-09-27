@@ -37,28 +37,68 @@ export function concat(a: ByteArray, b: ByteArray): ByteArray {
   return changetype<ByteArray>(out);
 }
 
-export function createOrUpdateResolver(resolverId: string, addr: string, tokenId: BigInt, now: BigInt): void {
-  let resolverEntity = new Resolver(resolverId);
-  resolverEntity.version = BigInt.fromI32(0);  // Initialize with default version number
+export function padHex(hexString: string, padding: i32): string {
+  let cleanHex = hexString.startsWith('0x') ? hexString.slice(2) : hexString;
+
+  // Convert to f64 explicitly
+  let paddingLength: i32 = (padding) * i32(2.0);
+  
+  let paddedHex = cleanHex.padStart(paddingLength, '0');
+  
+  return '0x' + paddedHex;
+}
+
+
+export function createOrUpdateResolver(
+  resolverId: string, 
+  addr: string, 
+  tokenId: BigInt, 
+  now: BigInt, 
+  resolverAddress: string
+): void {
+  // Try to load the existing Resolver entity
+  let resolverEntity = Resolver.load(resolverId);
+
+  // If it doesn't exist, create a new one
+  if (resolverEntity == null) {
+    resolverEntity = new Resolver(resolverId);
+    resolverEntity.version = BigInt.fromI32(0);  // Initialize with default version number
+  }
+
+  // Assign resolverAddress only if it's not an empty string
+  if (resolverAddress != "") {
+    resolverEntity.address = resolverAddress;
+  }
+
+  // Update other fields
   resolverEntity.tokenId = tokenId;
   resolverEntity.save();
 
-  // Initialize addresses for all EVM coin types
+  // Initialize or update addresses for all EVM coin types
   const defaultCoinTypes = [60, 614, 9006, 966, 9001, 9000, 9005];
   for (let i = 0; i < defaultCoinTypes.length; i++) {
     let coinType = defaultCoinTypes[i];
     let addressId = resolverId.concat("-").concat(coinType.toString());
-    let addressEntity = new Address(addressId);
-    addressEntity.cointype = BigInt.fromI32(coinType);
+
+    // Try to load existing address entity
+    let addressEntity = Address.load(addressId);
+
+    // If it doesn't exist, create a new one
+    if (addressEntity == null) {
+      addressEntity = new Address(addressId);
+      addressEntity.cointype = BigInt.fromI32(coinType);
+      addressEntity.resolver = resolverEntity.id;
+      addressEntity.tokenId = tokenId;
+      addressEntity.createdAt = now;
+    }
+
+    // Update fields (whether new or existing entity)
     addressEntity.address = addr;
-    addressEntity.resolver = resolverEntity.id;
-    addressEntity.tokenId = tokenId;
-    addressEntity.createdAt = now;
     addressEntity.updatedAt = now;
     addressEntity.save();
   }
-
 }
+
 
 
 export function byteArrayFromHex(s: string): ByteArray {
