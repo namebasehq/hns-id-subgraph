@@ -3,7 +3,7 @@ import {
   Transfer as TransferEvent,
   Approval as ApprovalEvent,
 } from "../generated/WHNS/ERC20";
-import { TokenTransfer, Account } from "../generated/schema";
+import { TokenTransfer, Account, WhnsToken } from "../generated/schema";
 
 function getOrCreateAccount(address: Address): Account {
   let accountId = address.toHexString();
@@ -19,6 +19,21 @@ function getOrCreateAccount(address: Address): Account {
   return account;
 }
 
+function getOrCreateWhnsToken(): WhnsToken {
+
+  let whnsToken = WhnsToken.load("WHNS");
+
+  if (!whnsToken) {
+    whnsToken = new WhnsToken("WHNS");
+
+    whnsToken.totalSupply = BigInt.fromI32(0);
+    whnsToken.save();
+  }
+
+  return whnsToken;
+
+}
+
 export function handleTransfer(event: TransferEvent): void {
   let zeroAddress = "0x0000000000000000000000000000000000000000";
 
@@ -30,10 +45,20 @@ export function handleTransfer(event: TransferEvent): void {
     from.WhnsBalance = from.WhnsBalance.minus(event.params.value);
     from.save();
   }
+  else {
+    let whnsToken = getOrCreateWhnsToken();
+    whnsToken.totalSupply = whnsToken.totalSupply.plus(event.params.value);
+    whnsToken.save();
+  }
 
   if (to.id != zeroAddress) {
     to.WhnsBalance = to.WhnsBalance.plus(event.params.value);
     to.save();
+  }
+  else {
+    let whnsToken = getOrCreateWhnsToken();
+    whnsToken.totalSupply = whnsToken.totalSupply.minus(event.params.value);
+    whnsToken.save();
   }
 
   // Create transfer event

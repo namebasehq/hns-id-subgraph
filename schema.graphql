@@ -392,6 +392,11 @@ type DNSRecordEvent @entity {
   eventTimestamp: BigInt!          # The timestamp of the event (used for the join)
 }
 
+type WhnsToken @entity {
+  id: ID!
+  totalSupply: BigInt!
+  }
+
 
 
 type TokenTransfer @entity {

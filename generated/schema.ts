@@ -3291,6 +3291,59 @@ export class DNSRecordEvent extends Entity {
   }
 }
 
+export class WhnsToken extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save WhnsToken entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type WhnsToken must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`,
+      );
+      store.set("WhnsToken", id.toString(), this);
+    }
+  }
+
+  static loadInBlock(id: string): WhnsToken | null {
+    return changetype<WhnsToken | null>(store.get_in_block("WhnsToken", id));
+  }
+
+  static load(id: string): WhnsToken | null {
+    return changetype<WhnsToken | null>(store.get("WhnsToken", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toString();
+    }
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get totalSupply(): BigInt {
+    let value = this.get("totalSupply");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set totalSupply(value: BigInt) {
+    this.set("totalSupply", Value.fromBigInt(value));
+  }
+}
+
 export class TokenTransfer extends Entity {
   constructor(id: string) {
     super();
