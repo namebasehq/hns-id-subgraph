@@ -1,6 +1,39 @@
 // Import types and APIs from graph-ts
 import { BigInt, ByteArray, ethereum, log } from "@graphprotocol/graph-ts";
-import { Account, Address, Resolver, ResolverHistory, Sld, Tld } from "../generated/schema";
+import {
+  Account,
+  Address,
+  Resolver,
+  ResolverHistory,
+  Sld,
+  Tld,
+} from "../generated/schema";
+
+export function toPaddedHexString(byteArray: ByteArray): string {
+  let hex = byteArray.toHexString().slice(2); // Remove '0x' prefix
+
+  // Ensure the hex string is not longer than expected
+  if (hex.length > 64) {
+    log.warning("toPaddedHexString: Hex string is longer than expected: {}", [
+      hex,
+    ]);
+  }
+
+  // Pad to 64 characters (32 bytes) with leading zeros and add '0x' prefix
+  return "0x" + hex.padStart(64, "0");
+}
+
+export function toPaddedHexStringFromBigint(value: BigInt): string {
+  let hex = value.toHexString().slice(2); // Convert ByteArray to hex string and remove '0x' prefix
+  return "0x" + hex.padStart(64, "0"); // Pad to 64 characters and add '0x' prefix
+}
+export function toAddress(byteArray: ByteArray): string {
+  let hex = byteArray.toHexString().slice(2); // Remove '0x' prefix
+  if (hex.length > 40) {
+    hex = hex.slice(-40); // Truncate to the last 40 characters
+  }
+  return "0x" + hex.padStart(40, "0"); // Pad to 40 characters and add '0x' prefix
+}
 
 // using TX hash + log index
 export function createEventID(event: ethereum.Event): string {
@@ -38,22 +71,21 @@ export function concat(a: ByteArray, b: ByteArray): ByteArray {
 }
 
 export function padHex(hexString: string, padding: i32): string {
-  let cleanHex = hexString.startsWith('0x') ? hexString.slice(2) : hexString;
+  let cleanHex = hexString.startsWith("0x") ? hexString.slice(2) : hexString;
 
   // Convert to f64 explicitly
-  let paddingLength: i32 = (padding) * i32(2.0);
-  
-  let paddedHex = cleanHex.padStart(paddingLength, '0');
-  
-  return '0x' + paddedHex;
+  let paddingLength: i32 = padding * i32(2.0);
+
+  let paddedHex = cleanHex.padStart(paddingLength, "0");
+
+  return "0x" + paddedHex;
 }
 
-
 export function createOrUpdateResolver(
-  resolverId: string, 
-  addr: string, 
-  tokenId: BigInt, 
-  now: BigInt, 
+  resolverId: string,
+  addr: string,
+  tokenId: BigInt,
+  now: BigInt,
   resolverAddress: string
 ): void {
   // Try to load the existing Resolver entity
@@ -62,7 +94,7 @@ export function createOrUpdateResolver(
   // If it doesn't exist, create a new one
   if (resolverEntity == null) {
     resolverEntity = new Resolver(resolverId);
-    resolverEntity.version = BigInt.fromI32(0);  // Initialize with default version number
+    resolverEntity.version = BigInt.fromI32(0); // Initialize with default version number
   }
 
   // Assign resolverAddress only if it's not an empty string
@@ -99,8 +131,6 @@ export function createOrUpdateResolver(
   }
 }
 
-
-
 export function byteArrayFromHex(s: string): ByteArray {
   if (s.length % 2 !== 0) {
     throw new TypeError("Hex string must have an even number of characters");
@@ -113,10 +143,7 @@ export function byteArrayFromHex(s: string): ByteArray {
 }
 
 export function uint256ToByteArray(i: BigInt): ByteArray {
-  let hex = i
-    .toHex()
-    .slice(2)
-    .padStart(64, "0");
+  let hex = i.toHex().slice(2).padStart(64, "0");
   return byteArrayFromHex(hex);
 }
 
@@ -124,6 +151,7 @@ export function createOrLoadAccount(address: string): Account {
   let account = Account.load(address);
   if (account == null) {
     account = new Account(address);
+    account.WhnsBalance = BigInt.fromI32(0);
   }
   return account;
 }
@@ -145,18 +173,15 @@ export function createOrLoadTld(node: string): Tld {
 }
 
 export function getResolverId(node: string): string {
-
   let tld = Tld.load(node);
   let sld = Sld.load(node);
 
   if (tld) return node.concat("-").concat(tld.resolverVersion.toString());
   if (sld) return node.concat("-").concat(sld.resolverVersion.toString());
 
-
   log.warning("getResolverId: No TLD or SLD found for node: {}", [node]);
 
   return "";
-
 }
 
 export function checkValidLabel(name: string): boolean {
@@ -176,4 +201,3 @@ export function checkValidLabel(name: string): boolean {
 
   return true;
 }
-

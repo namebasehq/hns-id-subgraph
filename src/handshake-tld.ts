@@ -1,26 +1,30 @@
 import {
   RegistrationStrategySet as RegistrationStrategySetEvent,
   ResolverSet as ResolverSetEvent,
-  Transfer as TransferEvent
-} from "../generated/HandshakeTld/HandshakeTld"
+  Transfer as TransferEvent,
+} from "../generated/HandshakeTld/HandshakeTld";
 import {
   Tld,
   Account,
   TldTransfer,
   Delegate,
-  Resolver
-} from "../generated/schema"
+  Resolver,
+} from "../generated/schema";
 
-import { log, BigInt, Address, Bytes } from '@graphprotocol/graph-ts'
+import { log, BigInt, Address, Bytes } from "@graphprotocol/graph-ts";
 
-import { padHex } from './utils'
+import {
+  padHex,
+  toAddress,
+  toPaddedHexString,
+  toPaddedHexStringFromBigint,
+} from "./utils";
+import { createTLDEvent } from "./entity-helpers";
 
 // TODO: will need to implement this
 export function handleRegistrationStrategySet(
   event: RegistrationStrategySetEvent
-): void {
-
-}
+): void {}
 
 function bytesToUint(bytes: Bytes): BigInt {
   // Initialize BigInt from zero
@@ -36,26 +40,27 @@ function bytesToUint(bytes: Bytes): BigInt {
 }
 
 export function handleResolverSet(event: ResolverSetEvent): void {
-  let tldId = event.params._nftNamehash.toHexString();
+  let tldId = toPaddedHexString(event.params._nftNamehash);
   let tldEntity = Tld.load(tldId);
 
   if (!tldEntity) {
     tldEntity = new Tld(tldId);
     tldEntity.tokenId = bytesToUint(event.params._nftNamehash);
-    
+
     // Default values for mandatory fields
-    tldEntity.label = ""; 
-    
+    tldEntity.label = "";
+
     // Create a default Account for owner
-    let defaultAccount = new Account(Address.zero().toHexString());
+    let defaultAccount = new Account(toAddress(Address.zero()));
+    defaultAccount.WhnsBalance = BigInt.fromI32(0);
     defaultAccount.save();
     tldEntity.owner = defaultAccount.id;
-    
+
     tldEntity.registrationBlockNumber = event.block.number;
     tldEntity.lastUpdateBlockNumber = event.block.number;
     tldEntity.transferCount = BigInt.fromI32(0);
     tldEntity.resolverVersion = BigInt.fromI32(0);
-    
+
     // Optional fields
     tldEntity.registrationBlockTimestamp = event.block.timestamp;
     tldEntity.registrationTransactionHash = event.transaction.hash;
@@ -63,14 +68,13 @@ export function handleResolverSet(event: ResolverSetEvent): void {
     tldEntity.lastUpdateTransactionHash = event.transaction.hash;
     tldEntity.claimant = defaultAccount.id; // Set claimant to the same default account
   }
-  
-  
+
   // Create new resolver ID
   let resolverId = tldId + "-" + tldEntity.resolverVersion.toString();
-  
+
   let resolverObj = new Resolver(resolverId);
   resolverObj.tokenId = bytesToUint(event.params._nftNamehash);
-  resolverObj.address = event.params._resolver.toHexString();
+  resolverObj.address = toAddress(event.params._resolver);
   resolverObj.version = tldEntity.resolverVersion;
   resolverObj.save();
 
@@ -82,11 +86,15 @@ export function handleResolverSet(event: ResolverSetEvent): void {
   tldEntity.lastUpdateTransactionHash = event.transaction.hash;
   tldEntity.save();
 
+  createTLDEvent(
+    tldEntity.tokenId,
+    event.transaction.hash,
+    event.block.timestamp
+  );
 }
 
-
 export function handleTransfer(event: TransferEvent): void {
-  let tldId = padHex(event.params.tokenId.toHexString(), 32);
+  let tldId = toPaddedHexStringFromBigint(event.params.tokenId);
   let tldEntity = Tld.load(tldId);
 
   if (!tldEntity) {
@@ -104,18 +112,20 @@ export function handleTransfer(event: TransferEvent): void {
   }
 
   // Create or load the Account entity for the new owner (Recipient)
-  let recipientAccountId = event.params.to.toHex();
+  let recipientAccountId = toAddress(event.params.to);
   let recipientAccount = Account.load(recipientAccountId);
   if (!recipientAccount) {
     recipientAccount = new Account(recipientAccountId);
+    recipientAccount.WhnsBalance = BigInt.fromI32(0);
     recipientAccount.save();
   }
 
   // Create or load the Account entity for the old owner (Sender)
-  let senderAccountId = event.params.from.toHex();
+  let senderAccountId = toAddress(event.params.from);
   let senderAccount = Account.load(senderAccountId);
   if (!senderAccount) {
     senderAccount = new Account(senderAccountId);
+    senderAccount.WhnsBalance = BigInt.fromI32(0);
     senderAccount.save();
   }
 
@@ -154,10 +164,10 @@ export function handleTransfer(event: TransferEvent): void {
 
   // Save updated Tld entity
   tldEntity.save();
+
+  createTLDEvent(
+    tldEntity.tokenId,
+    event.transaction.hash,
+    event.block.timestamp
+  );
 }
-
-
-
-
-
-

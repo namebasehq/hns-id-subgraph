@@ -92,7 +92,7 @@ type Sld @entity {
   "The full name of the SLD"
   fullName: String!
   "The account that owns the SLD"
-  owner: Account!
+  owner: Account
   "The account that registered the SLD"
   registrant: Account!
   "The parent TLD of this SLD"
@@ -186,6 +186,7 @@ type SaleSetting @entity {
 type Account @entity {
   "The unique identifier for the account"
   id: ID!
+  WhnsBalance: BigInt!
   "The TLDs owned by the account"
   tlds: [Tld!]! @derivedFrom(field: "owner")
   "The SLDs owned by the account"
@@ -266,7 +267,7 @@ type DnsRecord @entity {
   "Token ID associated with the DNS Record"
   tokenId: BigInt
   "Name in bytes format"
-  name: String! # Original field retained as bytes
+  name: String! 
   "Name of the DNS Record (from varchar in the new table)"
   nameString: String # New field from DNSRecords table
   "Resource type as a uint16"
@@ -311,7 +312,7 @@ type ReservedName @entity {
   "The label that is reserved"
   label: String!
   "The claimant of the reserved name"
-  claimant: Bytes
+  claimant: Account
 }
 
 type TextRecordHistory @entity {
@@ -338,4 +339,78 @@ type DnsRecordHistory @entity {
 }
 
 
+
+
+type SLDEvent @entity {
+  id: ID!                         # Unique combination of tokenId and event timestamp
+  tokenId: BigInt!                 # The tokenId of the SLD being updated
+  txHash: Bytes!                   # The transaction hash of the event
+  eventTimestamp: BigInt!          # The timestamp of the event (used for the join)
+}
+
+type TLDEvent @entity {
+  id: ID!                         # Unique combination of tokenId and event timestamp
+  tokenId: BigInt!                 # The tokenId of the TLD being updated
+  txHash: Bytes!                   # The transaction hash of the event
+  eventTimestamp: BigInt!          # The timestamp of the event (used for the join)
+}
+
+
+type PremiumNameEvent @entity {
+  id: ID!                         # Unique combination of tokenId and event timestamp
+  tokenId: BigInt!                 # The tokenId of the premium name being updated
+  txHash: Bytes!                   # The transaction hash of the event
+  eventTimestamp: BigInt!          # The timestamp of the event (used for the join)
+}
+
+type ReservedNameEvent @entity {
+  id: ID!                         # Unique combination of tokenId and event timestamp
+  tokenId: BigInt!                 # The tokenId of the reserved name being updated
+  txHash: Bytes!                   # The transaction hash of the event
+  eventTimestamp: BigInt!          # The timestamp of the event (used for the join)
+}
+
+type TextRecordEvent @entity {
+  id: ID!                         # Unique combination of tokenId and event timestamp
+  tokenId: BigInt!                 # The tokenId of the text record being updated
+  txHash: Bytes!                   # The transaction hash of the event
+  eventTimestamp: BigInt!          # The timestamp of the event (used for the join)
+}
+
+type AddressRecordEvent @entity {
+  id: ID!                         # Unique combination of tokenId and event timestamp
+  tokenId: BigInt!                 # The tokenId of the address record being updated
+  txHash: Bytes!                   # The transaction hash of the event
+  eventTimestamp: BigInt!          # The timestamp of the event (used for the join)
+}
+
+
+type DNSRecordEvent @entity {
+  id: ID!                         # Unique combination of tokenId and event timestamp
+  tokenId: BigInt!                 # The tokenId of the DNS record being updated
+  txHash: Bytes!                   # The transaction hash of the event
+  eventTimestamp: BigInt!          # The timestamp of the event (used for the join)
+}
+
+
+
+type TokenTransfer @entity {
+  id: ID!
+  from: Account!
+  to: Account!
+  value: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
+
+type TokenApproval @entity {
+  id: ID!
+  owner: Account!
+  spender: Account!
+  value: BigInt!
+  timestamp: BigInt!
+  blockNumber: BigInt!
+  transactionHash: Bytes!
+}
 

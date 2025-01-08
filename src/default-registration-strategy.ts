@@ -10,12 +10,15 @@ import {
   PremiumPrice,
   ReservedName,
   SaleSetting,
-  Tld
+  Tld,
+  Account
 } from "../generated/schema"
+import { createPremiumNameEvent, createReservedNameEvent, createTLDEvent } from "./entity-helpers";
+import { toAddress, toPaddedHexString, toPaddedHexStringFromBigint } from "./utils";
 
 
 export function handleEnabledSet(event: EnabledSetEvent): void {
-  let tldId = event.params._tokenNamehash.toHexString();
+  let tldId = toPaddedHexString(event.params._tokenNamehash);
   let tld = Tld.load(tldId);
 
   if (tld) {
@@ -31,11 +34,13 @@ export function handleEnabledSet(event: EnabledSetEvent): void {
 
     saleSetting.enabled = event.params._enabled;
     saleSetting.save();
+
+    createTLDEvent(tld.tokenId, event.transaction.hash, event.block.timestamp);
   }
 }
 
 export function handleLengthCostSet(event: LengthCostSetEvent): void {
-  let tldId = event.params._tokenNamehash.toHexString();
+  let tldId = toPaddedHexString(event.params._tokenNamehash);
   let tld = Tld.load(tldId);
 
   if (tld) {
@@ -51,6 +56,8 @@ export function handleLengthCostSet(event: LengthCostSetEvent): void {
 
     saleSetting.prices = event.params._prices;
     saleSetting.save();
+
+    createTLDEvent(tld.tokenId, event.transaction.hash, event.block.timestamp);
   }
 }
 
@@ -58,7 +65,7 @@ export function handleMultiYearDiscountSet(
   event: MultiYearDiscountSetEvent
 ): void {
 
-  let tldId = event.params._tokenNamehash.toHexString();
+  let tldId = toPaddedHexString(event.params._tokenNamehash);
   let tld = Tld.load(tldId);
 
   if (tld) {
@@ -75,11 +82,13 @@ export function handleMultiYearDiscountSet(
 
     saleSetting.discounts = event.params._discounts;
     saleSetting.save();
+
+    createTLDEvent(tld.tokenId, event.transaction.hash, event.block.timestamp);
   }
 }
 
 export function handlePremiumNameSet(event: PremiumNameSetEvent): void {
-  let tldId = event.params._tokenNamehash.toHexString();
+  let tldId = toPaddedHexString(event.params._tokenNamehash);
 
   let tld = Tld.load(tldId);
   let saleSetting = SaleSetting.load(tldId);
@@ -113,15 +122,17 @@ export function handlePremiumNameSet(event: PremiumNameSetEvent): void {
     premiumPrice.label = event.params._label;
     premiumPrice.price = event.params._price;
 
-    if(tld)
+    if(tld) {
       premiumPrice.tld = tld.id;
+      createPremiumNameEvent(tld.tokenId, event.transaction.hash, event.block.timestamp);
 
+    }
     premiumPrice.save();
   }
 }
 
 export function handleReservedNameSet(event: ReservedNameSetEvent): void {
-  let tldId = event.params._tokenNamehash.toHexString();
+  let tldId = toPaddedHexString(event.params._tokenNamehash);
   let saleSetting = SaleSetting.load(tldId);
 
 
@@ -145,7 +156,7 @@ export function handleReservedNameSet(event: ReservedNameSetEvent): void {
   let reservedName = ReservedName.load(reservedNameId);
 
   // If the address is the zero address, remove the entity, otherwise create or update it.
-  if (event.params._claimant.toHexString() == '0x0000000000000000000000000000000000000000') {
+  if (toAddress(event.params._claimant) == '0x0000000000000000000000000000000000000000') {
     if (reservedName) {
       store.remove('ReservedName', reservedNameId);
     }
@@ -155,8 +166,21 @@ export function handleReservedNameSet(event: ReservedNameSetEvent): void {
     }
     reservedName.saleSettings = saleSetting.id;
     reservedName.label = event.params._label;
-    reservedName.claimant = event.params._claimant;
+
+    let claimantAccount = Account.load(toAddress(event.params._claimant));
+    if (claimantAccount == null) {
+      claimantAccount = new Account(toAddress(event.params._claimant));
+      claimantAccount.WhnsBalance = BigInt.fromI32(0)
+      claimantAccount.save();
+    }
+
+    reservedName.claimant = claimantAccount.id;
+
+    
+
     reservedName.tld = tldId;
     reservedName.save();
+
+    createReservedNameEvent(BigInt.fromUnsignedBytes(event.params._tokenNamehash), event.transaction.hash, event.block.timestamp);
   }
 }

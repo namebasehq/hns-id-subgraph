@@ -1,5 +1,6 @@
 // src/utils.ts
 import { Bytes, BigInt, log } from '@graphprotocol/graph-ts';
+import { toPaddedHexString } from './utils';
 
 // Function to decode the length-prefixed name in DNS wire format
 function decodeNameLength(recordBytes: Bytes, offset: i32): i32 {
@@ -38,16 +39,45 @@ function decodeNameLength(recordBytes: Bytes, offset: i32): i32 {
   }
 
 
-// Function to decode the DNS name from bytes (simplified)
-export function decodeName(nameBytes: Bytes): string {
-  // Example decoding logic, modify based on your actual needs
-  return nameBytes.toHexString(); // Replace this with the actual decoding logic
-}
+  export function decodeName(nameBytes: Bytes): string {
+    let decodedName = "";
+    let i = 0;
+    
+    // Loop through the bytes
+    while (i < nameBytes.length) {
+      // Get the length of the next label
+      let labelLength = nameBytes[i];
+      
+      // If label length is 0, we've reached the end of the domain
+      if (labelLength == 0) {
+        break;
+      }
+      
+      // Extract the label by converting the byte values to characters
+      let label = "";
+      for (let j = 1; j <= i32(labelLength); j++) {
+        label += String.fromCharCode(nameBytes[i + j]);
+      }
+      
+      // Append a dot if this is not the first label
+      if (decodedName.length > 0) {
+        decodedName += ".";
+      }
+      
+      decodedName += label;
+      
+      // Move the index to the next label
+      i += labelLength + 1;
+    }
+    
+    return decodedName;
+  }
+    
 
 // Function to parse the DNS record data
 export function parseRecordData(recordBytes: Bytes): string {
   // Example parsing logic, modify based on your actual needs
-  return recordBytes.toHexString(); // Replace with your actual decoding logic
+  return toPaddedHexString(recordBytes); // Replace with your actual decoding logic
 }
 
 export function decodeDNSName(nameBytes: Bytes): string {
@@ -66,7 +96,7 @@ export function decodeDNSName(nameBytes: Bytes): string {
       if (pos + length > nameBytes.length) {
         // Malformed name, return as hex string for debugging
         log.warning("Malformed DNS name: exceeds byte array length.", []);
-        return nameBytes.toHexString();
+        return toPaddedHexString(nameBytes);
       }
   
       // Extract the label bytes

@@ -17,23 +17,28 @@ import {
   Sld,
   Tld,
 } from "../generated/schema";
-import { concat, createOrUpdateResolver } from "./utils";
-import { BigInt, ByteArray, Bytes, crypto } from "@graphprotocol/graph-ts";
+import { createSLDEvent } from "./entity-helpers";
+import {
+  concat,
+  createOrUpdateResolver,
+  toAddress,
+  toPaddedHexString,
+} from "./utils";
+import { BigInt, ByteArray, Bytes, crypto, log } from "@graphprotocol/graph-ts";
 
 export function handleRegisterSld(event: RegisterSldEvent): void {
   // Initialize common variables
   let label = event.params._label;
-  let parentHash = event.params._tldNamehash.toHexString();
+  let parentHash = toPaddedHexString(event.params._tldNamehash);
   let labelHash = crypto.keccak256(ByteArray.fromUTF8(label));
-  let nameHash = crypto.keccak256(
-    concat(ByteArray.fromHexString(parentHash), labelHash)
-  );
+  let nameHash = crypto.keccak256(concat(event.params._tldNamehash, labelHash));
 
   // Account Entity
-  let account = Account.load(event.transaction.from.toHex());
+  let account = Account.load(toAddress(event.transaction.from));
 
   if (!account) {
-    account = new Account(event.transaction.from.toHex());
+    account = new Account(toAddress(event.transaction.from));
+    account.WhnsBalance = BigInt.fromI32(0);
     account.save();
   }
 
@@ -45,24 +50,22 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     // Construct the full domain name
     let fullName = label + "." + parentLabel;
 
-    let domain = Sld.load(nameHash.toHex());
+    let domain = Sld.load(toPaddedHexString(nameHash));
 
     if (!domain) {
-      domain = new Sld(nameHash.toHex());
+      domain = new Sld(toPaddedHexString(nameHash));
       domain.resolverVersion = BigInt.fromI32(0);
       domain.tokenId = BigInt.fromUnsignedBytes(nameHash);
     }
 
-    let resolverId = nameHash
-      .toHexString()
+    let resolverId = toPaddedHexString(nameHash)
       .concat("-")
       .concat(domain.resolverVersion.toString());
-      
+
     let resolverHistoryId = resolverId
       .concat("-")
       .concat(event.block.timestamp.toString());
-   // createOrUpdateResolver(resolverId, account.id, domain.tokenId, event.block.timestamp, "");
-    
+
     // Create ResolverHistory Entity
     let resolverHistoryEntity = new ResolverHistory(resolverHistoryId);
     resolverHistoryEntity.resolver = resolverId;
@@ -72,9 +75,8 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
 
     domain.renewalCount = BigInt.fromI32(0);
     domain.fullName = fullName;
-    domain.owner = account.id;
     domain.registrant = account.id;
-    domain.parentTld = parentTld.id; // we can set this here but will get overwritten by the transfer event
+    domain.parentTld = parentTld.id;
     domain.registrationBlockNumber = event.block.number;
     domain.registrationTimestamp = event.block.timestamp;
     domain.registrationTransactionHash = event.transaction.hash;
@@ -87,9 +89,37 @@ export function handleRegisterSld(event: RegisterSldEvent): void {
     domain.transferCount = BigInt.fromI32(0);
 
     domain.save();
+
+    log.info(
+      "TAKE MY BREATH AWAY - NEW REGISTRATION 🎸\n" +
+        "--------------------------------\n" +
+        "Domain: {}\n" +
+        "Token ID: {}\n" +
+        "Registrant: {}\n" +
+        "Parent TLD: {}\n" +
+        "Registration Block: {}\n" +
+        "Expiry: {}\n" +
+        "Resolver ID: {}\n" +
+        "--------------------------------\n" +
+        "GONNA TAKE IT RIGHT INTO THE DANGER ZONE! 🚀\n",
+      [
+        fullName,
+        domain.tokenId.toHexString(),
+        account.id,
+        parentLabel,
+        event.block.number.toString(),
+        event.params._expiry.toString(),
+        resolverId,
+      ]
+    );
+
+    createSLDEvent(
+      domain.tokenId,
+      event.transaction.hash,
+      event.block.timestamp
+    );
   }
 }
-
 export function handleDiscountSet(event: DiscountSetEvent): void {}
 
 export function handleInitialized(event: InitializedEvent): void {}
@@ -109,14 +139,12 @@ export function handlePaymentSent(event: PaymentSentEvent): void {}
 export function handleRenewSld(event: RenewSldEvent): void {
   // Existing code for calculating nameHash
   let label = event.params._label;
-  let parentHash = event.params._tldNamehash.toHexString();
+  let parentHash = toPaddedHexString(event.params._tldNamehash);
   let labelHash = crypto.keccak256(ByteArray.fromUTF8(label));
-  let nameHash = crypto.keccak256(
-    concat(ByteArray.fromHexString(parentHash), labelHash)
-  );
+  let nameHash = crypto.keccak256(concat(event.params._tldNamehash, labelHash));
 
   // Load the existing Sld entity using nameHash
-  let sldEntity = Sld.load(nameHash.toHex());
+  let sldEntity = Sld.load(toPaddedHexString(nameHash));
 
   // If the Sld entity exists, update its expiry
   // it should always exist, but just in case
@@ -128,27 +156,38 @@ export function handleRenewSld(event: RenewSldEvent): void {
     let renewalEventId = sldEntity.id + "-" + sldEntity.renewalCount.toString();
     let renewalEvent = new Renewal(renewalEventId);
 
-    let renewerAccountId = event.transaction.from.toHex();
+    let renewerAccountId = toAddress(event.transaction.from);
     let renewerAccount = Account.load(renewerAccountId);
 
     if (!renewerAccount) {
       renewerAccount = new Account(renewerAccountId);
+      renewerAccount.WhnsBalance = BigInt.fromI32(0);
       renewerAccount.save();
     }
 
-    // Populate RenewalEvent fields
-    renewalEvent.expirationTimestamp = event.params._expiry;
-    renewalEvent.sld = sldEntity.id;
-    renewalEvent.owner = sldEntity.owner;
-    renewalEvent.renewer = renewerAccountId;
-    renewalEvent.blockNumber = event.block.number;
-    renewalEvent.blockTimestamp = event.block.timestamp;
-    renewalEvent.transactionHash = event.transaction.hash;
+    if (sldEntity.owner) {
+      // Populate RenewalEvent fields
+      renewalEvent.expirationTimestamp = event.params._expiry;
+      renewalEvent.sld = sldEntity.id;
+      renewalEvent.owner = sldEntity.owner!;
+      renewalEvent.renewer = renewerAccountId;
+      renewalEvent.blockNumber = event.block.number;
+      renewalEvent.blockTimestamp = event.block.timestamp;
+      renewalEvent.transactionHash = event.transaction.hash;
 
-    // Save RenewalEvent entity
-    renewalEvent.save();
+      // Save RenewalEvent entity
+      renewalEvent.save();
 
-    // Save Sld entity (with updated expiry)
-    sldEntity.save();
+      // Save Sld entity (with updated expiry)
+      sldEntity.save();
+
+      createSLDEvent(
+        sldEntity.tokenId,
+        event.transaction.hash,
+        event.block.timestamp
+      );
+    } else {
+      throw new Error("Owner is not set for SLD: " + sldEntity.id);
+    }
   }
 }

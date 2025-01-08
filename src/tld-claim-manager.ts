@@ -1,13 +1,14 @@
 import { TldClaimed as TldClaimedEvent } from "../generated/TldClaimManager/TldClaimManager";
 import { Account, Resolver, ResolverHistory, Tld } from "../generated/schema";
 import { BigInt, log, Bytes } from "@graphprotocol/graph-ts";
-import { createOrUpdateResolver, padHex } from "./utils";
+import { createOrUpdateResolver, padHex, toAddress, toPaddedHexStringFromBigint } from "./utils";
 import { DefaultResolver } from "../generated/DefaultResolver/DefaultResolver";
+import { createTLDEvent } from "./entity-helpers";
 
 
 
 export function handleTldClaimed(event: TldClaimedEvent): void {
-  let tldId = padHex(event.params._tokenId.toHexString(), 32);
+  let tldId = toPaddedHexStringFromBigint(event.params._tokenId)
   let tldEntity = Tld.load(tldId);
 
   if (!tldEntity) {
@@ -23,10 +24,11 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
   }
 
   // Ensure the claimant account entity exists
-  let claimantAccountId = event.params._to.toHex();
+  let claimantAccountId = toAddress(event.params._to);
   let claimantAccount = Account.load(claimantAccountId);
   if (!claimantAccount) {
     claimantAccount = new Account(claimantAccountId);
+    claimantAccount.WhnsBalance = BigInt.fromI32(0);
     claimantAccount.save();
   }
 
@@ -57,6 +59,8 @@ export function handleTldClaimed(event: TldClaimedEvent): void {
   tldEntity.lastUpdateTransactionHash = event.transaction.hash;
 
   tldEntity.save();
+
+  createTLDEvent(tldEntity.tokenId, event.transaction.hash, event.block.timestamp);
 
   log.info("Saved TLD entity: {} - {}", [tldId.toString(), event.params._label]);
 }

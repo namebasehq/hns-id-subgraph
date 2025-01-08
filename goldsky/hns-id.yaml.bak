@@ -1,0 +1,288 @@
+  apiVersion: 3
+  name: optimism-sepolia-hns-id
+  status: ACTIVE
+  sources:
+    optimism_sld:
+      type: subgraph_entity
+      subgraphs:
+        - name: hns-id
+          version: '0.0.68'
+      name: sld
+    optimism_tld:
+      type: subgraph_entity
+      subgraphs:
+        - name: hns-id
+          version: '0.0.68'
+      name: tld
+    sale_settings:
+      type: subgraph_entity
+      subgraphs:
+        - name: hns-id
+          version: '0.0.68'
+      name: sale_setting
+    premium_names:
+      type: subgraph_entity
+      subgraphs:
+        - name: hns-id
+          version: '0.0.68'
+      name: premium_price
+    reserved_names:
+      type: subgraph_entity
+      subgraphs:
+        - name: hns-id
+          version: '0.0.68'
+      name: reserved_name  
+    text_records:
+      type: subgraph_entity
+      subgraphs:
+        - name: hns-id
+          version: '0.0.68'
+      name: text_record
+    address_records:
+      type: subgraph_entity
+      subgraphs:
+        - name: hns-id
+          version: '0.0.68'
+      name: address
+    resolver_records:
+      type: subgraph_entity
+      subgraphs:
+        - name: hns-id
+          version: '0.0.68'
+      name: resolver
+    royalty_records:
+      type: subgraph_entity
+      subgraphs:
+        - name: hns-id
+          version: '0.0.68'
+      name: royalty  
+    dns_records:
+      type: subgraph_entity
+      subgraphs:
+        - name: hns-id
+          version: '0.0.68'
+      name: dns_record
+    
+
+
+  transforms:
+    sld_transform:
+      primary_key: id
+      sql: |
+        SELECT
+          s.token_id AS id,   
+          s.label,
+          s.parent_tld as tldHash,
+          CAST(t.token_id as NUMERIC) AS tldId,
+          to_timestamp(from_unixtime(cast(s.registration_timestamp as integer))) AS createdAt,    
+          to_timestamp(from_unixtime(CAST(s.last_update_timestamp AS INTEGER))) AS updatedAt  
+        FROM optimism_sld s
+        JOIN optimism_tld t ON s.parent_tld = t.id
+
+    tld_transform:
+      primary_key: id
+      sql: |
+        SELECT
+          t.token_id AS id,  
+          t.id AS hash, 
+          to_timestamp(from_unixtime(cast(t.registration_block_timestamp as integer))) AS createdAt,    
+          to_timestamp(from_unixtime(CAST(t.last_update_timestamp AS INTEGER))) AS updatedAt  
+        FROM optimism_tld t
+
+    sale_settings_transform:
+      primary_key: id
+      sql: |
+        SELECT
+          t.token_id AS id,
+          ss.tld AS hash,   
+          ss.prices AS lengthPrice,      
+          ss.discounts AS annualDiscounts,  
+          ss.enabled,         
+          to_timestamp(from_unixtime(cast(t.registration_block_timestamp as integer))) AS createdAt,    
+          to_timestamp(from_unixtime(CAST(t.last_update_timestamp AS INTEGER))) AS updatedAt               
+        FROM sale_settings ss
+        JOIN optimism_tld t ON ss.tld = t.id
+
+    premium_name_transform:
+      primary_key: tldId,label
+      sql: |
+        SELECT
+          t.token_id AS tldId,
+          pn.label, 
+          pn.price,                 
+          to_timestamp(from_unixtime(cast(t.registration_block_timestamp as integer))) AS createdAt,    
+          to_timestamp(from_unixtime(CAST(t.last_update_timestamp AS INTEGER))) AS updatedAt               
+        FROM premium_names pn
+        JOIN optimism_tld t ON pn.tld = t.id
+
+    reserved_name_transform:
+      primary_key: tldId,label
+      sql: |
+        SELECT
+          t.token_id AS tldId,   
+          rn.label,
+          rn.claimant,                 
+          to_timestamp(from_unixtime(cast(t.registration_block_timestamp as integer))) AS createdAt,    
+          to_timestamp(from_unixtime(CAST(t.last_update_timestamp AS INTEGER))) AS updatedAt               
+        FROM reserved_names rn
+        JOIN optimism_tld t ON rn.tld = t.id
+
+
+    tld_nft_transform:
+        primary_key: id
+        sql: |
+          SELECT 
+            t.token_id AS id,  
+            t.id AS hash,                       
+            t.label AS name,                    
+            t.owner,                
+            to_timestamp(from_unixtime(cast(t.registration_block_timestamp as integer))) AS createdAt,    
+            to_timestamp(from_unixtime(CAST(t.last_update_timestamp AS INTEGER))) AS updatedAt,          
+            t.resolver       
+          FROM optimism_tld t
+
+    sld_nft_transform:
+      primary_key: id
+      sql: |
+        SELECT 
+          s.token_id AS id,  
+          s.id AS hash,                       
+          s.label AS name,                    
+          s.owner,             
+          to_timestamp(from_unixtime(cast(s.registration_timestamp as integer))) AS createdAt,    
+          to_timestamp(from_unixtime(CAST(s.last_update_timestamp AS INTEGER))) AS updatedAt,      
+          to_timestamp(from_unixtime(CAST(s.expiration_timestamp AS INTEGER))) AS expiry,         
+          s.resolver       
+        FROM optimism_sld s
+        
+    
+    text_record_transform:
+      primary_key: nftId,textKey
+      sql: |
+        SELECT
+          tr.text_key as textKey, 
+          tr.text_value as textValue,
+          tr.token_id as nftId,
+          to_timestamp(from_unixtime(cast(tr.created_at as integer))) AS createdAt,
+          to_timestamp(from_unixtime(cast(tr.updated_at as integer))) AS updatedAt
+        FROM text_records tr
+
+    address_record_transform:
+      primary_key: nftId,coinType
+      sql: |
+            SELECT
+                ar.cointype as coinType, 
+                ar.address as address,
+                ar.token_id as nftId,
+                to_timestamp(from_unixtime(COALESCE(cast(sld.last_update_timestamp as bigint), cast(tld.last_update_timestamp as bigint), extract(epoch from now())))) as createdAt,
+                to_timestamp(from_unixtime(cast(extract(epoch from now()) as integer))) as updatedAt
+            FROM address_records ar
+            LEFT JOIN optimism_sld sld ON sld.id = cast(ar.token_id as varchar)
+            LEFT JOIN optimism_tld tld ON tld.id = cast(ar.token_id as varchar)
+
+
+    
+    royalty_transform:
+      primary_key: id
+      sql: |
+        SELECT
+          t.token_id as id,
+          r.percentage as royaltyFee,
+          t.id as hash,
+          to_timestamp(from_unixtime(cast(t.last_update_timestamp as integer))) as createdAt,
+          to_timestamp(from_unixtime(cast(extract(epoch from now()) as integer))) as updatedAt
+        FROM royalty_records r
+        JOIN optimism_tld t ON t.id = r.tld
+
+    dns_records_transform:
+      primary_key: nftId,type
+      sql: |
+        SELECT
+          d.name,
+          d.type,
+          d.ttl,
+          d.data,
+          to_timestamp(from_unixtime(cast(d.created_at as bigint))) AS createdAt,
+          to_timestamp(from_unixtime(cast(extract(epoch from now()) as integer))) as updatedAt,
+          d.token_id AS nftId
+        FROM dns_records d
+
+
+  sinks:
+    postgres_sink_sld_nfts:
+      type: postgres
+      table: NFTs
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: sld_nft_transform
+
+    postgres_sink_tld_nfts:
+      type: postgres
+      table: NFTs
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: tld_nft_transform
+
+    postgres_sink_slds:
+      type: postgres
+      table: SLDs
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: sld_transform
+
+    postgres_sink_tlds:
+      type: postgres
+      table: TLDs
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: tld_transform
+
+    postgres_sink_tld_sale_settings:
+      type: postgres
+      table: TLDs
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: sale_settings_transform
+    
+    postgres_sink_premium_names:
+      type: postgres
+      table: Premiums
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: premium_name_transform
+    
+    postgres_sink_reserved_names:
+      type: postgres
+      table: Reserved
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: reserved_name_transform
+
+    postgres_sink_text_records:
+      type: postgres
+      table: TextRecords
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: text_record_transform
+
+    postgres_sink_royalties:
+      type: postgres
+      table: TLDs
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: royalty_transform  
+    
+    postgres_sink_address_records:
+      type: postgres
+      table: Wallets
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: address_record_transform
+
+    postgres_sink_dns_records:
+      type: postgres
+      table: DNSRecords
+      schema: goldsky
+      secret_name: A_POSTGRESQL_SECRET
+      from: dns_records_transform
+

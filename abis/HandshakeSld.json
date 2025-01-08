@@ -8,7 +8,8 @@
       }
     ],
     "stateMutability": "nonpayable",
-    "type": "constructor"
+    "type": "constructor",
+    "customField": "Added to modify hash"
   },
   {
     "anonymous": false,

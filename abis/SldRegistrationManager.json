@@ -1,5 +1,6 @@
 [
-  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor",
+  "customField": "Added to modify hash" },
   {
     "anonymous": false,
     "inputs": [

@@ -25,13 +25,14 @@ import {
 } from "../generated/schema";
 
 import { BigInt, Bytes, store as GraphStore, log } from "@graphprotocol/graph-ts";
-import { createOrUpdateResolver, getResolverId } from "./utils";
+import { createOrUpdateResolver, getResolverId, toAddress, toPaddedHexString, toPaddedHexStringFromBigint } from "./utils";
 import { extractTTL, decodeName, parseRecordData, decodeDNSName, decodeDNSData, getResourceType } from './dns-utils';
+import { createAddressRecordEvent, createDNSRecordEvent, createSLDEvent, createTextRecordEvent, createTLDEvent } from "./entity-helpers";
 
 export function handleAddrChanged(event: AddrChangedEvent): void {}
 
 export function handleAddressChanged(event: AddressChangedEvent): void {
-  let resolverId = getResolverId(event.params.node.toHex());
+  let resolverId = getResolverId(toPaddedHexString(event.params.node));
 
   // Load or create the parent Resolver entity
   let resolverEntity = Resolver.load(resolverId);
@@ -54,7 +55,7 @@ export function handleAddressChanged(event: AddressChangedEvent): void {
   }
 
   // Update fields on the Address entity
-  addressEntity.address = event.params.newAddress.toHex();
+  addressEntity.address = toAddress(event.params.newAddress);
   addressEntity.cointype = event.params.coinType;
   addressEntity.resolver = resolverEntity.id;
   addressEntity.tokenId = BigInt.fromUnsignedBytes(event.params.node);
@@ -72,11 +73,13 @@ export function handleAddressChanged(event: AddressChangedEvent): void {
   resolverHistoryEntity.changeType = "addressChanged";
   resolverHistoryEntity.changedAt = event.block.timestamp;
   resolverHistoryEntity.save();
+
+  createAddressRecordEvent(BigInt.fromUnsignedBytes(event.params.node), event.transaction.hash, event.block.timestamp);
 }
 
 export function handleContenthashChanged(event: ContenthashChangedEvent): void {
   // Generate a unique ID for the Resolver entity
-  let resolverId = getResolverId(event.params.node.toHex());
+  let resolverId = getResolverId(toPaddedHexString(event.params.node));
 
   // Try loading the Resolver entity, or create a new one if it doesn't exist
   // (it should always exist though)
@@ -100,10 +103,12 @@ export function handleContenthashChanged(event: ContenthashChangedEvent): void {
   resolverHistoryEntity.changeType = "contenthashChanged";
   resolverHistoryEntity.changedAt = event.block.timestamp;
   resolverHistoryEntity.save();
+
+  createDNSRecordEvent(BigInt.fromUnsignedBytes(event.params.node), event.transaction.hash, event.block.timestamp);
 }
 
 export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
-  let resolverId = getResolverId(event.params.node.toHexString());
+  let resolverId = getResolverId(toPaddedHexString(event.params.node));
   // Generate a unique ID for the DnsRecord entity
   let dnsRecordId = resolverId
     .concat("-")
@@ -169,10 +174,12 @@ export function handleDNSRecordChanged(event: DNSRecordChangedEvent): void {
   dnsRecordHistoryEntity.changedAt = event.block.timestamp;
   dnsRecordHistoryEntity.changeType = "Updated"; // Or 'Created' if it's a new entity
   dnsRecordHistoryEntity.save();
+
+  createDNSRecordEvent(BigInt.fromUnsignedBytes(event.params.node), event.transaction.hash, event.block.timestamp);
 }
 
 export function handleDNSRecordDeleted(event: DNSRecordDeletedEvent): void {
-  let resolverId = getResolverId(event.params.node.toHex());
+  let resolverId = getResolverId(toPaddedHexString(event.params.node));
   // Generate the ID based on the node and resource
   let dnsRecordId = resolverId
     .concat("-")
@@ -217,11 +224,13 @@ export function handleDNSRecordDeleted(event: DNSRecordDeletedEvent): void {
   resolverHistoryEntity.changeType = "dnsRecordDeleted";
   resolverHistoryEntity.changedAt = event.block.timestamp;
   resolverHistoryEntity.save();
+
+  createDNSRecordEvent(BigInt.fromUnsignedBytes(event.params.node), event.transaction.hash, event.block.timestamp);
 }
 
 export function handleDNSZonehashChanged(event: DNSZonehashChangedEvent): void {
   // Generate a unique ID for the Resolver entity
-  let resolverId = getResolverId(event.params.node.toHex());
+  let resolverId = getResolverId(toPaddedHexString(event.params.node));
 
   // Try loading the Resolver entity, or create a new one if it doesn't exist
   // (it should always exist though)
@@ -251,7 +260,7 @@ export function handleNameChanged(event: NameChangedEvent): void {}
 export function handleReverseClaimed(event: ReverseClaimedEvent): void {}
 
 export function handleTextChanged(event: TextChangedEvent): void {
-  let resolverId = getResolverId(event.params.node.toHex());
+  let resolverId = getResolverId(toPaddedHexString(event.params.node));
   // Generate a unique ID for the TextRecord entity
   let textRecordId = resolverId.concat("-").concat(event.params.key.toString());
 
@@ -306,12 +315,14 @@ export function handleTextChanged(event: TextChangedEvent): void {
   }
 
   textRecordHistoryEntity.save();
+
+  createTextRecordEvent(BigInt.fromUnsignedBytes(event.params.node), event.transaction.hash, event.block.timestamp);
 }
 
 export function handleUpdatedDelegate(event: UpdatedDelegateEvent): void {
-  let tokenId = event.params._tokenId.toHexString();
+  let tokenId = toPaddedHexStringFromBigint(event.params._tokenId);
   // Generate a unique ID for the Delegate entity by combining the _tokenId and _owner
-  let delegateId = tokenId.concat("-").concat(event.params._owner.toHex());
+  let delegateId = tokenId.concat("-").concat(toAddress(event.params._owner));
 
   // Try loading the Delegate entity, or create a new one if it doesn't exist
   let delegateEntity = Delegate.load(delegateId);
@@ -337,15 +348,17 @@ export function handleUpdatedDelegate(event: UpdatedDelegateEvent): void {
     tld.delegate = delegateEntity.id;
     tld.save();
   }
+
+  addNftEvent(event.params._tokenId, event.transaction.hash, event.block.timestamp);
 }
 
 export function handleVersionChanged(event: VersionChangedEvent): void {
-  let sld = Sld.load(event.params.node.toHex());
-  let tld = Tld.load(event.params.node.toHex());
+  let sld = Sld.load(toPaddedHexString(event.params.node));
+  let tld = Tld.load(toPaddedHexString(event.params.node));
 
-  let owner = "";
+  let owner: string|null = null;
 
-  let oldResolverId = getResolverId(event.params.node.toHex());
+  let oldResolverId = getResolverId(toPaddedHexString(event.params.node));
 
   let oldResolver = Resolver.load(oldResolverId);
 
@@ -361,10 +374,16 @@ export function handleVersionChanged(event: VersionChangedEvent): void {
     tld.save();
   }
 
+  if(!owner){
+    throw new Error("Owner not found for tokenId: " + event.params.node.toHexString());
+  }
+
+  if(owner){
   // Load or create the parent Resolver entity
-  let resolverId = getResolverId(event.params.node.toHex());
-  createOrUpdateResolver(resolverId, owner, BigInt.fromUnsignedBytes(event.params.node), event.block.timestamp, event.address.toHexString());
+  let resolverId = getResolverId(toPaddedHexString(event.params.node));
+  createOrUpdateResolver(resolverId, owner, BigInt.fromUnsignedBytes(event.params.node), event.block.timestamp, toAddress(event.address));
   let resolverEntity = Resolver.load(resolverId);
+
 
   if (resolverEntity) {
 
@@ -380,6 +399,32 @@ export function handleVersionChanged(event: VersionChangedEvent): void {
   if (sld) {
     sld.resolver = resolverId;
     sld.save();
+  }
+
+  addNftEvent(BigInt.fromUnsignedBytes(event.params.node), event.transaction.hash, event.block.timestamp);
+}
+}
+
+
+export function addNftEvent(tokenId: BigInt, txHash: Bytes, eventTimestamp: BigInt): void {
+  let tokenIdHex = toPaddedHexStringFromBigint(tokenId);
+
+  // Try loading both SLD and TLD entities using the tokenId
+  let sld = Sld.load(tokenIdHex);
+  let tld = Tld.load(tokenIdHex);
+
+  // If SLD exists, update it
+  if (sld) {
+    
+    createSLDEvent(tokenId, txHash, eventTimestamp);
+  } 
+  // If TLD exists, update it
+  else if (tld) {
+    createTLDEvent(tokenId, txHash, eventTimestamp);
+  } 
+  // If neither SLD nor TLD exists, log a warning
+  else {
+    log.warning("No SLD or TLD found for tokenId: {}", [tokenIdHex]);
   }
 }
 
