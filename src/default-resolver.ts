@@ -285,6 +285,7 @@ export function handleTextChanged(event: TextChangedEvent): void {
   if (resolverEntity == null) {
     resolverEntity = new Resolver(resolverId);
     resolverEntity.tokenId = BigInt.fromUnsignedBytes(event.params.node);
+    resolverEntity.version = BigInt.fromI32(0);
     resolverEntity.save();
   }
 

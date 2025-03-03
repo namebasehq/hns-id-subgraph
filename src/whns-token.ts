@@ -51,6 +51,7 @@ export function handleTransfer(event: TransferEvent): void {
     whnsToken.save();
   }
 
+  
   if (to.id != zeroAddress) {
     to.WhnsBalance = to.WhnsBalance.plus(event.params.value);
     to.save();
